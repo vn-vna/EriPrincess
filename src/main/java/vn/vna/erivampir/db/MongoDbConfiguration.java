@@ -1,16 +1,20 @@
 package vn.vna.erivampir.db;
 
 
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.MongoDriverInformation;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver;
-import org.springframework.data.mongodb.core.convert.DefaultMongoTypeMapper;
-import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
-import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
+import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
+import vn.vna.erivampir.EriServer;
+import vn.vna.erivampir.ServerConfig;
 
 @Configuration
 public class MongoDbConfiguration {
@@ -22,13 +26,18 @@ public class MongoDbConfiguration {
     Logger logger = LoggerFactory.getLogger(MongoDbConfiguration.class);
 
     @Bean
-    public MongoTemplate mongoTemplate(MongoMappingContext context, MongoDatabaseFactory mongoDbFactory) {
-        MappingMongoConverter converter = new MappingMongoConverter(new DefaultDbRefResolver(mongoDbFactory), context);
-        converter.setTypeMapper(new DefaultMongoTypeMapper(null));
+    public MongoTemplate mongoTemplate() {
+        logger.info("Setting up mongo db connection");
+        String                 uri               = EriServer.getServerConfig().getConfiguration(ServerConfig.CFG_MONGODB_URI);
+        ConnectionString       connectionString  = new ConnectionString(uri);
+        MongoDriverInformation driverInformation = MongoDriverInformation.builder().build();
+        MongoClientSettings options = MongoClientSettings.builder()
+            .applyConnectionString(connectionString)
+            .build();
 
-        MongoTemplate mongoTemplate = new MongoTemplate(mongoDbFactory, converter);
-
-        return mongoTemplate;
+        MongoClient          mongoClient          = MongoClients.create(options, driverInformation);
+        MongoDatabaseFactory mongoDatabaseFactory = new SimpleMongoClientDatabaseFactory(mongoClient, DATABASE_NAME);
+        return new MongoTemplate(mongoDatabaseFactory);
     }
 
 }

@@ -10,9 +10,14 @@ import vn.vna.erivampir.discord.DiscordBotService;
 public class EriServer {
     protected static ApplicationContext appCtx;
     protected static DiscordBotService  discordBotService;
+    protected static ServerConfig       serverConfig;
 
     public static void main(String[] args) {
-        appCtx            = SpringApplication.run(EriServer.class, args);
+        serverConfig = new ServerConfig();
+        serverConfig.parseArgs(args);
+
+        appCtx = SpringApplication.run(EriServer.class, args);
+
         discordBotService = DiscordBotService.getInstance();
         discordBotService.awake(args);
     }
@@ -23,6 +28,10 @@ public class EriServer {
 
     public static DiscordBotService getDiscordBotService() {
         return discordBotService;
+    }
+
+    public static ServerConfig getServerConfig() {
+        return serverConfig;
     }
 
 }

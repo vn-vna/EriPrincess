@@ -2,11 +2,14 @@ package vn.vna.erivampir.discord;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import vn.vna.erivampir.EriServer;
+import vn.vna.erivampir.ServerConfig;
+import vn.vna.erivampir.discord.slash.PingSlashCommand;
 
 import javax.security.auth.login.LoginException;
 import java.util.ArrayList;
@@ -19,7 +22,9 @@ public class DiscordBotService {
     private final  Logger            logger = LoggerFactory.getLogger(DiscordBotService.class);
     protected      JDABuilder        jdaBuilder;
     protected      JDA               jdaClient;
-    protected      OnMessageListener messageListener;
+    protected      OnMessageListener onMessageListener;
+    protected      OnReadyEvent      onReadyEvent;
+    protected      OnSlashCommand    onSlashCommand;
 
     public static DiscordBotService getInstance() {
         synchronized (DiscordBotService.class) {
@@ -31,20 +36,10 @@ public class DiscordBotService {
     }
 
     public void awake(String[] args) {
-        messageListener = new OnMessageListener();
-        String token = null;
-
-        // Find token in args
-        for (int i = 0; i < args.length; ++i) {
-            if (args[i].startsWith("--token")) {
-                String[] tokenArg = args[i].split("=");
-                if (tokenArg.length != 2) {
-                    throw new IllegalArgumentException("Bad token argument");
-                }
-                token = tokenArg[1];
-                break;
-            }
-        }
+        onMessageListener = new OnMessageListener();
+        onReadyEvent      = new OnReadyEvent();
+        onSlashCommand    = new OnSlashCommand();
+        String token = EriServer.getServerConfig().getConfiguration(ServerConfig.CFG_DISCORD_BOT_TOKEN);
 
         if (Objects.isNull(token)) {
             throw new IllegalArgumentException("Token String is null");
@@ -52,13 +47,30 @@ public class DiscordBotService {
 
         logger.info("Discord Bot Service has started");
         Collection<GatewayIntent> intents = new ArrayList<>();
+
         intents.add(GatewayIntent.GUILD_MESSAGES);
+        intents.add(GatewayIntent.GUILD_MEMBERS);
+        intents.add(GatewayIntent.GUILD_BANS);
+        intents.add(GatewayIntent.GUILD_EMOJIS);
+        intents.add(GatewayIntent.GUILD_INVITES);
+        intents.add(GatewayIntent.GUILD_MESSAGE_TYPING);
+        intents.add(GatewayIntent.GUILD_PRESENCES);
+        intents.add(GatewayIntent.GUILD_VOICE_STATES);
+        intents.add(GatewayIntent.GUILD_WEBHOOKS);
         intents.add(GatewayIntent.GUILD_MESSAGE_REACTIONS);
+
         jdaBuilder = JDABuilder.create(token, intents);
-        jdaBuilder.addEventListeners(messageListener);
+        jdaBuilder
+            .addEventListeners(onReadyEvent)
+            .addEventListeners(onMessageListener)
+            .addEventListeners(onSlashCommand)
+            .setActivity(Activity.playing("with VNA"));
 
         try {
             jdaClient = jdaBuilder.build();
+            jdaClient
+                .upsertCommand(PingSlashCommand.COMMAND, PingSlashCommand.DESCRIPTION)
+                .queue();
         } catch (LoginException lex) {
             lex.printStackTrace();
         }
