@@ -1,10 +1,2 @@
 server:
   port: 3000
-
-logging:
-  level:
-    root: INFO
-    org:
-      springframework:
-        web: INFO
-      hibernate: ERROR
