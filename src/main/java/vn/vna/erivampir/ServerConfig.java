@@ -12,9 +12,12 @@ import java.util.Map;
 @ToString
 public class ServerConfig {
 
-    public static final  String             CFG_DISCORD_BOT_TOKEN = "token";
-    public static final  String             CFG_MONGODB_URI       = "mongo-uri";
-    public static final  String             CFG_ERIBOT_PREFIX     = "bot-prefix";
+    public static final String ERI_VERSION = "V1.0 - By VNA - 2022";
+
+    public static final String CFG_DISCORD_BOT_TOKEN = "token";
+    public static final String CFG_MONGODB_URI       = "mongo-uri";
+    public static final String CFG_ERIBOT_PREFIX     = "bot-prefix";
+
     private static final Collection<String> allCfg;
 
     static {
@@ -59,7 +62,4 @@ public class ServerConfig {
         return configurations.get(key);
     }
 
-    public Logger getLogger() {
-        return logger;
-    }
 }

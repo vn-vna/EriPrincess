@@ -1,24 +1,23 @@
-package vn.vna.erivampir.discord;
+package vn.vna.erivampir.discord.msgcmd;
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
+import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import vn.vna.erivampir.EriServer;
 import vn.vna.erivampir.ServerConfig;
-import vn.vna.erivampir.discord.msgcmd.PingCommand;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Objects;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 
 public class OnMessageListener extends ListenerAdapter {
-    protected Logger                     logger;
-    protected Collection<MessageCommand> adminCommands;
-    protected Collection<MessageCommand> msgCommands;
-    protected String                     eriPrefix;
+    protected Logger                      logger;
+    protected Collection<CommandTemplate> adminCommands;
+    protected Collection<CommandTemplate> msgCommands;
+    protected String                      eriPrefix;
 
     public OnMessageListener() {
         logger        = LoggerFactory.getLogger(OnMessageListener.class);
@@ -30,8 +29,24 @@ public class OnMessageListener extends ListenerAdapter {
             throw new IllegalStateException("Please configure a prefix");
         }
 
-        // Add commands
-        msgCommands.add(new PingCommand());
+        // === Add commands
+        loadCommands(msgCommands, ".ncmd", CommandTemplate.NormalCommand.class);
+        loadCommands(adminCommands, ".acmd", CommandTemplate.AdminCommand.class);
+    }
+
+    private void loadCommands(Collection<CommandTemplate> commandsPool, String pkg, Class<? extends Annotation> annotation) {
+        Reflections   allCmdHandlers    = new Reflections(OnMessageListener.class.getPackageName() + pkg);
+        Set<Class<?>> targetCmdHandlers = allCmdHandlers.getTypesAnnotatedWith(annotation);
+        for (Class<?> targetCmdHandler : targetCmdHandlers) {
+            try {
+                final Object handler = targetCmdHandler.getDeclaredConstructor().newInstance();
+                if (handler instanceof CommandTemplate targetCommand) {
+                    commandsPool.add(targetCommand);
+                }
+            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+                logger.error("Cannot create instance of command handler " + targetCmdHandler.getName() + " " + e.getMessage());
+            }
+        }
     }
 
     @Override
@@ -56,7 +71,7 @@ public class OnMessageListener extends ListenerAdapter {
     }
 
     public void adminCommandEval(String[] commands, MessageReceivedEvent event) {
-        for (MessageCommand msgCommand : adminCommands) {
+        for (CommandTemplate msgCommand : adminCommands) {
             if (!Objects.isNull(msgCommand) && msgCommand.matchCommand(commands, event)) {
                 msgCommand.invoke(commands, event);
                 break;
@@ -66,11 +81,19 @@ public class OnMessageListener extends ListenerAdapter {
 
     public void messageCommandEval(String[] commands, MessageReceivedEvent event) {
         logger.debug("Triggered message command evaler >> " + Arrays.toString(commands));
-        for (MessageCommand msgCommand : msgCommands) {
+        for (CommandTemplate msgCommand : msgCommands) {
             if (!Objects.isNull(msgCommand) && msgCommand.matchCommand(commands, event)) {
                 msgCommand.invoke(commands, event);
                 break;
             }
         }
+    }
+
+    public Collection<CommandTemplate> getAdminCommands() {
+        return adminCommands;
+    }
+
+    public Collection<CommandTemplate> getMsgCommands() {
+        return msgCommands;
     }
 }

@@ -1,4 +1,4 @@
-package vn.vna.erivampir.db.ericfg;
+package vn.vna.erivampir.db.discordsvr;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -12,21 +12,20 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = MongoDbConfiguration.COLLECTION_ERI_CONFIGURATION)
-public class EriConfiguration {
-
+@EqualsAndHashCode
+@Document(collection = MongoDbConfiguration.COLLECTION_DISCORD_SERVERS)
+public class DiscordServerConfiguration {
 
     @Id
+    @Field
     @Indexed(unique = true)
-    private String key;
+    private String serverID;
 
     @Field
-    private String value;
+    private Date registeredTime;
 
     @Field
-    private Date lastModify;
-
+    private Integer serverGMT;
 }

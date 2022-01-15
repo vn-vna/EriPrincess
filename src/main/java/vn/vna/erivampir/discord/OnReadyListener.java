@@ -11,17 +11,17 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Objects;
 
-public class OnReadyEvent extends ListenerAdapter {
+public class OnReadyListener extends ListenerAdapter {
 
-    Logger logger = LoggerFactory.getLogger(OnReadyEvent.class);
+    Logger logger = LoggerFactory.getLogger(OnReadyListener.class);
 
     @Override
     public void onReady(@NotNull ReadyEvent event) {
         super.onReady(event);
         logger.info("Logged in successfully as [" + event.getJDA().getSelfUser().getAsTag() + "]");
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(ListenerAdapter.class.getResourceAsStream("/console-banner")));
-            String str = "";
+            BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(ListenerAdapter.class.getResourceAsStream("/console-banner"))));
+            String         str    = "";
             while (!Objects.isNull(str = reader.readLine())) {
                 System.out.println(str);
             }
