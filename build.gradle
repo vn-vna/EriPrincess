@@ -1,8 +1,8 @@
 plugins {
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
     id 'java'
 }
-
-group 'org.example'
+group 'vn.vna'
 version '1.0-SNAPSHOT'
 
 repositories {
@@ -29,3 +29,12 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'vn.vna.erivampir.EriServer'
+        )
+    }
+}
+
