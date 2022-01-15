@@ -28,7 +28,7 @@ public class MongoDbConfiguration {
     @Bean
     public MongoTemplate mongoTemplate() {
         logger.info("Setting up mongo db connection");
-        String                 uri               = EriServer.getServerConfig().getConfiguration(ServerConfig.CFG_MONGODB_URI);
+        String                 uri               = ServerConfig.getInstance().getConfiguration(ServerConfig.CFG_MONGODB_URI);
         ConnectionString       connectionString  = new ConnectionString(uri);
         MongoDriverInformation driverInformation = MongoDriverInformation.builder().build();
         MongoClientSettings options = MongoClientSettings.builder()

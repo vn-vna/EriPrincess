@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import vn.vna.erivampir.cli.CommandLineService;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,7 +19,6 @@ public class OnReadyListener extends ListenerAdapter {
     @Override
     public void onReady(@NotNull ReadyEvent event) {
         super.onReady(event);
-        logger.info("Logged in successfully as [" + event.getJDA().getSelfUser().getAsTag() + "]");
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(ListenerAdapter.class.getResourceAsStream("/console-banner"))));
             String         str    = "";
@@ -28,5 +28,7 @@ public class OnReadyListener extends ListenerAdapter {
         } catch (IOException ioex) {
             ioex.printStackTrace();
         }
+        logger.info("Logged in successfully as [" + event.getJDA().getSelfUser().getAsTag() + "]");
+        CommandLineService.getInstance().awake();
     }
 }

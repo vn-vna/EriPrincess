@@ -50,7 +50,7 @@ public class DiscordBotService {
         onReadyEvent      = new OnReadyListener();
         onSlashCommand    = new OnSlashCommand();
 
-        String token = EriServer.getServerConfig().getConfiguration(ServerConfig.CFG_DISCORD_BOT_TOKEN);
+        String token = ServerConfig.getInstance().getConfiguration(ServerConfig.CFG_DISCORD_BOT_TOKEN);
 
         if (Objects.isNull(token)) {
             throw new IllegalArgumentException("Token String is null");

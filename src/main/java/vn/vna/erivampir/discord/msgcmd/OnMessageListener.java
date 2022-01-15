@@ -23,7 +23,7 @@ public class OnMessageListener extends ListenerAdapter {
         logger        = LoggerFactory.getLogger(OnMessageListener.class);
         adminCommands = new ArrayList<>();
         msgCommands   = new ArrayList<>();
-        eriPrefix     = EriServer.getServerConfig().getConfiguration(ServerConfig.CFG_ERIBOT_PREFIX);
+        eriPrefix     = ServerConfig.getInstance().getConfiguration(ServerConfig.CFG_ERIBOT_PREFIX);
         if ("".equals(eriPrefix)) {
             logger.error("Prefix can't be NULL or EMPTY");
             throw new IllegalStateException("Please configure a prefix");

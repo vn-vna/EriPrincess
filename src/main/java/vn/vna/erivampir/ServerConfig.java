@@ -4,10 +4,7 @@ import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @ToString
 public class ServerConfig {
@@ -19,6 +16,8 @@ public class ServerConfig {
     public static final String CFG_ERIBOT_PREFIX     = "bot-prefix";
 
     private static final Collection<String> allCfg;
+
+    private static ServerConfig instance;
 
     static {
         allCfg = new ArrayList<>();
@@ -60,6 +59,13 @@ public class ServerConfig {
 
     public String getConfiguration(String key) {
         return configurations.get(key);
+    }
+
+    public static ServerConfig getInstance() {
+        if (Objects.isNull(instance)) {
+            instance = new ServerConfig();
+        }
+        return instance;
     }
 
 }

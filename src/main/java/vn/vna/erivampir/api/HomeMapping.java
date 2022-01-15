@@ -37,7 +37,6 @@ public class HomeMapping {
                 str.append(line);
             }
 
-            EriConfiguration configuration = eriCfgRepository.insert(new EriConfiguration("KEY1_", "VALUE_", new Date()));
         } catch (IOException | NullPointerException | DuplicateKeyException ex) {
             logger.error(ex.getMessage());
         }
