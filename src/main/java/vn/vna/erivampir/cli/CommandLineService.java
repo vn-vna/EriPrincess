@@ -1,6 +1,8 @@
 package vn.vna.erivampir.cli;
 
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import vn.vna.erivampir.EriServer;
 
@@ -11,15 +13,18 @@ import java.util.Objects;
 import java.util.Scanner;
 
 @Service
-public class CommandLineService {
+public class CommandLineService implements Runnable {
 
     private static CommandLineService instance;
     private final  Scanner            serviceScanner;
-    private        boolean            serviceAlive;
+    private final  Thread             cliThread;
+    private       boolean serviceAlive;
+    private final Logger  logger = LoggerFactory.getLogger(CommandLineService.class);
 
     public CommandLineService() {
         serviceAlive   = true;
         serviceScanner = new Scanner(System.in);
+        cliThread      = new Thread(this, "eri-cli");
     }
 
     public static CommandLineService getInstance() {
@@ -30,6 +35,12 @@ public class CommandLineService {
     }
 
     public void awake() {
+        cliThread.start();
+    }
+
+    @Override
+    public void run() {
+        logger.info("Eri CLI Service Start");
         String line;
         // Print banner
         try {
