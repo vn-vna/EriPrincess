@@ -43,7 +43,7 @@ public class PropertiesCommand extends CommandTemplate {
                 .addField("Server timezone", serverConfiguration.get().getServerGMT().toString(), false);
         } else {
             embedBuilder
-                .addField("❌ Server has not been registered yet", "Sorry about that", false);
+                .addField("Server has not been registered yet", "Sorry about that", false);
         }
         messageBuilder
             .setContent("Here you are")

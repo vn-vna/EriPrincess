@@ -50,12 +50,12 @@ public class ServerConfig {
     }
 
     void parseSpecArg(String cfg, String arg) {
-        String[] parg = arg.split("=");
-        if (parg.length != 2) {
-            configurations.put(cfg, "");
-            throw new IllegalArgumentException("Value passed in to " + cfg + " is NOT valid");
+        try {
+            String parg = arg.substring(arg.indexOf('=') + 1);
+            configurations.put(cfg, parg);
+        } catch (IndexOutOfBoundsException iobex) {
+            logger.error("Parse argument to " + cfg + "Error");
         }
-        configurations.put(cfg, parg[1]);
     }
 
     public String getConfiguration(String key) {
