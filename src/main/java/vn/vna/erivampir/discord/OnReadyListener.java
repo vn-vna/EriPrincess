@@ -25,6 +25,7 @@ public class OnReadyListener extends ListenerAdapter {
             while (!Objects.isNull(str = reader.readLine())) {
                 System.out.println(str);
             }
+            reader.close();
         } catch (IOException ioex) {
             ioex.printStackTrace();
         }

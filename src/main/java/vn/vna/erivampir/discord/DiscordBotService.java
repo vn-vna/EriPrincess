@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.vna.erivampir.EriServer;
-import vn.vna.erivampir.ServerConfig;
+import vn.vna.erivampir.EriServerConfig;
 import vn.vna.erivampir.db.discordsvr.DiscordServerCfgRepoI;
 import vn.vna.erivampir.db.ericfg.EriCfgRepoI;
 import vn.vna.erivampir.discord.msgcmd.OnMessageListener;
@@ -50,7 +50,7 @@ public class DiscordBotService {
         onReadyEvent      = new OnReadyListener();
         onSlashCommand    = new OnSlashCommand();
 
-        String token = ServerConfig.getInstance().getConfiguration(ServerConfig.CFG_DISCORD_BOT_TOKEN);
+        String token = EriServerConfig.getInstance().getConfiguration(EriServerConfig.CFG_DISCORD_BOT_TOKEN);
 
         if (Objects.isNull(token)) {
             throw new IllegalArgumentException("Token String is null");

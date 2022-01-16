@@ -3,14 +3,13 @@ package vn.vna.erivampir.discord.msgcmd.ncmd;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import vn.vna.erivampir.ServerConfig;
+import vn.vna.erivampir.EriServerConfig;
 import vn.vna.erivampir.db.discordsvr.DiscordServerCfgRepoI;
 import vn.vna.erivampir.db.discordsvr.DiscordServerConfiguration;
 import vn.vna.erivampir.discord.DiscordBotService;
 import vn.vna.erivampir.discord.msgcmd.CommandTemplate;
 
 import java.awt.Color;
-import java.util.Objects;
 import java.util.Optional;
 
 @CommandTemplate.NormalCommand
@@ -28,7 +27,7 @@ public class PropertiesCommand extends CommandTemplate {
         Optional<DiscordServerConfiguration> serverConfiguration = discordServerCfgRepo.findById(event.getGuild().getId());
         MessageBuilder                       messageBuilder      = new MessageBuilder();
         EmbedBuilder                         embedBuilder        = new EmbedBuilder();
-        final String                         version             = ServerConfig.ERI_VERSION;
+        final String                         version             = EriServerConfig.ERI_VERSION;
 
         embedBuilder
             .setTitle("Server register properties")

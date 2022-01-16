@@ -49,6 +49,7 @@ public class CommandLineService implements Runnable {
             while (!Objects.isNull(str = reader.readLine())) {
                 System.out.println(str);
             }
+            reader.close();
         } catch (IOException ioex) {
             ioex.printStackTrace();
         }

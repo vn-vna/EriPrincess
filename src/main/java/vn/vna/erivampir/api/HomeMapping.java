@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import vn.vna.erivampir.db.ericfg.EriCfgRepoI;
 import vn.vna.erivampir.db.ericfg.EriConfiguration;
+import vn.vna.erivampir.utilities.SauceNAOSearcher;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -36,7 +37,6 @@ public class HomeMapping {
             while (!Objects.isNull(line = bufferedReader.readLine())) {
                 str.append(line);
             }
-
         } catch (IOException | NullPointerException | DuplicateKeyException ex) {
             logger.error(ex.getMessage());
         }

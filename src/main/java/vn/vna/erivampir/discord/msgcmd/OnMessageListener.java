@@ -6,8 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import vn.vna.erivampir.EriServer;
-import vn.vna.erivampir.ServerConfig;
+import vn.vna.erivampir.EriServerConfig;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -23,7 +22,7 @@ public class OnMessageListener extends ListenerAdapter {
         logger        = LoggerFactory.getLogger(OnMessageListener.class);
         adminCommands = new ArrayList<>();
         msgCommands   = new ArrayList<>();
-        eriPrefix     = ServerConfig.getInstance().getConfiguration(ServerConfig.CFG_ERIBOT_PREFIX);
+        eriPrefix     = EriServerConfig.getInstance().getConfiguration(EriServerConfig.CFG_ERIBOT_PREFIX);
         if ("".equals(eriPrefix)) {
             logger.error("Prefix can't be NULL or EMPTY");
             throw new IllegalStateException("Please configure a prefix");

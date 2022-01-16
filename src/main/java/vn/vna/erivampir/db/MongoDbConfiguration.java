@@ -13,8 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
-import vn.vna.erivampir.EriServer;
-import vn.vna.erivampir.ServerConfig;
+import vn.vna.erivampir.EriServerConfig;
 
 @Configuration
 public class MongoDbConfiguration {
@@ -28,7 +27,7 @@ public class MongoDbConfiguration {
     @Bean
     public MongoTemplate mongoTemplate() {
         logger.info("Setting up mongo db connection");
-        String                 uri               = ServerConfig.getInstance().getConfiguration(ServerConfig.CFG_MONGODB_URI);
+        String                 uri               = EriServerConfig.getInstance().getConfiguration(EriServerConfig.CFG_MONGODB_URI);
         ConnectionString       connectionString  = new ConnectionString(uri);
         MongoDriverInformation driverInformation = MongoDriverInformation.builder().build();
         MongoClientSettings options = MongoClientSettings.builder()

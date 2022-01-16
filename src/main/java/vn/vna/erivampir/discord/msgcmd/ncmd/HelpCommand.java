@@ -3,7 +3,7 @@ package vn.vna.erivampir.discord.msgcmd.ncmd;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import vn.vna.erivampir.ServerConfig;
+import vn.vna.erivampir.EriServerConfig;
 import vn.vna.erivampir.discord.DiscordBotService;
 import vn.vna.erivampir.discord.msgcmd.CommandTemplate;
 
@@ -20,7 +20,7 @@ public class HelpCommand extends CommandTemplate {
     @Override
     public void invoke(String[] commands, MessageReceivedEvent event) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
-        final String version      = ServerConfig.ERI_VERSION;
+        final String version      = EriServerConfig.ERI_VERSION;
 
         embedBuilder
             .setColor(Color.RED)
