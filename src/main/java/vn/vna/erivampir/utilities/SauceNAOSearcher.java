@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import vn.vna.erivampir.EriServerConfig;
@@ -33,6 +32,49 @@ public class SauceNAOSearcher {
     public static final String SAUCENAO_NUM_RESULTS = "10";
     public static final Logger logger               = LoggerFactory.getLogger(SauceNAOSearcher.class);
 
+    public static final int SAUCENAO_SOURCE_HMAGS            = 0;
+    public static final int SAUCENAO_SOURCE_HANIME           = 1;
+    public static final int SAUCENAO_SOURCE_HCG              = 2;
+    public static final int SAUCENAO_SOURCE_DDB_OBJECTS      = 3;
+    public static final int SAUCENAO_SOURCE_DDB_SAMPLES      = 4;
+    public static final int SAUCENAO_SOURCE_PIXIV            = 5;
+    public static final int SAUCENAO_SOURCE_PIXIV_HISTORICAL = 6;
+    public static final int SAUCENAO_SOURCE_ANIME            = 7;
+    public static final int SAUCENAO_SOURCE_SEIGA_ILLUST     = 8;
+    public static final int SAUCENAO_SOURCE_DANBOORU         = 9;
+    public static final int SAUCENAO_SOURCE_DRAWR            = 10;
+    public static final int SAUCENAO_SOURCE_NIJIE            = 11;
+    public static final int SAUCENAO_SOURCE_YEANDE_RE        = 12;
+    public static final int SAUCENAO_SOURCE_ANIMEOP          = 13;
+    public static final int SAUCENAO_SOURCE_IMDB             = 14;
+    public static final int SAUCENAO_SOURCE_SHUTTERSTOCK     = 15;
+    public static final int SAUCENAO_SOURCE_FAKKU            = 16;
+    public static final int SAUCENAO_SOURCE_NHENTAI          = 18;
+    public static final int SAUCENAO_SOURCE_2DMARKET         = 19;
+    public static final int SAUCENAO_SOURCE_MEDIBANG         = 20;
+    public static final int SAUCENAO_SOURCE_ANIME2           = 21;
+    public static final int SAUCENAO_SOURCE_HANIME2          = 22;
+    public static final int SAUCENAO_SOURCE_MOVIES           = 23;
+    public static final int SAUCENAO_SOURCE_SHOWS            = 24;
+    public static final int SAUCENAO_SOURCE_GELBOORU         = 25;
+    public static final int SAUCENAO_SOURCE_KONACHAN         = 26;
+    public static final int SAUCENAO_SOURCE_SANKAKU          = 27;
+    public static final int SAUCENAO_SOURCE_ANIME_PICTURES   = 28;
+    public static final int SAUCENAO_SOURCE_E621             = 29;
+    public static final int SAUCENAO_SOURCE_IDOL_COMPLEX     = 30;
+    public static final int SAUCENAO_SOURCE_BCY_ILLUST       = 31;
+    public static final int SAUCENAO_SOURCE_BCY_COSPLAY      = 32;
+    public static final int SAUCENAO_SOURCE_PORTALGRAPHICS   = 33;
+    public static final int SAUCENAO_SOURCE_DA               = 34;
+    public static final int SAUCENAO_SOURCE_PAWOO            = 35;
+    public static final int SAUCENAO_SOURCE_MADOKAMI         = 36;
+    public static final int SAUCENAO_SOURCE_MANGADEX         = 37;
+    public static final int SAUCENAO_SOURCE_EHENTAI          = 38;
+    public static final int SAUCENAO_SOURCE_ART_STATION      = 39;
+    public static final int SAUCENAO_SOURCE_FUR_AFFINITY     = 40;
+    public static final int SAUCENAO_SOURCE_TWITTER          = 41;
+    public static final int SAUCENAO_SOURCE_FURRY_NETWORK    = 42;
+
     public static String createAPIUrl(String imgURL) {
         String              url;
         Map<String, String> reqParams = new HashMap<>();
@@ -50,12 +92,6 @@ public class SauceNAOSearcher {
             .collect(Collectors.joining("&", SAUCENAO_SEARCH_URL, ""));
 
         return url;
-    }
-
-    public static SauceNAOResult parseResultFromJSON(JSONObject jsonObject) {
-        SauceNAOResult result = new SauceNAOResult();
-
-        return result;
     }
 
     public static SauceNAOResult requestSauceNAOSearch(String imgURL) {
