@@ -9,7 +9,7 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ master ]
+    branches: [ add-gh-gradle-build ]
   pull_request:
     branches: [ master ]
 
@@ -30,4 +30,4 @@ jobs:
       uses: gradle/gradle-build-action@v2
     
     - name: Execute Gradle build
-      run: ./gradlew shadowJar
+      run: ./gradle build
