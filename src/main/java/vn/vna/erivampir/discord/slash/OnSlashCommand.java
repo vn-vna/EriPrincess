@@ -4,7 +4,6 @@ import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 import vn.vna.erivampir.discord.SlashCommand;
-import vn.vna.erivampir.discord.slash.PingSlashCommand;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,7 +23,9 @@ public class OnSlashCommand extends ListenerAdapter {
         super.onSlashCommand(event);
 
         for (SlashCommand slashCommand : slashCommands) {
-            if (Objects.isNull(slashCommand)) continue;
+            if (Objects.isNull(slashCommand)) {
+                continue;
+            }
             if (slashCommand.matchCommand(event)) {
                 slashCommand.invoke(event);
             }

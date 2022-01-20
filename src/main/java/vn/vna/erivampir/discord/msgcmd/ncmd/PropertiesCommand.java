@@ -12,6 +12,7 @@ import vn.vna.erivampir.discord.msgcmd.CommandTemplate;
 import java.awt.Color;
 import java.util.Optional;
 
+@SuppressWarnings("unused")
 @CommandTemplate.NormalCommand
 public class PropertiesCommand extends CommandTemplate {
 

@@ -1,0 +1,10 @@
+{
+  "java.format.settings.url": ".vscode/eclipse-java-google-style.xml",
+  "java.format.settings.profile": "GoogleStyle",
+  "java.completion.filteredTypes": [],
+  "[java]": {
+    "editor.detectIndentation": false,
+    "editor.tabSize": 2,
+  },
+  "java.dependency.packagePresentation": "hierarchical",
+}

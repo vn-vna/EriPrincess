@@ -12,6 +12,7 @@ import vn.vna.erivampir.discord.msgcmd.CommandTemplate;
 
 import java.util.Date;
 
+@SuppressWarnings("unused")
 @CommandTemplate.NormalCommand
 public class RegisterCommand extends CommandTemplate {
 

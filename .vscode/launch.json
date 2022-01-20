@@ -1,0 +1,22 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Launch EriServer",
+            "request": "launch",
+            "mainClass": "vn.vna.erivampir.EriServer",
+            "projectName": "Eri",
+            "args": "--token=OTI5MzM2NzMzODkwMzc5Nzc3.Ydl2Rw.bokwJypO9XJJYtfYU7OYeJnmHY0 --mongo-uri=mongodb://localhost:27017 --bot-prefix=E. --saucenao-apikey=686427d94b4b4a4508b9f7d7d19721977a705132"
+        }
+    ]
+}

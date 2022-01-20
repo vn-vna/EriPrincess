@@ -7,6 +7,7 @@ import vn.vna.erivampir.discord.msgcmd.CommandTemplate;
 
 import java.time.temporal.ChronoUnit;
 
+@SuppressWarnings("unused")
 @CommandTemplate.NormalCommand
 public class PingCommand extends CommandTemplate {
 

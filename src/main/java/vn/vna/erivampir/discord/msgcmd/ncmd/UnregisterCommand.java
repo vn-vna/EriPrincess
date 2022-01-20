@@ -8,6 +8,7 @@ import vn.vna.erivampir.db.discordsvr.DiscordServerCfgRepoI;
 import vn.vna.erivampir.discord.DiscordBotService;
 import vn.vna.erivampir.discord.msgcmd.CommandTemplate;
 
+@SuppressWarnings("unused")
 @CommandTemplate.NormalCommand
 public class UnregisterCommand extends CommandTemplate {
 

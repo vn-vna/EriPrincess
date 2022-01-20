@@ -9,6 +9,7 @@ import vn.vna.erivampir.utilities.SauceNAOSearcher;
 
 import java.util.Objects;
 
+@SuppressWarnings("unused")
 @CommandTemplate.NormalCommand
 public class ImgSearchCommand extends CommandTemplate {
     public ImgSearchCommand() {
@@ -29,16 +30,23 @@ public class ImgSearchCommand extends CommandTemplate {
             new Thread(() -> {
                 SauceNAOSearcher.SauceNAOResult result = SauceNAOSearcher.requestSauceNAOSearch(event.getMessage().getAttachments().get(0).getUrl());
                 if (result.getHeader().getStatus() == 0 && result.getHeader().getResultsReturned() > 0) {
-                    var bestMatch = result.getResults().get(0);
+                    var           bestMatch   = result.getResults().get(0);
+                    StringBuilder linkBuilder = new StringBuilder();
+
+                    for (var imgurl : bestMatch.getData().getExtUrls()) {
+                        linkBuilder.append(imgurl).append("\n");
+                    }
+
                     EmbedBuilder embedBuilder = new EmbedBuilder()
                         .setAuthor("Eri Vampir Shirone")
                         .setTitle("Best match result")
-                        .setThumbnail("https://i.imgur.com/sTDFv85.png")
                         .setDescription("API Provider: SauceNAO")
-                        .setImage(bestMatch.getHeader().getThumbnail())
+                        .setThumbnail(bestMatch.getHeader().getThumbnail())
                         .addField("Match ratio", result.getResults().get(0).getHeader().getSimilarity() + "%", false)
-                        .addField("Image title", Objects.isNull(bestMatch.getData().getTitle()) ? "NO TITLE" : bestMatch.getData().getTitle(), false)
+                        .addField("Image title", Objects.isNull(bestMatch.getHeader().getIndexName()) ? "NO TITLE" : bestMatch.getHeader().getIndexName(), false)
+                        .addField("Image Link", linkBuilder.toString(), false)
                         .setFooter(EriServerConfig.ERI_VERSION);
+
                     MessageBuilder messageBuilder = new MessageBuilder()
                         .setContent("Here U are ~~")
                         .setEmbeds(embedBuilder.build());

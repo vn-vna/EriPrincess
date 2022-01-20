@@ -10,6 +10,7 @@ import vn.vna.erivampir.discord.msgcmd.CommandTemplate;
 import java.awt.Color;
 import java.util.Objects;
 
+@SuppressWarnings("unused")
 @CommandTemplate.NormalCommand
 public class HelpCommand extends CommandTemplate {
 
