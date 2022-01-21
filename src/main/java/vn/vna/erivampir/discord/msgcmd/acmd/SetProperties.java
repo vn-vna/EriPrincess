@@ -4,8 +4,8 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;
-import vn.vna.erivampir.db.ericfg.EriCfgRepoI;
-import vn.vna.erivampir.db.ericfg.EriConfiguration;
+import vn.vna.erivampir.db.mongo.ericfg.EriCfgRepoI;
+import vn.vna.erivampir.db.mongo.ericfg.EriConfiguration;
 import vn.vna.erivampir.discord.DiscordBotService;
 import vn.vna.erivampir.discord.msgcmd.CommandTemplate;
 

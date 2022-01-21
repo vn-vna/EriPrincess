@@ -51,10 +51,12 @@ public class OnMessageListener extends ListenerAdapter {
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
         super.onMessageReceived(event);
+
         if (event.getMessage().getAuthor().isBot()) {
             return;
         }
-        if (event.getMessage().getContentRaw().startsWith("E.")) {
+
+        if (event.getMessage().getContentRaw().startsWith(eriPrefix)) {
             String[] commands = event.getMessage()
                 .getContentRaw()
                 .substring(eriPrefix.length())

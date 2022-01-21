@@ -10,8 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.vna.erivampir.EriServer;
 import vn.vna.erivampir.EriServerConfig;
-import vn.vna.erivampir.db.discordsvr.DiscordServerCfgRepoI;
-import vn.vna.erivampir.db.ericfg.EriCfgRepoI;
+import vn.vna.erivampir.db.h2.dscguild.DscGuildCfgRepository;
+import vn.vna.erivampir.db.mongo.discordsvr.DiscordServerCfgRepoI;
+import vn.vna.erivampir.db.mongo.ericfg.EriCfgRepoI;
 import vn.vna.erivampir.discord.msgcmd.OnMessageListener;
 import vn.vna.erivampir.discord.slash.OnSlashCommand;
 import vn.vna.erivampir.discord.slash.PingSlashCommand;
@@ -31,8 +32,9 @@ public class DiscordBotService {
     protected      OnSlashCommand    onSlashCommand;
 
     @Autowired
-    private DiscordServerCfgRepoI discordServerCfgRepo;
-
+    private DiscordServerCfgRepoI discordServerCfgRepoMG;
+    @Autowired
+    private DscGuildCfgRepository dscGuildCfgRepositoryH2;
     @Autowired
     private EriCfgRepoI eriCfgRepo;
 
@@ -43,6 +45,10 @@ public class DiscordBotService {
             }
         }
         return instance;
+    }
+
+    public DscGuildCfgRepository getDscGuildCfgRepositoryH2() {
+        return dscGuildCfgRepositoryH2;
     }
 
     public void awake(String[] args) {
@@ -103,8 +109,8 @@ public class DiscordBotService {
         return onSlashCommand;
     }
 
-    public DiscordServerCfgRepoI getDiscordServerCfgRepo() {
-        return discordServerCfgRepo;
+    public DiscordServerCfgRepoI getDiscordServerCfgRepoMG() {
+        return discordServerCfgRepoMG;
     }
 
     public EriCfgRepoI getEriCfgRepo() {

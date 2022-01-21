@@ -1,7 +1,7 @@
 package vn.vna.erivampir.discord.msgcmd.ncmd;
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import vn.vna.erivampir.db.discordsvr.DiscordServerCfgRepoI;
+import vn.vna.erivampir.db.mongo.discordsvr.DiscordServerCfgRepoI;
 import vn.vna.erivampir.discord.DiscordBotService;
 import vn.vna.erivampir.discord.msgcmd.CommandTemplate;
 
@@ -11,11 +11,9 @@ import java.time.temporal.ChronoUnit;
 @CommandTemplate.NormalCommand
 public class PingCommand extends CommandTemplate {
 
-    protected DiscordServerCfgRepoI serverCfgRepo;
 
     public PingCommand() {
         super("ping", "Check ping");
-        serverCfgRepo = DiscordBotService.getInstance().getDiscordServerCfgRepo();
     }
 
     @Override

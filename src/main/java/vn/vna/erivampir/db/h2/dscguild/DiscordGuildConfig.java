@@ -19,16 +19,13 @@ import java.util.Date;
 public final class DiscordGuildConfig {
 
     @Id
-    @Column(name = "_INDEX", unique = true, nullable = false)
-    private Integer index;
-
     @Column(name = "_GUILD_ID", length = 30, unique = true, nullable = false)
     private String guildId;
 
     @Column(name = "_GUILD_REGISTER_DATE")
     private Date registeredDate;
 
-    @Column(name = "_GUILD_GMT", nullable = false)
+    @Column(name = "_GUILD_GMT")
     private Integer gmt;
 
 }
