@@ -1,2 +1,11 @@
-server:
-  port: 3000
+spring:
+  datasource:
+    url: jdbc:h2:file:~/h2db/eridb;AUTO_SERVER=true
+    driverClassName: org.h2.Driver
+    username: vnvna
+    password: bakatsuki
+  h2:
+    console:
+      enabled: true
+  jpa:
+    spring.jpa.database-platform: org.hibernate.dialect.H2Dialect

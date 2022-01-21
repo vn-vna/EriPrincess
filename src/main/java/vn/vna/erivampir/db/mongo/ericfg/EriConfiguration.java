@@ -1,14 +1,15 @@
-package vn.vna.erivampir.db.ericfg;
+package vn.vna.erivampir.db.mongo.ericfg;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import vn.vna.erivampir.db.MongoDbConfiguration;
+import vn.vna.erivampir.db.mongo.MongoDbConfiguration;
 
 import java.util.Date;
 
+@Deprecated
 @Getter
 @Setter
 @ToString

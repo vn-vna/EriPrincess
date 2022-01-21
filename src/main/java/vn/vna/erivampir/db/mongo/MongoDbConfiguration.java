@@ -1,4 +1,4 @@
-package vn.vna.erivampir.db;
+package vn.vna.erivampir.db.mongo;
 
 
 import com.mongodb.ConnectionString;
@@ -15,6 +15,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
 import vn.vna.erivampir.EriServerConfig;
 
+@Deprecated
 @Configuration
 public class MongoDbConfiguration {
 
