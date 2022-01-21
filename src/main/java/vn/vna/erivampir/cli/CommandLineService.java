@@ -18,8 +18,8 @@ public class CommandLineService implements Runnable {
     private static CommandLineService instance;
     private final  Scanner            serviceScanner;
     private final  Thread             cliThread;
-    private       boolean serviceAlive;
-    private final Logger  logger = LoggerFactory.getLogger(CommandLineService.class);
+    private final  Logger             logger = LoggerFactory.getLogger(CommandLineService.class);
+    private        boolean            serviceAlive;
 
     public CommandLineService() {
         serviceAlive   = true;

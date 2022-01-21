@@ -1,9 +1,5 @@
 package vn.vna.erivampir.discord;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Objects;
-import javax.security.auth.login.LoginException;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -15,92 +11,97 @@ import org.springframework.stereotype.Service;
 import vn.vna.erivampir.EriServer;
 import vn.vna.erivampir.EriServerConfig;
 import vn.vna.erivampir.db.h2.dscguild.DscGuildCfgRepository;
-import vn.vna.erivampir.db.mongo.discordsvr.DiscordServerCfgRepoI;
-import vn.vna.erivampir.db.mongo.ericfg.EriCfgRepoI;
 import vn.vna.erivampir.discord.msgcmd.OnMessageListener;
 import vn.vna.erivampir.discord.slash.OnSlashCommand;
 import vn.vna.erivampir.discord.slash.PingSlashCommand;
 
+import javax.security.auth.login.LoginException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Objects;
+
 @Service
 public class DiscordBotService {
-  private static DiscordBotService instance;
-  private final Logger logger =
-      LoggerFactory.getLogger(DiscordBotService.class);
-  protected JDA jdaClient;
-  protected OnMessageListener onMessageListener;
-  protected OnReadyListener onReadyEvent;
-  protected OnSlashCommand onSlashCommand;
+    private static DiscordBotService instance;
+    private final  Logger            logger =
+        LoggerFactory.getLogger(DiscordBotService.class);
+    protected      JDA               jdaClient;
+    protected      OnMessageListener onMessageListener;
+    protected      OnReadyListener   onReadyEvent;
+    protected      OnSlashCommand    onSlashCommand;
 
-  @Autowired private DiscordServerCfgRepoI discordServerCfgRepoMG;
-  @Autowired private DscGuildCfgRepository dscGuildCfgRepositoryH2;
-  @Autowired private EriCfgRepoI eriCfgRepo;
+    @Autowired
+    private DscGuildCfgRepository dscGuildCfgRepositoryH2;
 
-  public static DiscordBotService getInstance() {
-    synchronized (DiscordBotService.class) {
-      if (Objects.isNull(instance)) {
-        instance = EriServer.getAppContext().getBean(DiscordBotService.class);
-      }
-    }
-    return instance;
-  }
-
-  public DscGuildCfgRepository getDscGuildCfgRepositoryH2() {
-    return dscGuildCfgRepositoryH2;
-  }
-
-  public void awake(String[] args) {
-    onMessageListener = new OnMessageListener();
-    onReadyEvent = new OnReadyListener();
-    onSlashCommand = new OnSlashCommand();
-
-    String token = EriServerConfig.getInstance().getConfiguration(
-        EriServerConfig.CFG_DISCORD_BOT_TOKEN);
-
-    if (Objects.isNull(token)) {
-      throw new IllegalArgumentException("Token String is null");
+    public static DiscordBotService getInstance() {
+        synchronized (DiscordBotService.class) {
+            if (Objects.isNull(instance)) {
+                instance = EriServer.getAppContext().getBean(DiscordBotService.class);
+            }
+        }
+        return instance;
     }
 
-    logger.info("Discord Bot Service has started");
-    Collection<GatewayIntent> intents = new ArrayList<>();
-
-    intents.add(GatewayIntent.GUILD_MESSAGES);
-    intents.add(GatewayIntent.GUILD_MEMBERS);
-    intents.add(GatewayIntent.GUILD_BANS);
-    intents.add(GatewayIntent.GUILD_EMOJIS);
-    intents.add(GatewayIntent.GUILD_INVITES);
-    intents.add(GatewayIntent.GUILD_MESSAGE_TYPING);
-    intents.add(GatewayIntent.GUILD_PRESENCES);
-    intents.add(GatewayIntent.GUILD_VOICE_STATES);
-    intents.add(GatewayIntent.GUILD_WEBHOOKS);
-    intents.add(GatewayIntent.GUILD_MESSAGE_REACTIONS);
-
-    JDABuilder jdaBuilder = JDABuilder.create(token, intents);
-    jdaBuilder.addEventListeners(onReadyEvent)
-        .addEventListeners(onMessageListener)
-        .addEventListeners(onSlashCommand)
-        .setActivity(Activity.playing("with VNA"));
-
-    try {
-      jdaClient = jdaBuilder.build();
-      jdaClient
-          .upsertCommand(PingSlashCommand.COMMAND, PingSlashCommand.DESCRIPTION)
-          .queue();
-    } catch (LoginException lex) {
-      lex.printStackTrace();
+    public DscGuildCfgRepository getDscGuildCfgRepositoryH2() {
+        return dscGuildCfgRepositoryH2;
     }
-  }
 
-  public JDA getJDAClient() { return jdaClient; }
+    public void awake(String[] args) {
+        onMessageListener = new OnMessageListener();
+        onReadyEvent      = new OnReadyListener();
+        onSlashCommand    = new OnSlashCommand();
 
-  public OnMessageListener getOnMessageListener() { return onMessageListener; }
+        String token = EriServerConfig.getInstance().getConfiguration(
+            EriServerConfig.CFG_DISCORD_BOT_TOKEN);
 
-  public OnReadyListener getOnReadyEventListener() { return onReadyEvent; }
+        if (Objects.isNull(token)) {
+            throw new IllegalArgumentException("Token String is null");
+        }
 
-  public OnSlashCommand getOnSlashCommandListener() { return onSlashCommand; }
+        logger.info("Discord Bot Service has started");
+        Collection<GatewayIntent> intents = new ArrayList<>();
 
-  public DiscordServerCfgRepoI getDiscordServerCfgRepoMG() {
-    return discordServerCfgRepoMG;
-  }
+        intents.add(GatewayIntent.GUILD_MESSAGES);
+        intents.add(GatewayIntent.GUILD_MEMBERS);
+        intents.add(GatewayIntent.GUILD_BANS);
+        intents.add(GatewayIntent.GUILD_EMOJIS);
+        intents.add(GatewayIntent.GUILD_INVITES);
+        intents.add(GatewayIntent.GUILD_MESSAGE_TYPING);
+        intents.add(GatewayIntent.GUILD_PRESENCES);
+        intents.add(GatewayIntent.GUILD_VOICE_STATES);
+        intents.add(GatewayIntent.GUILD_WEBHOOKS);
+        intents.add(GatewayIntent.GUILD_MESSAGE_REACTIONS);
 
-  public EriCfgRepoI getEriCfgRepo() { return eriCfgRepo; }
+        JDABuilder jdaBuilder = JDABuilder.create(token, intents);
+        jdaBuilder.addEventListeners(onReadyEvent)
+            .addEventListeners(onMessageListener)
+            .addEventListeners(onSlashCommand)
+            .setActivity(Activity.playing("with VNA"));
+
+        try {
+            jdaClient = jdaBuilder.build();
+            jdaClient
+                .upsertCommand(PingSlashCommand.COMMAND, PingSlashCommand.DESCRIPTION)
+                .queue();
+        } catch (LoginException lex) {
+            lex.printStackTrace();
+        }
+    }
+
+    public JDA getJDAClient() {
+        return jdaClient;
+    }
+
+    public OnMessageListener getOnMessageListener() {
+        return onMessageListener;
+    }
+
+    public OnReadyListener getOnReadyEventListener() {
+        return onReadyEvent;
+    }
+
+    public OnSlashCommand getOnSlashCommandListener() {
+        return onSlashCommand;
+    }
+
 }
