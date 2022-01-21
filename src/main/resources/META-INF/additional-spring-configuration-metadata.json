@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "spring.jpa.spring.jpa.database-platform",
+      "type": "java.lang.String",
+      "description": "Description for spring.jpa.spring.jpa.database-platform."
+    }
+  ]
+}

@@ -8,5 +8,12 @@
       <jdbc-url>mongodb://localhost:27017/eridb</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="eridb" uuid="aa07c8b1-abbd-4131-bbc5-e0935cee1a2e">
+      <driver-ref>h2.unified</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.h2.Driver</jdbc-driver>
+      <jdbc-url>jdbc:h2:file:~/h2db/eridb;AUTO_SERVER=true</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>
