@@ -14,15 +14,13 @@ import java.util.*;
 
 public class OnMessageListener extends ListenerAdapter {
     protected Logger                      logger;
-    protected Collection<CommandTemplate> adminCommands;
     protected Collection<CommandTemplate> msgCommands;
     protected String                      eriPrefix;
 
     public OnMessageListener() {
-        logger        = LoggerFactory.getLogger(OnMessageListener.class);
-        adminCommands = new ArrayList<>();
-        msgCommands   = new ArrayList<>();
-        eriPrefix     = EriServerConfig.getInstance().getConfiguration(
+        logger      = LoggerFactory.getLogger(OnMessageListener.class);
+        msgCommands = new ArrayList<>();
+        eriPrefix   = EriServerConfig.getInstance().getConfiguration(
             EriServerConfig.CFG_ERIBOT_PREFIX);
         if ("".equals(eriPrefix)) {
             logger.error("Prefix can't be NULL or EMPTY");
@@ -31,12 +29,9 @@ public class OnMessageListener extends ListenerAdapter {
 
         // === Add commands
         loadCommands(msgCommands, ".ncmd", CommandTemplate.NormalCommand.class);
-        loadCommands(adminCommands, ".acmd", CommandTemplate.AdminCommand.class);
     }
 
-    private void loadCommands(Collection<CommandTemplate> commandsPool,
-                              String pkg,
-                              Class<? extends Annotation> annotation) {
+    private void loadCommands(Collection<CommandTemplate> commandsPool, String pkg, Class<? extends Annotation> annotation) {
         Reflections allCmdHandlers =
             new Reflections(OnMessageListener.class.getPackageName() + pkg);
         Set<Class<?>> targetCmdHandlers =
@@ -70,24 +65,7 @@ public class OnMessageListener extends ListenerAdapter {
                 .substring(eriPrefix.length())
                 .split(" ");
 
-            if ("admin".equals(commands[0])) {
-                adminCommandEval(Arrays.copyOfRange(commands, 1, commands.length),
-                    event);
-                logger.info("Executed administrator command >> " +
-                    Arrays.toString(commands));
-            } else {
-                messageCommandEval(commands, event);
-            }
-        }
-    }
-
-    public void adminCommandEval(String[] commands, MessageReceivedEvent event) {
-        for (CommandTemplate msgCommand : adminCommands) {
-            if (!Objects.isNull(msgCommand) &&
-                msgCommand.matchCommand(commands, event)) {
-                msgCommand.invoke(commands, event);
-                break;
-            }
+            messageCommandEval(commands, event);
         }
     }
 
@@ -102,10 +80,6 @@ public class OnMessageListener extends ListenerAdapter {
                 break;
             }
         }
-    }
-
-    public Collection<CommandTemplate> getAdminCommands() {
-        return adminCommands;
     }
 
     public Collection<CommandTemplate> getMsgCommands() {
