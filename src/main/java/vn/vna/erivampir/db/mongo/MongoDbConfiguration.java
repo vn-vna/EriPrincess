@@ -1,6 +1,5 @@
 package vn.vna.erivampir.db.mongo;
 
-
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoDriverInformation;
@@ -19,25 +18,27 @@ import vn.vna.erivampir.EriServerConfig;
 @Configuration
 public class MongoDbConfiguration {
 
-    public static final String DATABASE_NAME                = "eridb";
-    public static final String COLLECTION_ERI_CONFIGURATION = "ericfg";
-    public static final String COLLECTION_DISCORD_SERVERS   = "discordsvr";
+  public static final String DATABASE_NAME = "eridb";
+  public static final String COLLECTION_ERI_CONFIGURATION = "ericfg";
+  public static final String COLLECTION_DISCORD_SERVERS = "discordsvr";
 
-    Logger logger = LoggerFactory.getLogger(MongoDbConfiguration.class);
+  Logger logger = LoggerFactory.getLogger(MongoDbConfiguration.class);
 
-    @Bean
-    public MongoTemplate mongoTemplate() {
-        logger.info("Setting up mongo db connection");
-        String                 uri               = EriServerConfig.getInstance().getConfiguration(EriServerConfig.CFG_MONGODB_URI);
-        ConnectionString       connectionString  = new ConnectionString(uri);
-        MongoDriverInformation driverInformation = MongoDriverInformation.builder().build();
-        MongoClientSettings options = MongoClientSettings.builder()
-            .applyConnectionString(connectionString)
-            .build();
+  @Bean
+  public MongoTemplate mongoTemplate() {
+    logger.info("Setting up mongo db connection");
+    String uri = EriServerConfig.getInstance().getConfiguration(
+        EriServerConfig.CFG_MONGODB_URI);
+    ConnectionString connectionString = new ConnectionString(uri);
+    MongoDriverInformation driverInformation =
+        MongoDriverInformation.builder().build();
+    MongoClientSettings options = MongoClientSettings.builder()
+                                      .applyConnectionString(connectionString)
+                                      .build();
 
-        MongoClient          mongoClient          = MongoClients.create(options, driverInformation);
-        MongoDatabaseFactory mongoDatabaseFactory = new SimpleMongoClientDatabaseFactory(mongoClient, DATABASE_NAME);
-        return new MongoTemplate(mongoDatabaseFactory);
-    }
-
+    MongoClient mongoClient = MongoClients.create(options, driverInformation);
+    MongoDatabaseFactory mongoDatabaseFactory =
+        new SimpleMongoClientDatabaseFactory(mongoClient, DATABASE_NAME);
+    return new MongoTemplate(mongoDatabaseFactory);
+  }
 }
