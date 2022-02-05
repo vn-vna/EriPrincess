@@ -36,14 +36,6 @@ public class HelpCommand extends CommandTemplate {
             }
         }
 
-//        embedBuilder
-//            .addField("Administrator Commands", "Privileged commands", false);
-//        for (CommandTemplate command : DiscordBotService.getInstance().getOnMessageListener().getAdminCommands()) {
-//            if (!Objects.isNull(command)) {
-//                embedBuilder.addField(command.getCommand(), command.getDescription(), true);
-//            }
-//        }
-
         event.getMessage().getChannel().sendMessage("Fetching data").queue((m) -> {
             embedBuilder
                 .setFooter(version);
