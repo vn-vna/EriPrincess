@@ -10,6 +10,8 @@ import vn.vna.erivampir.db.pgsql.ercfg.EriConfigRepository;
 import vn.vna.erivampir.discord.DiscordBotService;
 
 import java.awt.*;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Optional;
 
 public class DiscordUtilities {
@@ -21,9 +23,30 @@ public class DiscordUtilities {
         return discordGuildConfigRepository.findOne(findGuildExample);
     }
 
+    public static void registerGuildToDb(String guildId) {
+        DiscordGuildConfigRepository discordGuildConfigRepository = DiscordBotService.getInstance().getDiscordGuildConfigRepository();
+        DiscordGuildConfig newConfig = new DiscordGuildConfig();
+        newConfig.setGuildId(guildId);
+        newConfig.setGuildGMT(7);
+        newConfig.setGuildRegisteredDate(Timestamp.from(new Date().toInstant()));
+        discordGuildConfigRepository.save(newConfig);
+    }
+
+    public static void unregisterGuildToDb(String guildId) {
+        DiscordGuildConfigRepository discordGuildConfigRepository = DiscordBotService.getInstance().getDiscordGuildConfigRepository();
+        DiscordGuildConfig deleteConfig = new DiscordGuildConfig();
+        deleteConfig.setGuildId(guildId);
+        Example<DiscordGuildConfig> deleteConfigExample = Example.of(deleteConfig);
+        Optional<DiscordGuildConfig> config = discordGuildConfigRepository.findOne(deleteConfigExample);
+        if (config.isEmpty()) {
+            return;
+        }
+        discordGuildConfigRepository.delete(config.get());
+    }
+
     public static EmbedBuilder getEriEmbedBuilder() {
         Optional<EriConfig> versionConfig = getEriConfigFromDb("ERI_VERSION");
-        String versionString;
+        String              versionString;
         if (versionConfig.isEmpty()) {
             versionString = EriServerConfig.ERI_VERSION;
         } else {
@@ -41,9 +64,10 @@ public class DiscordUtilities {
 
     public static Optional<EriConfig> getEriConfigFromDb(String key) {
         EriConfigRepository eriConfigRepository = DiscordBotService.getInstance().getEriConfigRepository();
-        EriConfig eriConfig = new EriConfig();
+        EriConfig           eriConfig           = new EriConfig();
         eriConfig.setConfigKey(key);
         Example<EriConfig> eriConfigExample = Example.of(eriConfig);
         return eriConfigRepository.findOne(eriConfigExample);
     }
+
 }

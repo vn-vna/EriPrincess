@@ -6,7 +6,6 @@ import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.vna.erivampir.EriServer;
 import vn.vna.erivampir.EriServerConfig;
@@ -23,18 +22,21 @@ import java.util.Objects;
 
 @Service
 public class DiscordBotService {
-    private static final Logger            logger =
-        LoggerFactory.getLogger(DiscordBotService.class);
+    private static final Logger            logger = LoggerFactory.getLogger(DiscordBotService.class);
     private static       DiscordBotService instance;
+    protected final EriConfigRepository          eriConfigRepository;
+    protected final DiscordGuildConfigRepository discordGuildConfigRepository;
+    protected       JDA                          jdaClient;
+    protected       OnMessageListener            onMessageListener;
+    protected       OnReadyListener              onReadyEvent;
+    protected       OnSlashCommand               onSlashCommand;
 
-    protected JDA                          jdaClient;
-    protected OnMessageListener            onMessageListener;
-    protected OnReadyListener              onReadyEvent;
-    protected OnSlashCommand               onSlashCommand;
-    @Autowired
-    protected EriConfigRepository          eriConfigRepository;
-    @Autowired
-    protected DiscordGuildConfigRepository discordGuildConfigRepository;
+    public DiscordBotService(
+        EriConfigRepository eriConfigRepository,
+        DiscordGuildConfigRepository discordGuildConfigRepository) {
+        this.eriConfigRepository          = eriConfigRepository;
+        this.discordGuildConfigRepository = discordGuildConfigRepository;
+    }
 
     public static DiscordBotService getInstance() {
         synchronized (DiscordBotService.class) {
