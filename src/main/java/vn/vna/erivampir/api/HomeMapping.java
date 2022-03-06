@@ -8,8 +8,6 @@ import org.springframework.data.domain.Example;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import vn.vna.erivampir.db.h2.ericfg.EriCfgRepository;
-import vn.vna.erivampir.db.h2.ericfg.EriConfig;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,8 +21,6 @@ public class HomeMapping {
 
     Logger logger = LoggerFactory.getLogger(HomeMapping.class);
 
-    @Autowired
-    EriCfgRepository eriCfgRepositoryH2;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String homePage() {
@@ -45,10 +41,7 @@ public class HomeMapping {
             logger.error(ex.getMessage());
         }
 
-        EriConfig ex = new EriConfig();
-        ex.setKey("ERI_VERSION");
-        Optional<EriConfig> findResult = eriCfgRepositoryH2.findOne(Example.of(ex));
-        System.out.println(findResult);
+        // PSEUDO
 
         return str.toString();
     }

@@ -10,7 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.vna.erivampir.EriServer;
 import vn.vna.erivampir.EriServerConfig;
-import vn.vna.erivampir.db.h2.dscguild.DscGuildCfgRepository;
+import vn.vna.erivampir.db.pgsql.dscguild.DiscordGuildConfigRepository;
+import vn.vna.erivampir.db.pgsql.ercfg.EriConfigRepository;
 import vn.vna.erivampir.discord.msgcmd.OnMessageListener;
 import vn.vna.erivampir.discord.slash.OnSlashCommand;
 import vn.vna.erivampir.discord.slash.PingSlashCommand;
@@ -22,16 +23,18 @@ import java.util.Objects;
 
 @Service
 public class DiscordBotService {
-    private static DiscordBotService instance;
-    private final  Logger            logger =
+    private static final Logger            logger =
         LoggerFactory.getLogger(DiscordBotService.class);
-    protected      JDA               jdaClient;
-    protected      OnMessageListener onMessageListener;
-    protected      OnReadyListener   onReadyEvent;
-    protected      OnSlashCommand    onSlashCommand;
+    private static       DiscordBotService instance;
 
+    protected JDA                          jdaClient;
+    protected OnMessageListener            onMessageListener;
+    protected OnReadyListener              onReadyEvent;
+    protected OnSlashCommand               onSlashCommand;
     @Autowired
-    private DscGuildCfgRepository dscGuildCfgRepositoryH2;
+    protected EriConfigRepository          eriConfigRepository;
+    @Autowired
+    protected DiscordGuildConfigRepository discordGuildConfigRepository;
 
     public static DiscordBotService getInstance() {
         synchronized (DiscordBotService.class) {
@@ -42,8 +45,12 @@ public class DiscordBotService {
         return instance;
     }
 
-    public DscGuildCfgRepository getDscGuildCfgRepositoryH2() {
-        return dscGuildCfgRepositoryH2;
+    public EriConfigRepository getEriConfigRepository() {
+        return eriConfigRepository;
+    }
+
+    public DiscordGuildConfigRepository getDiscordGuildConfigRepository() {
+        return discordGuildConfigRepository;
     }
 
     public void awake(String[] args) {
