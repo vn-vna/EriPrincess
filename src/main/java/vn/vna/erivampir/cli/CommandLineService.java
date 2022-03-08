@@ -11,6 +11,7 @@ import vn.vna.erivampir.utilities.StuffUtilities;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class CommandLineService implements Runnable {
@@ -96,7 +97,7 @@ public class CommandLineService implements Runnable {
                 String command = trimmedLine.substring(1, slicer);
                 String[] args = Arrays.stream(trimmedLine.substring(slicer).split(" "))
                     .filter(s -> !"".equals(s))
-                    .toList()
+                    .collect(Collectors.toList())
                     .toArray(String[]::new);
 
                 for (CommandLine cli : commandLines) {

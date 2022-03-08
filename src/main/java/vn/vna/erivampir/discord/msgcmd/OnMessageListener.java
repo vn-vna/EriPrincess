@@ -36,7 +36,8 @@ public class OnMessageListener extends ListenerAdapter {
         for (Class<?> targetCmdHandler : targetCmdHandlers) {
             try {
                 final Object handler = targetCmdHandler.getDeclaredConstructor().newInstance();
-                if (handler instanceof CommandTemplate targetCommand) {
+                if (handler instanceof CommandTemplate) {
+                    CommandTemplate targetCommand = (CommandTemplate) handler;
                     commandsPool.add(targetCommand);
                 }
             } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
