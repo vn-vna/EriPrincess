@@ -22,14 +22,14 @@ import java.util.Objects;
 
 @Service
 public class DiscordBotService {
-    private static final Logger            logger = LoggerFactory.getLogger(DiscordBotService.class);
-    private static       DiscordBotService instance;
-    protected final EriConfigRepository          eriConfigRepository;
-    protected final DiscordGuildConfigRepository discordGuildConfigRepository;
-    protected       JDA                          jdaClient;
-    protected       OnMessageListener            onMessageListener;
-    protected       OnReadyListener              onReadyEvent;
-    protected       OnSlashCommand               onSlashCommand;
+    private static final Logger                       logger = LoggerFactory.getLogger(DiscordBotService.class);
+    private static       DiscordBotService            instance;
+    protected final      EriConfigRepository          eriConfigRepository;
+    protected final      DiscordGuildConfigRepository discordGuildConfigRepository;
+    protected            JDA                          jdaClient;
+    protected            OnMessageListener            onMessageListener;
+    protected            OnReadyListener              onReadyEvent;
+    protected            OnSlashCommand               onSlashCommand;
 
     public DiscordBotService(
         EriConfigRepository eriConfigRepository,

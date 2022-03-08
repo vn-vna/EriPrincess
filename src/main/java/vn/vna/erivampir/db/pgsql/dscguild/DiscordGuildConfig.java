@@ -28,4 +28,13 @@ public class DiscordGuildConfig {
 
     @Column(name = "_guild_register_date")
     private Timestamp guildRegisteredDate;
+
+    @Column(name = "_enable_gm")
+    private boolean enableGoodMorning;
+
+    @Column(name = "_enable_gn")
+    private boolean enableGoodNight;
+
+    @Column(name = "_enable_lm")
+    private boolean enableLonelyMessage;
 }

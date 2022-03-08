@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.slf4j.Logger;
@@ -30,30 +31,12 @@ public class UnregisterCommand extends CommandTemplate {
 
     @Override
     public void invoke(String[] commands, MessageReceivedEvent event) {
-        boolean authorIsAdmin = false;
-
-        List<Role> roles = Objects.requireNonNull(event.getGuild().getMember(event.getAuthor())).getRoles();
-        for (var role : roles) {
-            if (role.hasPermission(Permission.MANAGE_CHANNEL, Permission.MANAGE_SERVER, Permission.MANAGE_ROLES)) {
-                authorIsAdmin = true;
-            }
-        }
+        Member author = event.getGuild().getMember(event.getAuthor());
+        boolean authorIsAdmin = DiscordUtilities.isFullPermission(author, Permission.MANAGE_SERVER);
+        String guildName = event.getGuild().getName();
 
         if (!authorIsAdmin) {
-            EmbedBuilder embedBuilder = DiscordUtilities.getEriEmbedBuilder();
-            embedBuilder
-                .setTitle("User do not have permission to do this action \uD83D\uDE05")
-                .setDescription("Please contact administrator");
-
-            MessageBuilder messageBuilder = new MessageBuilder();
-            messageBuilder
-                .setEmbeds(embedBuilder.build());
-
-            event
-                .getChannel()
-                .sendMessage(messageBuilder.build())
-                .queue();
-
+            DiscordUtilities.replyUserNotEnoughPermission(event);
             return;
         }
 
@@ -65,7 +48,7 @@ public class UnregisterCommand extends CommandTemplate {
                 if (fGuildConfig.isEmpty()) {
                     EmbedBuilder embedBuilder = DiscordUtilities.getEriEmbedBuilder();
                     embedBuilder
-                        .setTitle("Guild has not been registered before \uD83E\uDD17")
+                        .setTitle("Guild [%s] has been registered before \uD83E\uDD17".formatted(guildName))
                         .setDescription("You can't unregister this guild now");
 
                     MessageBuilder messageBuilder = new MessageBuilder();

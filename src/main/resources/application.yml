@@ -1,8 +1,4 @@
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/eri
-    username: postgres
-    password: bakatsuki
   jpa:
     hibernate:
       ddl-auto: update

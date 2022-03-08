@@ -3,7 +3,7 @@ package vn.vna.erivampir.discord.msgcmd.ncmd;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,8 +11,6 @@ import vn.vna.erivampir.db.pgsql.dscguild.DiscordGuildConfig;
 import vn.vna.erivampir.discord.msgcmd.CommandTemplate;
 import vn.vna.erivampir.utilities.DiscordUtilities;
 
-import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @SuppressWarnings("unused")
@@ -27,32 +25,15 @@ public class RegisterCommand extends CommandTemplate {
 
     @Override
     public void invoke(String[] commands, MessageReceivedEvent event) {
-        boolean authorIsAdmin = false;
-
-        List<Role> roles = Objects.requireNonNull(event.getGuild().getMember(event.getAuthor())).getRoles();
-        for (var role : roles) {
-            if (role.hasPermission(Permission.MANAGE_CHANNEL, Permission.MANAGE_SERVER, Permission.MANAGE_ROLES)) {
-                authorIsAdmin = true;
-            }
-        }
+        Member  author        = event.getGuild().getMember(event.getAuthor());
+        boolean authorIsAdmin = DiscordUtilities.isFullPermission(author, Permission.MANAGE_SERVER);
+        String guildName = event.getGuild().getName();
 
         if (!authorIsAdmin) {
-            EmbedBuilder embedBuilder = DiscordUtilities.getEriEmbedBuilder();
-            embedBuilder
-                .setTitle("User do not have permission to do this action \uD83D\uDE05")
-                .setDescription("Please contact administrator");
-
-            MessageBuilder messageBuilder = new MessageBuilder();
-            messageBuilder
-                .setEmbeds(embedBuilder.build());
-
-            event
-                .getChannel()
-                .sendMessage(messageBuilder.build())
-                .queue();
-
+            DiscordUtilities.replyUserNotEnoughPermission(event);
             return;
         }
+
 
         event
             .getChannel()
@@ -62,7 +43,7 @@ public class RegisterCommand extends CommandTemplate {
                 if (fGuildConfig.isPresent()) {
                     EmbedBuilder embedBuilder = DiscordUtilities.getEriEmbedBuilder();
                     embedBuilder
-                        .setTitle("Guild has been registered before \uD83E\uDD17")
+                        .setTitle("Guild [%s] has been registered before \uD83E\uDD17".formatted(guildName))
                         .setDescription("You no need to do it again");
 
                     MessageBuilder messageBuilder = new MessageBuilder();

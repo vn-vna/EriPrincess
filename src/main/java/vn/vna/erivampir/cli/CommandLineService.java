@@ -1,16 +1,16 @@
 package vn.vna.erivampir.cli;
 
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import picocli.CommandLine;
 import vn.vna.erivampir.EriServer;
+import vn.vna.erivampir.EriServerConfig;
+import vn.vna.erivampir.utilities.StuffUtilities;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Objects;
-import java.util.Scanner;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 
 @Service
 public class CommandLineService implements Runnable {
@@ -19,12 +19,15 @@ public class CommandLineService implements Runnable {
     private final  Scanner            serviceScanner;
     private final  Thread             cliThread;
     private final  Logger             logger = LoggerFactory.getLogger(CommandLineService.class);
+    private final  Set<CommandLine>   commandLines;
     private        boolean            serviceAlive;
 
     public CommandLineService() {
         serviceAlive   = true;
         serviceScanner = new Scanner(System.in);
         cliThread      = new Thread(this, "eri-cli");
+        commandLines   = new HashSet<>();
+        loadCommands();
     }
 
     public static CommandLineService getInstance() {
@@ -34,32 +37,77 @@ public class CommandLineService implements Runnable {
         return instance;
     }
 
+    public boolean isServiceAlive() {
+        return serviceAlive;
+    }
+
+    public void setServiceAlive(boolean serviceAlive) {
+        this.serviceAlive = serviceAlive;
+    }
+
+    public void loadCommands() {
+        Reflections   reflections = new Reflections(CommandLineService.class.getPackageName());
+        Set<Class<?>> cliClasses  = reflections.getTypesAnnotatedWith(EriCLI.class);
+
+        for (Class<?> cliClass : cliClasses) {
+            try {
+                Object      cliObj      = cliClass.getDeclaredConstructor().newInstance();
+                CommandLine cliExecutor = new CommandLine(cliObj);
+                commandLines.add(cliExecutor);
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public void awake() {
         cliThread.start();
     }
 
     @Override
     public void run() {
+        if ("true".equals(EriServerConfig.getInstance().getConfiguration(EriServerConfig.CFG_DISABLE_CLI))) {
+            return;
+        }
+
         logger.info("Eri CLI Service Start");
         String line;
-        // Print banner
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(ListenerAdapter.class.getResourceAsStream("/cli-banner"))));
-            String         str    = "";
-            while (!Objects.isNull(str = reader.readLine())) {
-                System.out.println(str);
-            }
-            reader.close();
-        } catch (IOException ioex) {
-            ioex.printStackTrace();
-        }
-        // Listen to CLI
+//      Print banner
+//        try {
+//            BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(ListenerAdapter.class.getResourceAsStream("/cli-banner"))));
+//            String         str;
+//            while (!Objects.isNull(str = reader.readLine())) {
+//                System.out.println(str);
+//            }
+//            reader.close();
+//        } catch (IOException ioex) {
+//            ioex.printStackTrace();
+//        }
+//      Listening to CLI
         while (serviceAlive) {
             System.out.println();
             line = serviceScanner.nextLine();
-            if (".exit".equals(line)) {
-                serviceAlive = false;
+
+            if (line.startsWith("$")) {
+                String trimmedLine = StuffUtilities.trimMultiSpaceString(line);
+                int    firstSpace  = trimmedLine.indexOf(' ');
+
+                int    slicer  = firstSpace == -1 ? trimmedLine.length() : firstSpace;
+                String command = trimmedLine.substring(1, slicer);
+                String[] args = Arrays.stream(trimmedLine.substring(slicer).split(" "))
+                    .filter(s -> !"".equals(s))
+                    .toList()
+                    .toArray(String[]::new);
+
+                for (CommandLine cli : commandLines) {
+                    if (cli.getCommandName().equals(command)) {
+                        cli.execute(args);
+                    }
+                }
             }
         }
+    }
+
+    public @interface EriCLI {
     }
 }

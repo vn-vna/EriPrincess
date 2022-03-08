@@ -20,8 +20,7 @@ public class OnMessageListener extends ListenerAdapter {
     public OnMessageListener() {
         logger      = LoggerFactory.getLogger(OnMessageListener.class);
         msgCommands = new ArrayList<>();
-        eriPrefix   = EriServerConfig.getInstance().getConfiguration(
-            EriServerConfig.CFG_ERIBOT_PREFIX);
+        eriPrefix   = EriServerConfig.getInstance().getConfiguration(EriServerConfig.CFG_ERIBOT_PREFIX);
         if ("".equals(eriPrefix)) {
             logger.error("Prefix can't be NULL or EMPTY");
             throw new IllegalStateException("Please configure a prefix");
@@ -32,21 +31,16 @@ public class OnMessageListener extends ListenerAdapter {
     }
 
     private void loadCommands(Collection<CommandTemplate> commandsPool, String pkg, Class<? extends Annotation> annotation) {
-        Reflections allCmdHandlers =
-            new Reflections(OnMessageListener.class.getPackageName() + pkg);
-        Set<Class<?>> targetCmdHandlers =
-            allCmdHandlers.getTypesAnnotatedWith(annotation);
+        Reflections   allCmdHandlers    = new Reflections(OnMessageListener.class.getPackageName() + pkg);
+        Set<Class<?>> targetCmdHandlers = allCmdHandlers.getTypesAnnotatedWith(annotation);
         for (Class<?> targetCmdHandler : targetCmdHandlers) {
             try {
-                final Object handler =
-                    targetCmdHandler.getDeclaredConstructor().newInstance();
+                final Object handler = targetCmdHandler.getDeclaredConstructor().newInstance();
                 if (handler instanceof CommandTemplate targetCommand) {
                     commandsPool.add(targetCommand);
                 }
-            } catch (InstantiationException | IllegalAccessException |
-                NoSuchMethodException | InvocationTargetException e) {
-                logger.error("Cannot create instance of command handler " +
-                    targetCmdHandler.getName() + " " + e.getMessage());
+            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+                logger.error("Cannot create instance of command handler " + targetCmdHandler.getName() + " " + e.getMessage());
             }
         }
     }
@@ -60,22 +54,16 @@ public class OnMessageListener extends ListenerAdapter {
         }
 
         if (event.getMessage().getContentRaw().startsWith(eriPrefix)) {
-            String[] commands = event.getMessage()
-                .getContentRaw()
-                .substring(eriPrefix.length())
-                .split(" ");
+            String[] commands = event.getMessage().getContentRaw().substring(eriPrefix.length()).split(" ");
 
             messageCommandEval(commands, event);
         }
     }
 
-    public void messageCommandEval(String[] commands,
-                                   MessageReceivedEvent event) {
-        logger.debug("Triggered message command evaler >> " +
-            Arrays.toString(commands));
+    public void messageCommandEval(String[] commands, MessageReceivedEvent event) {
+        logger.debug("Triggered message command evaler >> " + Arrays.toString(commands));
         for (CommandTemplate msgCommand : msgCommands) {
-            if (!Objects.isNull(msgCommand) &&
-                msgCommand.matchCommand(commands, event)) {
+            if (!Objects.isNull(msgCommand) && msgCommand.matchCommand(commands, event)) {
                 msgCommand.invoke(commands, event);
                 break;
             }

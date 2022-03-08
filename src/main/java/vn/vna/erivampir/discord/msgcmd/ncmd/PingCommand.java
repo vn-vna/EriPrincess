@@ -18,12 +18,20 @@ public class PingCommand extends CommandTemplate {
         event.getMessage()
             .getChannel()
             .sendMessage("Execution ping checker..")
-            .queue(m -> {
+            .queue(message -> {
                 long ping = event.getMessage().getTimeCreated().until(
-                    m.getTimeCreated(), ChronoUnit.MILLIS);
-                m.editMessage("Pong!!\nLatency: " + ping + "ms\nWebsocket: " +
-                        event.getJDA().getGatewayPing() + "ms")
+                    message.getTimeCreated(), ChronoUnit.MILLIS);
+                String pingMsg = """
+                        Eri pong!!!
+                        ```
+                        Message latency:  %dms
+                        Gateway ping:     %dms
+                        ```
+                        """.formatted(ping, event.getJDA().getGatewayPing());
+                message
+                    .editMessage(pingMsg)
                     .queue();
+
             });
     }
 }
