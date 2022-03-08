@@ -1,13 +1,12 @@
 package vn.vna.erivampir.db.pgsql.dscguild;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 
+@EnableTransactionManagement
 @Entity
 @Table(name = "discordguild")
 @Getter

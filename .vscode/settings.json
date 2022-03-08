@@ -1,8 +1,0 @@
-{
-  "java.completion.filteredTypes": [],
-  "[java]": {
-    "editor.detectIndentation": false,
-    "editor.tabSize": 2,
-  },
-  "java.dependency.packagePresentation": "hierarchical"
-}
