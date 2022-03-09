@@ -47,18 +47,8 @@ public class CommandLineService implements Runnable {
     }
 
     public void loadCommands() {
-        Reflections   reflections = new Reflections("vn.vna.erivampir.cli");
-        Set<Class<?>> cliClasses  = reflections.getTypesAnnotatedWith(EriCLI.class);
-
-        for (Class<?> cliClass : cliClasses) {
-            try {
-                Object      cliObj      = cliClass.getDeclaredConstructor().newInstance();
-                CommandLine cliExecutor = new CommandLine(cliObj);
-                commandLines.add(cliExecutor);
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                e.printStackTrace();
-            }
-        }
+        commandLines.add(new CommandLine(new CLICommandExit()));
+        commandLines.add(new CommandLine(new CLICommandTerminate()));
     }
 
     public void awake() {

@@ -7,7 +7,7 @@ import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import vn.vna.erivampir.EriServerConfig;
-import vn.vna.erivampir.discord.msgcmd.CommandTemplate;
+import vn.vna.erivampir.discord.msgcmd.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -31,18 +31,13 @@ public class OnMessageListener extends ListenerAdapter {
     }
 
     private void loadCommands(Collection<CommandTemplate> commandsPool) {
-        Reflections allCmdHandlers = new Reflections("vn.vna.erivampir.discord.msgcmd");
-        Set<Class<?>> targetCmdHandlers = allCmdHandlers.getTypesAnnotatedWith(CommandTemplate.NormalCommand.class);
-        for (Class<?> targetCmdHandler : targetCmdHandlers) {
-            try {
-                final Object handler = targetCmdHandler.getDeclaredConstructor().newInstance();
-                if (handler instanceof CommandTemplate targetCommand) {
-                    commandsPool.add(targetCommand);
-                }
-            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-                logger.error("Cannot create instance of command handler " + targetCmdHandler.getName() + " " + e.getMessage());
-            }
-        }
+        commandsPool.add(new HelpCommand());
+        commandsPool.add(new ImgSearchCommand());
+        commandsPool.add(new PingCommand());
+        commandsPool.add(new PropertiesCommand());
+        commandsPool.add(new RegisterCommand());
+        commandsPool.add(new ScheduleMessageCommand());
+        commandsPool.add(new UnregisterCommand());
     }
 
     @Override
