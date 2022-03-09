@@ -13,14 +13,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class OnMessageListener extends ListenerAdapter {
-    protected Logger                      logger;
+    protected Logger logger;
     protected Collection<CommandTemplate> msgCommands;
-    protected String                      eriPrefix;
+    protected String eriPrefix;
 
     public OnMessageListener() {
-        logger      = LoggerFactory.getLogger(OnMessageListener.class);
+        logger = LoggerFactory.getLogger(OnMessageListener.class);
         msgCommands = new ArrayList<>();
-        eriPrefix   = EriServerConfig.getInstance().getConfiguration(EriServerConfig.CFG_ERIBOT_PREFIX);
+        eriPrefix = EriServerConfig.getInstance().getConfiguration(EriServerConfig.CFG_ERIBOT_PREFIX);
         if ("".equals(eriPrefix)) {
             logger.error("Prefix can't be NULL or EMPTY");
             throw new IllegalStateException("Please configure a prefix");
@@ -31,7 +31,7 @@ public class OnMessageListener extends ListenerAdapter {
     }
 
     private void loadCommands(Collection<CommandTemplate> commandsPool, String pkg, Class<? extends Annotation> annotation) {
-        Reflections   allCmdHandlers    = new Reflections(OnMessageListener.class.getPackageName() + pkg);
+        Reflections allCmdHandlers = new Reflections(OnMessageListener.class.getPackageName() + pkg);
         Set<Class<?>> targetCmdHandlers = allCmdHandlers.getTypesAnnotatedWith(annotation);
         for (Class<?> targetCmdHandler : targetCmdHandlers) {
             try {
@@ -55,8 +55,8 @@ public class OnMessageListener extends ListenerAdapter {
         }
 
         if (event.getMessage().getContentRaw().startsWith(eriPrefix)) {
+            logger.info("Received a command from guild [" + event.getGuild().getName() + "]: " + event.getMessage().getContentRaw());
             String[] commands = event.getMessage().getContentRaw().substring(eriPrefix.length()).split(" ");
-
             messageCommandEval(commands, event);
         }
     }

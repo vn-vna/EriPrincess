@@ -19,6 +19,7 @@ public class EriServer {
     protected static ApplicationContext appCtx;
 
     public static void main(String[] args) {
+        System.out.println(System.getenv());
         EriServerConfig.getInstance().parseArgs(args);
         appCtx = SpringApplication.run(EriServer.class, args);
         CommandLineService.getInstance();
