@@ -1,4 +1,4 @@
-package vn.vna.erivampir.discord.msgcmd.ncmd;
+package vn.vna.erivampir.discord.msgcmd;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;

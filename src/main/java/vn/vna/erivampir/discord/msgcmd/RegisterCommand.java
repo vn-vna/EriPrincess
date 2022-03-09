@@ -1,37 +1,30 @@
-package vn.vna.erivampir.discord.msgcmd.ncmd;
+package vn.vna.erivampir.discord.msgcmd;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Example;
 import vn.vna.erivampir.db.pgsql.dscguild.DiscordGuildConfig;
-import vn.vna.erivampir.discord.DiscordBotService;
-import vn.vna.erivampir.discord.msgcmd.CommandTemplate;
 import vn.vna.erivampir.utilities.DiscordUtilities;
 
-import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @SuppressWarnings("unused")
 @CommandTemplate.NormalCommand
-public class UnregisterCommand extends CommandTemplate {
+public class RegisterCommand extends CommandTemplate {
 
-    Logger                logger = LoggerFactory.getLogger(UnregisterCommand.class);
+    Logger logger = LoggerFactory.getLogger(RegisterCommand.class);
 
-    public UnregisterCommand() {
-        super("unregister", "Unregister this server.");
+    public RegisterCommand() {
+        super("register", "Register this server");
     }
 
     @Override
     public void invoke(String[] commands, MessageReceivedEvent event) {
-        Member author = event.getGuild().getMember(event.getAuthor());
+        Member  author        = event.getGuild().getMember(event.getAuthor());
         boolean authorIsAdmin = DiscordUtilities.isFullPermission(author, Permission.MANAGE_SERVER);
         String guildName = event.getGuild().getName();
 
@@ -40,16 +33,17 @@ public class UnregisterCommand extends CommandTemplate {
             return;
         }
 
+
         event
             .getChannel()
             .sendMessage("Parsing Request")
             .queue(message -> {
                 Optional<DiscordGuildConfig> fGuildConfig = DiscordUtilities.findGuildById(event.getGuild().getId());
-                if (fGuildConfig.isEmpty()) {
+                if (fGuildConfig.isPresent()) {
                     EmbedBuilder embedBuilder = DiscordUtilities.getEriEmbedBuilder();
                     embedBuilder
                         .setTitle("Guild [%s] has been registered before \uD83E\uDD17".formatted(guildName))
-                        .setDescription("You can't unregister this guild now");
+                        .setDescription("You no need to do it again");
 
                     MessageBuilder messageBuilder = new MessageBuilder();
                     messageBuilder
@@ -61,12 +55,12 @@ public class UnregisterCommand extends CommandTemplate {
                         .queue();
 
                 } else {
-                    DiscordUtilities.unregisterGuildToDb(event.getGuild().getId());
+                    DiscordUtilities.registerGuildToDb(event.getGuild().getId());
 
                     EmbedBuilder embedBuilder = DiscordUtilities.getEriEmbedBuilder();
                     embedBuilder
-                        .setTitle("Guild has been unregistered successfully \uD83D\uDE14")
-                        .setDescription("Hope to see you again \uD83D\uDE15");
+                        .setTitle("Guild has been registered successfully \uD83E\uDD17")
+                        .setDescription("I'm glad to see you here \uD83D\uDE1C");
 
                     MessageBuilder messageBuilder = new MessageBuilder();
                     messageBuilder

@@ -1,4 +1,4 @@
-package vn.vna.erivampir.discord.msgcmd;
+package vn.vna.erivampir.discord;
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -7,8 +7,8 @@ import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import vn.vna.erivampir.EriServerConfig;
+import vn.vna.erivampir.discord.msgcmd.CommandTemplate;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
@@ -27,17 +27,16 @@ public class OnMessageListener extends ListenerAdapter {
         }
 
         // === Add commands
-        loadCommands(msgCommands, ".ncmd", CommandTemplate.NormalCommand.class);
+        loadCommands(msgCommands);
     }
 
-    private void loadCommands(Collection<CommandTemplate> commandsPool, String pkg, Class<? extends Annotation> annotation) {
-        Reflections allCmdHandlers = new Reflections(OnMessageListener.class.getPackageName() + pkg);
-        Set<Class<?>> targetCmdHandlers = allCmdHandlers.getTypesAnnotatedWith(annotation);
+    private void loadCommands(Collection<CommandTemplate> commandsPool) {
+        Reflections allCmdHandlers = new Reflections("vn.vna.erivampir.discord.msgcmd");
+        Set<Class<?>> targetCmdHandlers = allCmdHandlers.getTypesAnnotatedWith(CommandTemplate.NormalCommand.class);
         for (Class<?> targetCmdHandler : targetCmdHandlers) {
             try {
                 final Object handler = targetCmdHandler.getDeclaredConstructor().newInstance();
-                if (handler instanceof CommandTemplate) {
-                    CommandTemplate targetCommand = (CommandTemplate) handler;
+                if (handler instanceof CommandTemplate targetCommand) {
                     commandsPool.add(targetCommand);
                 }
             } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {

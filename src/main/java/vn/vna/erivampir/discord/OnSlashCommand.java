@@ -1,9 +1,10 @@
-package vn.vna.erivampir.discord.slash;
+package vn.vna.erivampir.discord;
 
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 import vn.vna.erivampir.discord.SlashCommand;
+import vn.vna.erivampir.discord.slash.PingSlashCommand;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -11,8 +11,6 @@ import vn.vna.erivampir.EriServer;
 import vn.vna.erivampir.EriServerConfig;
 import vn.vna.erivampir.db.pgsql.dscguild.DiscordGuildConfigRepository;
 import vn.vna.erivampir.db.pgsql.ercfg.EriConfigRepository;
-import vn.vna.erivampir.discord.msgcmd.OnMessageListener;
-import vn.vna.erivampir.discord.slash.OnSlashCommand;
 import vn.vna.erivampir.discord.slash.PingSlashCommand;
 
 import javax.security.auth.login.LoginException;

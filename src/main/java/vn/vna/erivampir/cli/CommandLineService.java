@@ -47,7 +47,7 @@ public class CommandLineService implements Runnable {
     }
 
     public void loadCommands() {
-        Reflections   reflections = new Reflections(CommandLineService.class.getPackageName());
+        Reflections   reflections = new Reflections("vn.vna.erivampir.cli");
         Set<Class<?>> cliClasses  = reflections.getTypesAnnotatedWith(EriCLI.class);
 
         for (Class<?> cliClass : cliClasses) {

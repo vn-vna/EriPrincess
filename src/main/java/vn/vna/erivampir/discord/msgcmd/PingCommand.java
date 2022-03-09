@@ -1,4 +1,4 @@
-package vn.vna.erivampir.discord.msgcmd.ncmd;
+package vn.vna.erivampir.discord.msgcmd;
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import vn.vna.erivampir.discord.msgcmd.CommandTemplate;
