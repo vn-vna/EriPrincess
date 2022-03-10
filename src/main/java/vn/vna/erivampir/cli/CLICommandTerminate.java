@@ -1,5 +1,7 @@
 package vn.vna.erivampir.cli;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 
 import java.util.Objects;
@@ -9,6 +11,8 @@ import java.util.concurrent.Callable;
 @CommandLineService.EriCLI
 @CommandLine.Command(name = "terminate", description = "Terminate the server")
 public class CLICommandTerminate implements Callable<Integer> {
+
+    public static final Logger logger = LoggerFactory.getLogger(CLICommandTerminate.class);
 
     @CommandLine.Option(names = {"-t", "--delay"}, description = "Delay terminate application")
     private Integer delay;
@@ -20,7 +24,7 @@ public class CLICommandTerminate implements Callable<Integer> {
 
         if (Objects.isNull(delay)) delay = 0;
 
-        System.out.printf("Process will be terminated after %dms", delay);
+        logger.warn("Process will be terminated after %dms".formatted(delay));
 
         new Thread(() -> {
             try {

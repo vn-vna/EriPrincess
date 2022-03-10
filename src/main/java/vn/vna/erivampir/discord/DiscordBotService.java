@@ -87,9 +87,6 @@ public class DiscordBotService {
 
         try {
             jdaClient = jdaBuilder.build();
-            jdaClient
-                .upsertCommand(PingSlashCommand.COMMAND, PingSlashCommand.DESCRIPTION)
-                .queue();
         } catch (LoginException lex) {
             lex.printStackTrace();
         }

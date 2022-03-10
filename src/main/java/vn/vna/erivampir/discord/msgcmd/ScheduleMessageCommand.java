@@ -28,9 +28,9 @@ public class ScheduleMessageCommand extends CommandTemplate {
 
         public static final String commandExampleHelp = """
             ```
-            schedule <target>(s) [-option](s)
+            schedule <target>(s) [-option][=value](s)
             Example:
-            schedule gm gn -e -c #channel1
+            schedule gm gn -e -c=#channel1
             ```
             """;
 
@@ -44,7 +44,7 @@ public class ScheduleMessageCommand extends CommandTemplate {
 
         public static final String commandOptionsHelp = """
             ```
-            -c --channel <channel> specific channel
+            -c --channel=<channel> specific channel
             -e --enable            enable targets
             -d --disable           disable targets
             -h --help              show this message

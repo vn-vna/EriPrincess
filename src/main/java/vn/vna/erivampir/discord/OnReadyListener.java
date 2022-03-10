@@ -23,7 +23,7 @@ public class OnReadyListener extends ListenerAdapter {
             BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(ListenerAdapter.class.getResourceAsStream("/console-banner"))));
             String         str    = "";
             while (!Objects.isNull(str = reader.readLine())) {
-                System.out.println(str);
+                logger.info(str);
             }
             reader.close();
         } catch (IOException ioex) {
