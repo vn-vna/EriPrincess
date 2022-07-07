@@ -24,7 +24,7 @@ public class RegisterCommand extends CommandTemplate {
 
     @Override
     public void invoke(String[] commands, MessageReceivedEvent event) {
-        Member  author        = event.getGuild().getMember(event.getAuthor());
+        Member author = event.getGuild().getMember(event.getAuthor());
         boolean authorIsAdmin = DiscordUtilities.isFullPermission(author, Permission.MANAGE_SERVER);
         String guildName = event.getGuild().getName();
 
@@ -33,43 +33,43 @@ public class RegisterCommand extends CommandTemplate {
             return;
         }
 
-
         event
-            .getChannel()
-            .sendMessage("Parsing Request")
-            .queue(message -> {
-                Optional<DiscordGuildConfig> fGuildConfig = DiscordUtilities.findGuildById(event.getGuild().getId());
-                if (fGuildConfig.isPresent()) {
-                    EmbedBuilder embedBuilder = DiscordUtilities.getEriEmbedBuilder();
-                    embedBuilder
-                        .setTitle("Guild [%s] has been registered before \uD83E\uDD17".formatted(guildName))
-                        .setDescription("You no need to do it again");
+                .getChannel()
+                .sendMessage("Parsing Request")
+                .queue(message -> {
+                    Optional<DiscordGuildConfig> fGuildConfig = DiscordUtilities
+                            .findGuildById(event.getGuild().getId());
+                    if (fGuildConfig.isPresent()) {
+                        EmbedBuilder embedBuilder = DiscordUtilities.getEriEmbedBuilder();
+                        embedBuilder
+                                .setTitle("Guild [%s] has been registered before \uD83E\uDD17".formatted(guildName))
+                                .setDescription("You no need to do it again");
 
-                    MessageBuilder messageBuilder = new MessageBuilder();
-                    messageBuilder
-                        .setEmbeds(embedBuilder.build());
+                        MessageBuilder messageBuilder = new MessageBuilder();
+                        messageBuilder
+                                .setEmbeds(embedBuilder.build());
 
-                    event
-                        .getChannel()
-                        .sendMessage(messageBuilder.build())
-                        .queue();
+                        event
+                                .getChannel()
+                                .sendMessage(messageBuilder.build())
+                                .queue();
 
-                } else {
-                    DiscordUtilities.registerGuildToDb(event.getGuild().getId());
+                    } else {
+                        DiscordUtilities.registerGuildToDb(event.getGuild().getId());
 
-                    EmbedBuilder embedBuilder = DiscordUtilities.getEriEmbedBuilder();
-                    embedBuilder
-                        .setTitle("Guild has been registered successfully \uD83E\uDD17")
-                        .setDescription("I'm glad to see you here \uD83D\uDE1C");
+                        EmbedBuilder embedBuilder = DiscordUtilities.getEriEmbedBuilder();
+                        embedBuilder
+                                .setTitle("Guild has been registered successfully \uD83E\uDD17")
+                                .setDescription("I'm glad to see you here \uD83D\uDE1C");
 
-                    MessageBuilder messageBuilder = new MessageBuilder();
-                    messageBuilder
-                        .setEmbeds(embedBuilder.build());
+                        MessageBuilder messageBuilder = new MessageBuilder();
+                        messageBuilder
+                                .setEmbeds(embedBuilder.build());
 
-                    message
-                        .editMessage(messageBuilder.build())
-                        .queue();
-                }
-            });
+                        message
+                                .editMessage(messageBuilder.build())
+                                .queue();
+                    }
+                });
     }
 }

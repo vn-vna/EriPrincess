@@ -14,15 +14,16 @@ public class CLICommandTerminate implements Callable<Integer> {
 
     public static final Logger logger = LoggerFactory.getLogger(CLICommandTerminate.class);
 
-    @CommandLine.Option(names = {"-t", "--delay"}, description = "Delay terminate application")
+    @CommandLine.Option(names = { "-t", "--delay" }, description = "Delay terminate application")
     private Integer delay;
-    @CommandLine.Option(names = {"-h", "--help"}, usageHelp = true, description = "Show help")
+    @CommandLine.Option(names = { "-h", "--help" }, usageHelp = true, description = "Show help")
     private Boolean showHelp;
 
     @Override
     public Integer call() throws Exception {
 
-        if (Objects.isNull(delay)) delay = 0;
+        if (Objects.isNull(delay))
+            delay = 0;
 
         logger.warn("Process will be terminated after %dms".formatted(delay));
 

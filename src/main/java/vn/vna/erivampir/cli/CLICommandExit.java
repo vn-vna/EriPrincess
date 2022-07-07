@@ -9,7 +9,7 @@ import java.util.concurrent.Callable;
 @CommandLine.Command(name = "exit", description = "Terminate the CLI thread")
 public class CLICommandExit implements Callable<Integer> {
 
-    @CommandLine.Option(names = {"-h", "--help"}, usageHelp = true, description = "Show help")
+    @CommandLine.Option(names = { "-h", "--help" }, usageHelp = true, description = "Show help")
     private Boolean showHelp;
 
     @Override

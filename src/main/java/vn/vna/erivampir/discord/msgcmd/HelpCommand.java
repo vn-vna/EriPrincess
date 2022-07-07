@@ -23,34 +23,35 @@ public class HelpCommand extends CommandTemplate {
     public void invoke(String[] commands, MessageReceivedEvent event) {
 
         event
-            .getMessage()
-            .reply("Fetching data")
-            .mentionRepliedUser(false)
-            .queue((message) -> {
-                MessageBuilder msgBuilder   = new MessageBuilder();
-                EmbedBuilder   embedBuilder = DiscordUtilities.getEriEmbedBuilder();
+                .getMessage()
+                .reply("Fetching data")
+                .mentionRepliedUser(false)
+                .queue((message) -> {
+                    MessageBuilder msgBuilder = new MessageBuilder();
+                    EmbedBuilder embedBuilder = DiscordUtilities.getEriEmbedBuilder();
 
-                embedBuilder
-                    .setTitle("I'm Eri, the princess of vampire empire ~~")
-                    .setDescription("Let's see what i can do \uD83D\uDC4B.") // \uD83D\uDC4b = 👋
-                    .addBlankField(false)
-                    .addField("Message Commands", "Eri is listening to you", false);
-                for (CommandTemplate command : DiscordBotService.getInstance().getOnMessageListener().getMsgCommands()) {
-                    if (!Objects.isNull(command)) {
-                        embedBuilder.addField(command.getCommand(), command.getDescription(), true);
+                    embedBuilder
+                            .setTitle("I'm Eri, the princess of vampire empire ~~")
+                            .setDescription("Let's see what i can do \uD83D\uDC4B.") // \uD83D\uDC4b = 👋
+                            .addBlankField(false)
+                            .addField("Message Commands", "Eri is listening to you", false);
+                    for (CommandTemplate command : DiscordBotService.getInstance().getOnMessageListener()
+                            .getMsgCommands()) {
+                        if (!Objects.isNull(command)) {
+                            embedBuilder.addField(command.getCommand(), command.getDescription(), true);
+                        }
                     }
-                }
 
-                msgBuilder.setEmbeds(embedBuilder.build());
-                msgBuilder.setContent(null);
-                message
-                    .editMessage(ZERO_WIDTH_SPACE)
-                    .mentionRepliedUser(false)
-                    .queue();
-                message
-                    .editMessage(msgBuilder.build())
-                    .mentionRepliedUser(false)
-                    .queue();
-            });
+                    msgBuilder.setEmbeds(embedBuilder.build());
+                    msgBuilder.setContent(null);
+                    message
+                            .editMessage(ZERO_WIDTH_SPACE)
+                            .mentionRepliedUser(false)
+                            .queue();
+                    message
+                            .editMessage(msgBuilder.build())
+                            .mentionRepliedUser(false)
+                            .queue();
+                });
     }
 }

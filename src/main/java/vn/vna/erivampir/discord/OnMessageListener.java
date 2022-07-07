@@ -49,7 +49,8 @@ public class OnMessageListener extends ListenerAdapter {
         }
 
         if (event.getMessage().getContentRaw().startsWith(eriPrefix)) {
-            logger.info("Received a command from guild [" + event.getGuild().getName() + "]: " + event.getMessage().getContentRaw());
+            logger.info("Received a command from guild [" + event.getGuild().getName() + "]: "
+                    + event.getMessage().getContentRaw());
             String[] commands = event.getMessage().getContentRaw().substring(eriPrefix.length()).split(" ");
             messageCommandEval(commands, event);
         }

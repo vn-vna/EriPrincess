@@ -20,8 +20,9 @@ public class OnReadyListener extends ListenerAdapter {
     public void onReady(@NotNull ReadyEvent event) {
         super.onReady(event);
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(ListenerAdapter.class.getResourceAsStream("/console-banner"))));
-            String         str    = "";
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    Objects.requireNonNull(ListenerAdapter.class.getResourceAsStream("/console-banner"))));
+            String str = "";
             while (!Objects.isNull(str = reader.readLine())) {
                 logger.info(str);
             }

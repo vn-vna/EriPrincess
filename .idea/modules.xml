@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Eri.iml" filepath="$PROJECT_DIR$/Eri.iml" />
+      <module fileurl="file://$PROJECT_DIR$/erivampir.iml" filepath="$PROJECT_DIR$/erivampir.iml" />
     </modules>
   </component>
 </project>

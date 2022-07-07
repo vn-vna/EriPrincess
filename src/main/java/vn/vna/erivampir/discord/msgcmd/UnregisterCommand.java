@@ -16,7 +16,7 @@ import java.util.Optional;
 @CommandTemplate.NormalCommand
 public class UnregisterCommand extends CommandTemplate {
 
-    Logger                logger = LoggerFactory.getLogger(UnregisterCommand.class);
+    Logger logger = LoggerFactory.getLogger(UnregisterCommand.class);
 
     public UnregisterCommand() {
         super("unregister", "Unregister this server.");
@@ -34,41 +34,42 @@ public class UnregisterCommand extends CommandTemplate {
         }
 
         event
-            .getChannel()
-            .sendMessage("Parsing Request")
-            .queue(message -> {
-                Optional<DiscordGuildConfig> fGuildConfig = DiscordUtilities.findGuildById(event.getGuild().getId());
-                if (fGuildConfig.isEmpty()) {
-                    EmbedBuilder embedBuilder = DiscordUtilities.getEriEmbedBuilder();
-                    embedBuilder
-                        .setTitle("Guild [%s] has been registered before \uD83E\uDD17".formatted(guildName))
-                        .setDescription("You can't unregister this guild now");
+                .getChannel()
+                .sendMessage("Parsing Request")
+                .queue(message -> {
+                    Optional<DiscordGuildConfig> fGuildConfig = DiscordUtilities
+                            .findGuildById(event.getGuild().getId());
+                    if (fGuildConfig.isEmpty()) {
+                        EmbedBuilder embedBuilder = DiscordUtilities.getEriEmbedBuilder();
+                        embedBuilder
+                                .setTitle("Guild [%s] has been registered before \uD83E\uDD17".formatted(guildName))
+                                .setDescription("You can't unregister this guild now");
 
-                    MessageBuilder messageBuilder = new MessageBuilder();
-                    messageBuilder
-                        .setEmbeds(embedBuilder.build());
+                        MessageBuilder messageBuilder = new MessageBuilder();
+                        messageBuilder
+                                .setEmbeds(embedBuilder.build());
 
-                    event
-                        .getChannel()
-                        .sendMessage(messageBuilder.build())
-                        .queue();
+                        event
+                                .getChannel()
+                                .sendMessage(messageBuilder.build())
+                                .queue();
 
-                } else {
-                    DiscordUtilities.unregisterGuildToDb(event.getGuild().getId());
+                    } else {
+                        DiscordUtilities.unregisterGuildToDb(event.getGuild().getId());
 
-                    EmbedBuilder embedBuilder = DiscordUtilities.getEriEmbedBuilder();
-                    embedBuilder
-                        .setTitle("Guild has been unregistered successfully \uD83D\uDE14")
-                        .setDescription("Hope to see you again \uD83D\uDE15");
+                        EmbedBuilder embedBuilder = DiscordUtilities.getEriEmbedBuilder();
+                        embedBuilder
+                                .setTitle("Guild has been unregistered successfully \uD83D\uDE14")
+                                .setDescription("Hope to see you again \uD83D\uDE15");
 
-                    MessageBuilder messageBuilder = new MessageBuilder();
-                    messageBuilder
-                        .setEmbeds(embedBuilder.build());
+                        MessageBuilder messageBuilder = new MessageBuilder();
+                        messageBuilder
+                                .setEmbeds(embedBuilder.build());
 
-                    message
-                        .editMessage(messageBuilder.build())
-                        .queue();
-                }
-            });
+                        message
+                                .editMessage(messageBuilder.build())
+                                .queue();
+                    }
+                });
     }
 }

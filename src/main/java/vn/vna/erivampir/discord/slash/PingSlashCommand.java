@@ -5,7 +5,7 @@ import vn.vna.erivampir.discord.SlashCommand;
 
 public class PingSlashCommand implements SlashCommand {
 
-    public static final String COMMAND     = "ping";
+    public static final String COMMAND = "ping";
     public static final String DESCRIPTION = "ping me";
 
     @Override

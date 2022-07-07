@@ -20,19 +20,19 @@ import java.util.Objects;
 
 @Service
 public class DiscordBotService {
-    private static final Logger                       logger = LoggerFactory.getLogger(DiscordBotService.class);
-    private static       DiscordBotService            instance;
-    protected final      EriConfigRepository          eriConfigRepository;
-    protected final      DiscordGuildConfigRepository discordGuildConfigRepository;
-    protected            JDA                          jdaClient;
-    protected            OnMessageListener            onMessageListener;
-    protected            OnReadyListener              onReadyEvent;
-    protected            OnSlashCommand               onSlashCommand;
+    private static final Logger logger = LoggerFactory.getLogger(DiscordBotService.class);
+    private static DiscordBotService instance;
+    protected final EriConfigRepository eriConfigRepository;
+    protected final DiscordGuildConfigRepository discordGuildConfigRepository;
+    protected JDA jdaClient;
+    protected OnMessageListener onMessageListener;
+    protected OnReadyListener onReadyEvent;
+    protected OnSlashCommand onSlashCommand;
 
     public DiscordBotService(
-        EriConfigRepository eriConfigRepository,
-        DiscordGuildConfigRepository discordGuildConfigRepository) {
-        this.eriConfigRepository          = eriConfigRepository;
+            EriConfigRepository eriConfigRepository,
+            DiscordGuildConfigRepository discordGuildConfigRepository) {
+        this.eriConfigRepository = eriConfigRepository;
         this.discordGuildConfigRepository = discordGuildConfigRepository;
     }
 
@@ -55,11 +55,11 @@ public class DiscordBotService {
 
     public void awake(String[] args) {
         onMessageListener = new OnMessageListener();
-        onReadyEvent      = new OnReadyListener();
-        onSlashCommand    = new OnSlashCommand();
+        onReadyEvent = new OnReadyListener();
+        onSlashCommand = new OnSlashCommand();
 
         String token = EriServerConfig.getInstance().getConfiguration(
-            EriServerConfig.CFG_DISCORD_BOT_TOKEN);
+                EriServerConfig.CFG_DISCORD_BOT_TOKEN);
 
         if (Objects.isNull(token)) {
             throw new IllegalArgumentException("Token String is null");
@@ -81,9 +81,9 @@ public class DiscordBotService {
 
         JDABuilder jdaBuilder = JDABuilder.create(token, intents);
         jdaBuilder.addEventListeners(onReadyEvent)
-            .addEventListeners(onMessageListener)
-            .addEventListeners(onSlashCommand)
-            .setActivity(Activity.playing("with VNA"));
+                .addEventListeners(onMessageListener)
+                .addEventListeners(onSlashCommand)
+                .setActivity(Activity.playing("with VNA"));
 
         try {
             jdaClient = jdaBuilder.build();

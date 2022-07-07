@@ -17,17 +17,17 @@ import java.util.stream.Collectors;
 public class CommandLineService implements Runnable {
 
     private static CommandLineService instance;
-    private final  Scanner            serviceScanner;
-    private final  Thread             cliThread;
-    private final  Logger             logger = LoggerFactory.getLogger(CommandLineService.class);
-    private final  Set<CommandLine>   commandLines;
-    private        boolean            serviceAlive;
+    private final Scanner serviceScanner;
+    private final Thread cliThread;
+    private final Logger logger = LoggerFactory.getLogger(CommandLineService.class);
+    private final Set<CommandLine> commandLines;
+    private boolean serviceAlive;
 
     public CommandLineService() {
-        serviceAlive   = true;
+        serviceAlive = true;
         serviceScanner = new Scanner(System.in);
-        cliThread      = new Thread(this, "eri-cli");
-        commandLines   = new HashSet<>();
+        cliThread = new Thread(this, "eri-cli");
+        commandLines = new HashSet<>();
         loadCommands();
     }
 
@@ -63,32 +63,33 @@ public class CommandLineService implements Runnable {
 
         logger.info("Eri CLI Service Start");
         String line;
-//      Print banner
-//        try {
-//            BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(ListenerAdapter.class.getResourceAsStream("/cli-banner"))));
-//            String         str;
-//            while (!Objects.isNull(str = reader.readLine())) {
-//                System.out.println(str);
-//            }
-//            reader.close();
-//        } catch (IOException ioex) {
-//            ioex.printStackTrace();
-//        }
-//      Listening to CLI
+        // Print banner
+        // try {
+        // BufferedReader reader = new BufferedReader(new
+        // InputStreamReader(Objects.requireNonNull(ListenerAdapter.class.getResourceAsStream("/cli-banner"))));
+        // String str;
+        // while (!Objects.isNull(str = reader.readLine())) {
+        // System.out.println(str);
+        // }
+        // reader.close();
+        // } catch (IOException ioex) {
+        // ioex.printStackTrace();
+        // }
+        // Listening to CLI
         while (serviceAlive) {
             System.out.println();
             line = serviceScanner.nextLine();
 
             if (line.startsWith("$")) {
                 String trimmedLine = StuffUtilities.trimMultiSpaceString(line);
-                int    firstSpace  = trimmedLine.indexOf(' ');
+                int firstSpace = trimmedLine.indexOf(' ');
 
-                int    slicer  = firstSpace == -1 ? trimmedLine.length() : firstSpace;
+                int slicer = firstSpace == -1 ? trimmedLine.length() : firstSpace;
                 String command = trimmedLine.substring(1, slicer);
                 String[] args = Arrays.stream(trimmedLine.substring(slicer).split(" "))
-                    .filter(s -> !"".equals(s))
-                    .collect(Collectors.toList())
-                    .toArray(String[]::new);
+                        .filter(s -> !"".equals(s))
+                        .collect(Collectors.toList())
+                        .toArray(String[]::new);
 
                 for (CommandLine cli : commandLines) {
                     if (cli.getCommandName().equals(command)) {

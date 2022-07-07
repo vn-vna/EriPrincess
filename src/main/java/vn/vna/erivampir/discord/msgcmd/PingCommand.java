@@ -16,22 +16,22 @@ public class PingCommand extends CommandTemplate {
     @Override
     public void invoke(String[] commands, MessageReceivedEvent event) {
         event.getMessage()
-            .getChannel()
-            .sendMessage("Execution ping checker..")
-            .queue(message -> {
-                long ping = event.getMessage().getTimeCreated().until(
-                    message.getTimeCreated(), ChronoUnit.MILLIS);
-                String pingMsg = """
-                        Eri pong!!!
-                        ```
-                        Message latency:  %dms
-                        Gateway ping:     %dms
-                        ```
-                        """.formatted(ping, event.getJDA().getGatewayPing());
-                message
-                    .editMessage(pingMsg)
-                    .queue();
+                .getChannel()
+                .sendMessage("Execution ping checker..")
+                .queue(message -> {
+                    long ping = event.getMessage().getTimeCreated().until(
+                            message.getTimeCreated(), ChronoUnit.MILLIS);
+                    String pingMsg = """
+                            Eri pong!!!
+                            ```
+                            Message latency:  %dms
+                            Gateway ping:     %dms
+                            ```
+                            """.formatted(ping, event.getJDA().getGatewayPing());
+                    message
+                            .editMessage(pingMsg)
+                            .queue();
 
-            });
+                });
     }
 }

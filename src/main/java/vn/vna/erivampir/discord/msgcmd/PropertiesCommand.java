@@ -21,26 +21,26 @@ public class PropertiesCommand extends CommandTemplate {
 
     @Override
     public void invoke(String[] commands, MessageReceivedEvent event) {
-        String                       guildName   = event.getGuild().getName();
+        String guildName = event.getGuild().getName();
         Optional<DiscordGuildConfig> guildConfig = DiscordUtilities.findGuildById(event.getGuild().getId());
         if (guildConfig.isEmpty()) {
             EmbedBuilder embedBuilder = DiscordUtilities.getEriEmbedBuilder();
             embedBuilder
-                .setTitle("Guild [%s] has not been registered yet \uD83E\uDD14".formatted(guildName))
-                .setDescription("Contact guild administrator to more information")
-                .setImage(event.getGuild().getIconUrl());
+                    .setTitle("Guild [%s] has not been registered yet \uD83E\uDD14".formatted(guildName))
+                    .setDescription("Contact guild administrator to more information")
+                    .setImage(event.getGuild().getIconUrl());
 
             MessageBuilder messageBuilder = new MessageBuilder();
             messageBuilder.setEmbeds(embedBuilder.build());
 
             event
-                .getMessage()
-                .reply(messageBuilder.build())
-                .mentionRepliedUser(false)
-                .queue();
+                    .getMessage()
+                    .reply(messageBuilder.build())
+                    .mentionRepliedUser(false)
+                    .queue();
         } else {
-            DiscordGuildConfig config       = guildConfig.get();
-            EmbedBuilder       embedBuilder = DiscordUtilities.getEriEmbedBuilder();
+            DiscordGuildConfig config = guildConfig.get();
+            EmbedBuilder embedBuilder = DiscordUtilities.getEriEmbedBuilder();
 
             String guildGMT = (config.getGuildGMT() > 0 ? "+" : "-") + config.getGuildGMT();
             Member owner = event.getGuild().getOwner();
@@ -56,24 +56,24 @@ public class PropertiesCommand extends CommandTemplate {
             }
 
             embedBuilder
-                .setTitle("Properties of guild " + guildName)
-                .addField("Guild ID", config.getGuildId(), true)
-                .addField("Guild Owner", ownerName, true)
-                .addField("Guild time zone", guildGMT, true)
-                .addField("Guild registration date", config.getGuildRegisteredDate().toString(), true)
-                .addBlankField(false)
-                .addField("G.Morning message", config.isEnableGoodMorning() ? "Enabled" : "Disabled", true)
-                .addField("G.Night message", config.isEnableGoodNight() ? "Enabled" : "Disabled", true)
-                .addField("Lonely message", config.isEnableLonelyMessage() ? "Enabled" : "Disabled", true);
+                    .setTitle("Properties of guild " + guildName)
+                    .addField("Guild ID", config.getGuildId(), true)
+                    .addField("Guild Owner", ownerName, true)
+                    .addField("Guild time zone", guildGMT, true)
+                    .addField("Guild registration date", config.getGuildRegisteredDate().toString(), true)
+                    .addBlankField(false)
+                    .addField("G.Morning message", config.isEnableGoodMorning() ? "Enabled" : "Disabled", true)
+                    .addField("G.Night message", config.isEnableGoodNight() ? "Enabled" : "Disabled", true)
+                    .addField("Lonely message", config.isEnableLonelyMessage() ? "Enabled" : "Disabled", true);
 
             MessageBuilder messageBuilder = new MessageBuilder();
             messageBuilder
-                .setEmbeds(embedBuilder.build());
+                    .setEmbeds(embedBuilder.build());
 
             event
-                .getChannel()
-                .sendMessage(messageBuilder.build())
-                .queue();
+                    .getChannel()
+                    .sendMessage(messageBuilder.build())
+                    .queue();
         }
     }
 }

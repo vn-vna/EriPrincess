@@ -12,14 +12,14 @@ public class EriServerConfig {
     public static final String ERI_VERSION = "V1.0 - By VNA - 2022";
 
     public static final String CFG_DISCORD_BOT_TOKEN = "ERI_TOKEN";
-    public static final String CFG_MONGODB_URI       = "MONGO_URI";
-    public static final String CFG_ERIBOT_PREFIX     = "ERI_PREFIX";
-    public static final String CFG_SAUCENAO_APIKEY   = "SAUCENAO_APIKEY";
-    public static final String CFG_DISABLE_CLI       = "ERI_DISABLE_CLI";
-    public static final String CFG_DATABASE_URL      = "DATABASE_URL";
+    public static final String CFG_MONGODB_URI = "MONGO_URI";
+    public static final String CFG_ERIBOT_PREFIX = "ERI_PREFIX";
+    public static final String CFG_SAUCENAO_APIKEY = "SAUCENAO_APIKEY";
+    public static final String CFG_DISABLE_CLI = "ERI_DISABLE_CLI";
+    public static final String CFG_DATABASE_URL = "DATABASE_URL";
     public static final String CFG_SPRING_DATASOURCE = "SPRING_DATASOURCE";
-    public static final String CFG_SPRING_DBUSER     = "SPRING_DBUSER";
-    public static final String CFG_SPRING_DBPWD      = "SPRING_DBPWD";
+    public static final String CFG_SPRING_DBUSER = "SPRING_DBUSER";
+    public static final String CFG_SPRING_DBPWD = "SPRING_DBPWD";
 
     private static final Collection<String> cliArgsProps;
 
@@ -39,7 +39,7 @@ public class EriServerConfig {
     }
 
     public Map<String, String> configurations;
-    public Logger              logger = LoggerFactory.getLogger(EriServerConfig.class);
+    public Logger logger = LoggerFactory.getLogger(EriServerConfig.class);
 
     public EriServerConfig() {
         configurations = new HashMap<>();
