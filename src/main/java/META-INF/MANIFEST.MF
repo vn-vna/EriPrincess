@@ -1,3 +1,3 @@
 Manifest-Version: 1.0
-Main-Class: vn.vna.erivampir.EriServer
+Main-Class: vn.vna.eri.v2.app.Main
 

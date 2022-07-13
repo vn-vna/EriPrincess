@@ -9,11 +9,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import vn.vna.eri.v2.db.ServerConfigRepository.ServerConfig;
-import vn.vna.eri.v2.utils.JsonClass;
+import vn.vna.eri.v2.schema.ServerConfigInfo;
+import vn.vna.eri.v2.utils.ConvertableToDataObject;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Repository
@@ -21,21 +20,20 @@ public interface ServerConfigRepository extends JpaRepository<ServerConfig, Stri
 
   @Getter
   @Setter
-  @NoArgsConstructor
-  @AllArgsConstructor
   @Entity
   @Table(name = "_svrcfg")
-  static public class ServerConfig extends JsonClass {
+  static public class ServerConfig extends ConvertableToDataObject<ServerConfigInfo> {
+
+    public ServerConfig() {
+      super(ServerConfigInfo.class);
+    }
+
     @Id
     @Column(name = "_key")
     private String key;
 
     @Column(name = "_val")
     private String value;
-
-    public vn.vna.eri.v2.schema.ServerConfig toDataObject() {
-      return new vn.vna.eri.v2.schema.ServerConfig(key, value);
-    }
   }
 
 }

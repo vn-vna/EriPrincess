@@ -13,6 +13,7 @@ import vn.vna.eri.v2.configs.ConfigManager;
 import vn.vna.eri.v2.configs.DiscordEventListener;
 import vn.vna.eri.v2.configs.Env;
 import vn.vna.eri.v2.error.DiscordServiceExists;
+import vn.vna.eri.v2.schema.ServiceStatus;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -42,6 +43,8 @@ public class DiscordService implements Runnable {
 
   @Override
   public void run() {
+    this.serviceStatus = new ServiceStatus();
+
     String token = ConfigManager.getEnvManager().getString(Env.ENV_BOT_TOKEN);
 
     List<GatewayIntent> intents = new ArrayList<>();
@@ -83,6 +86,7 @@ public class DiscordService implements Runnable {
 
   private JDA jdaContext;
   private DiscordEventListener eventListener;
+  private ServiceStatus serviceStatus;
 
   private static Thread serviceThread;
   private static DiscordService instance;

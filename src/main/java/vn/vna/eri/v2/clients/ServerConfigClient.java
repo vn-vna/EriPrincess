@@ -1,4 +1,4 @@
-package vn.vna.eri.v2.clients.postgres;
+package vn.vna.eri.v2.clients;
 
 import java.util.Objects;
 
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import vn.vna.eri.v2.configs.ConfigManager;
 import vn.vna.eri.v2.db.ServerConfigRepository;
-import vn.vna.eri.v2.schema.ServerConfig;
+import vn.vna.eri.v2.schema.ServerConfigInfo;
 import vn.vna.eri.v2.services.ApiService;
 
 @Component
@@ -33,16 +33,20 @@ public class ServerConfigClient extends ConfigManager {
     }
   }
 
-  public ServerConfig setConfig(String key, String value) {
+  public ServerConfigInfo setConfig(String key, String value) {
     try {
-      return this.repository.save(new ServerConfigRepository.ServerConfig(key, value)).toDataObject();
+      var saveValue = new ServerConfigRepository.ServerConfig();
+      saveValue.setKey(key);
+      saveValue.setValue(value);
+
+      return this.repository.save(saveValue).toDataObject();
     } catch (IllegalArgumentException | NullPointerException ex) {
       logger.error("Request set config to database has failed due to: {}", ex.getMessage());
     }
     return null;
   }
 
-  public ServerConfig getConfig(String key) {
+  public ServerConfigInfo getConfig(String key) {
     try {
       var result = this.repository.getById(key);
       if (Objects.isNull(result) || Objects.isNull(result.getKey())) {
