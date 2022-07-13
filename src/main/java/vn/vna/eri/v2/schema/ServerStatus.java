@@ -1,16 +1,10 @@
 package vn.vna.eri.v2.schema;
 
-import java.lang.management.ManagementFactory;
-
 import com.google.gson.annotations.SerializedName;
-
+import lombok.*;
 import vn.vna.eri.v2.utils.JsonClass;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import java.lang.management.ManagementFactory;
 
 @Getter
 @Setter
@@ -18,13 +12,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class ServerStatus extends JsonClass {
-  public static ServerStatus getStatus() {
-    ServerStatus result = new ServerStatus();
-    result.systemStatus = SystemStatus.getCurrentStatus();
-    result.upTime = ManagementFactory.getRuntimeMXBean().getUptime();
-    return result;
-  }
-
   @SerializedName("system_status")
   SystemStatus systemStatus;
   @SerializedName("up_time")
@@ -33,4 +20,11 @@ public class ServerStatus extends JsonClass {
   String discordService;
   @SerializedName("api_service")
   String apiService;
+
+  public static ServerStatus getStatus() {
+    ServerStatus result = new ServerStatus();
+    result.systemStatus = SystemStatus.getCurrentStatus();
+    result.upTime = ManagementFactory.getRuntimeMXBean().getUptime();
+    return result;
+  }
 }

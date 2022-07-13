@@ -2,8 +2,14 @@ package vn.vna.eri.v2.configs;
 
 public abstract class ConfigManager {
 
+  public static Env envManager;
+
   static {
     envManager = new Env();
+  }
+
+  public static Env getEnvManager() {
+    return ConfigManager.envManager;
   }
 
   public abstract String getString(String key);
@@ -47,10 +53,4 @@ public abstract class ConfigManager {
       return null;
     }
   }
-
-  public static Env getEnvManager() {
-    return ConfigManager.envManager;
-  }
-
-  public static Env envManager;
 }

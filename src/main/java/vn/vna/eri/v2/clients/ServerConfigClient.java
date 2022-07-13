@@ -1,28 +1,35 @@
 package vn.vna.eri.v2.clients;
 
-import java.util.Objects;
-
-import javax.persistence.EntityNotFoundException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import vn.vna.eri.v2.configs.ConfigManager;
 import vn.vna.eri.v2.db.ServerConfigRepository;
 import vn.vna.eri.v2.schema.ServerConfigInfo;
 import vn.vna.eri.v2.services.ApiService;
 
+import javax.persistence.EntityNotFoundException;
+import java.util.Objects;
+
 @Component
 public class ServerConfigClient extends ConfigManager {
+
+  private static final Logger logger;
 
   static {
     logger = LoggerFactory.getLogger(ServerConfigClient.class);
   }
 
+  @Autowired
+  private ServerConfigRepository repository;
+
   public ServerConfigClient() {
     logger.info("Server config client has been initialized");
+  }
+
+  public static ServerConfigClient getClient() {
+    return ApiService.getApplicationContext().getBean(ServerConfigClient.class);
   }
 
   public void removeConfig(String key) {
@@ -49,7 +56,7 @@ public class ServerConfigClient extends ConfigManager {
   public ServerConfigInfo getConfig(String key) {
     try {
       var result = this.repository.getById(key);
-      if (Objects.isNull(result) || Objects.isNull(result.getKey())) {
+      if (Objects.isNull(result.getKey())) {
         throw new EntityNotFoundException();
       }
       return result.toDataObject();
@@ -75,14 +82,5 @@ public class ServerConfigClient extends ConfigManager {
   public ServerConfigRepository getRepository() {
     return this.repository;
   }
-
-  public static ServerConfigClient getClient() {
-    return ApiService.getApplicationContext().getBean(ServerConfigClient.class);
-  }
-
-  private static Logger logger;
-
-  @Autowired
-  private ServerConfigRepository repository;
 
 }

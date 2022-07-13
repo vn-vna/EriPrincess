@@ -1,7 +1,5 @@
 package vn.vna.eri.v2.services;
 
-import java.util.Objects;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -12,8 +10,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
-
+import vn.vna.eri.v2.configs.ConfigManager;
+import vn.vna.eri.v2.configs.Env;
 import vn.vna.eri.v2.error.ApiServiceExists;
+
+import java.util.Objects;
 
 @SpringBootApplication
 @EntityScan("vn.vna.eri.v2")
@@ -22,6 +23,10 @@ import vn.vna.eri.v2.error.ApiServiceExists;
 @EnableCaching
 @EnableScheduling
 public class ApiService {
+
+  private static final Logger logger;
+  private static ApplicationContext springAppCtx;
+  private static ApiService instance;
 
   static {
     logger = LoggerFactory.getLogger(ApiService.class);
@@ -43,11 +48,11 @@ public class ApiService {
   }
 
   public static void initialize(String[] args) {
+    if (ConfigManager.getEnvManager().getBoolean(Env.ENV_DISABLE_API)) {
+      logger.warn("Api service is disabled by default");
+      return;
+    }
     logger.info("Starting SpingBoot service");
     ApiService.springAppCtx = SpringApplication.run(ApiService.class, args);
   }
-
-  private static ApplicationContext springAppCtx;
-  private static Logger logger;
-  private static ApiService instance;
 }

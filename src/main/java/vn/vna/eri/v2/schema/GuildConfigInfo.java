@@ -1,16 +1,10 @@
 package vn.vna.eri.v2.schema;
 
-import java.time.Instant;
-
 import com.google.gson.annotations.SerializedName;
-
+import lombok.*;
 import vn.vna.eri.v2.utils.JsonClass;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import java.time.Instant;
 
 @Getter
 @Setter

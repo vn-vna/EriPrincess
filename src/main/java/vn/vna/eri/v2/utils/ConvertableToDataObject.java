@@ -1,17 +1,20 @@
 package vn.vna.eri.v2.utils;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 public class ConvertableToDataObject<DataClass extends JsonClass> {
-  private static String ERROR_STRING = "Convert [{}] to data object [{}] has failed. Due to error {}";
+  private static final String ERROR_STRING = "Convert [{}] to data object [{}] has failed. Due to error {}";
+  private static final Logger logger;
 
   static {
     logger = LoggerFactory.getLogger(ConvertableToDataObject.class);
   }
+
+  protected Class<DataClass> type;
 
   public ConvertableToDataObject(Class<DataClass> type) {
     this.type = type;
@@ -46,8 +49,4 @@ public class ConvertableToDataObject<DataClass extends JsonClass> {
     }
     return obj;
   }
-
-  protected Class<DataClass> type;
-
-  private static Logger logger;
 }

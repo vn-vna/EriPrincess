@@ -1,15 +1,9 @@
 package vn.vna.eri.v2.schema;
 
 import com.google.gson.annotations.SerializedName;
-
-import vn.vna.eri.v2.utils.JsonClass;
-
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import oshi.SystemInfo;
+import vn.vna.eri.v2.utils.JsonClass;
 
 @Getter
 @Setter

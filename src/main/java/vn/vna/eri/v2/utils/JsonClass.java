@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 
 public class JsonClass {
 
+  private static final Gson gson;
+
   static {
     gson = new Gson();
   }
@@ -11,6 +13,4 @@ public class JsonClass {
   public String toJson() {
     return gson.toJson(this);
   }
-
-  private static Gson gson;
 }

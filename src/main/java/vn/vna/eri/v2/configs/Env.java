@@ -6,6 +6,7 @@ public class Env extends ConfigManager {
   public static final String ENV_DBPWD = "DBPWD";
   public static final String ENV_BOT_TOKEN = "BOT_TOKEN";
   public static final String ENV_DISABLE_DISCORD = "DISABLE_DISCORD";
+  public static final String ENV_DISABLE_API = "DISABLE_API";
 
   @Override
   public String getString(String key) {
