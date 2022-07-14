@@ -1,18 +1,22 @@
 package vn.vna.eri.v2.event.discord;
 
-@MessageCommand.Command(type = MessageCommand.CommandType.MESSAGE_COMMAND, command = "ping")
-public class PingCommand extends MessageCommand {
+import static vn.vna.eri.v2.event.discord.DiscordCommand.CommandType.MESSAGE_COMMAND;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import vn.vna.eri.v2.event.discord.DiscordCommand.CommandProperties;
+
+import net.dv8tion.jda.api.events.Event;
+
+@CommandProperties(type = MESSAGE_COMMAND, commands = { "ping", "tping", "ok" })
+public class PingCommand extends DiscordCommand {
+
+  private static final Logger logger = LoggerFactory.getLogger(PingCommand.class);
 
   @Override
-  public Boolean match(String str) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public void execute() {
-    // TODO Auto-generated method stub
-
+  public void execute(Event event) {
+    logger.info("Ping");
   }
 
 }
