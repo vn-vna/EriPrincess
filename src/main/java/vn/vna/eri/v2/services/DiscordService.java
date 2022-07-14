@@ -1,20 +1,24 @@
 package vn.vna.eri.v2.services;
 
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.requests.GatewayIntent;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import javax.security.auth.login.LoginException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import vn.vna.eri.v2.configs.ConfigManager;
 import vn.vna.eri.v2.configs.DiscordEventListener;
 import vn.vna.eri.v2.configs.Env;
 import vn.vna.eri.v2.error.DiscordServiceExists;
 import vn.vna.eri.v2.schema.ServiceStatus;
 
-import javax.security.auth.login.LoginException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 
 public class DiscordService implements Runnable {
 
@@ -28,12 +32,15 @@ public class DiscordService implements Runnable {
 
   private JDA jdaContext;
   private DiscordEventListener eventListener;
-  private ServiceStatus serviceStatus;
+  private final ServiceStatus serviceStatus;
 
   public DiscordService() {
     if (!Objects.isNull(DiscordService.instance)) {
       throw new DiscordServiceExists();
     }
+    this.serviceStatus = new ServiceStatus();
+    this.serviceStatus.setStatus(ServiceStatus.STATUS_OFFLINE);
+    this.serviceStatus.setLastStartUp(null);
 
     DiscordService.instance = this;
   }
@@ -56,14 +63,16 @@ public class DiscordService implements Runnable {
     return this.jdaContext;
   }
 
+  public ServiceStatus getStatus() {
+    return this.serviceStatus;
+  }
+
   public DiscordEventListener getEventListener() {
     return this.eventListener;
   }
 
   @Override
   public void run() {
-    this.serviceStatus = new ServiceStatus();
-
     String token = ConfigManager.getEnvManager().getString(Env.ENV_BOT_TOKEN);
 
     List<GatewayIntent> intents = new ArrayList<>();
@@ -84,9 +93,13 @@ public class DiscordService implements Runnable {
 
     try {
       this.jdaContext = jdaBuilder.build();
-      this.serviceStatus.setStatus("online");
+
+      // Update status
+      this.serviceStatus.setStatus(ServiceStatus.STATUS_ONLINE);
+      this.serviceStatus.setLastStartUp(Instant.now().toString());
     } catch (LoginException lex) {
       DiscordService.logger.error("Can't login to discord.");
+      this.serviceStatus.setStatus(ServiceStatus.STATUS_ERROR);
     }
   }
 

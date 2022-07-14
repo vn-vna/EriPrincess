@@ -1,10 +1,9 @@
 package vn.vna.eri.v2.utils;
 
+import java.util.Arrays;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 public class ConvertableToDataObject<DataClass extends JsonClass> {
   private static final String ERROR_STRING = "Convert [{}] to data object [{}] has failed. Due to error {}";
@@ -25,12 +24,9 @@ public class ConvertableToDataObject<DataClass extends JsonClass> {
     try {
       obj = type.getConstructor().newInstance();
 
-      var setMethods = Arrays.asList(type.getMethods())
-          .stream()
-          .filter((method) -> {
-            return method.getName().startsWith("set");
-          })
-          .collect(Collectors.toList());
+      var setMethods = Arrays.stream(type.getMethods())
+          .filter((method) -> method.getName().startsWith("set"))
+          .toList();
 
       for (var setMethod : setMethods) {
         try {

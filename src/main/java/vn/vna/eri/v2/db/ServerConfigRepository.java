@@ -1,17 +1,19 @@
 package vn.vna.eri.v2.db;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-import vn.vna.eri.v2.db.ServerConfigRepository.ServerConfig;
-import vn.vna.eri.v2.schema.ServerConfigInfo;
-import vn.vna.eri.v2.utils.ConvertableToDataObject;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import vn.vna.eri.v2.db.ServerConfigRepository.ServerConfig;
+import vn.vna.eri.v2.schema.ServerConfigInfo;
+import vn.vna.eri.v2.utils.ConvertableToDataObject;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Repository
 public interface ServerConfigRepository extends JpaRepository<ServerConfig, String> {

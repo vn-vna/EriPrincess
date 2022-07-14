@@ -1,17 +1,19 @@
 package vn.vna.eri.v2.db;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.data.jpa.repository.JpaRepository;
-import vn.vna.eri.v2.db.TokenManagerRepository.Token;
-import vn.vna.eri.v2.schema.AuthorizeToken;
-import vn.vna.eri.v2.utils.ConvertableToDataObject;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import vn.vna.eri.v2.db.TokenManagerRepository.Token;
+import vn.vna.eri.v2.schema.AuthorizeToken;
+import vn.vna.eri.v2.utils.ConvertableToDataObject;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 public interface TokenManagerRepository extends JpaRepository<Token, String> {
 

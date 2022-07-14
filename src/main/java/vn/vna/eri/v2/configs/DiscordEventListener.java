@@ -1,13 +1,18 @@
 package vn.vna.eri.v2.configs;
 
-import net.dv8tion.jda.api.events.message.*;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.reflections.Reflections;
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import vn.vna.eri.v2.event.discord.MessageCommand;
 
-import java.util.Set;
+import vn.vna.eri.v2.event.discord.DiscordCommand;
+
+import net.dv8tion.jda.api.events.message.MessageBulkDeleteEvent;
+import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
+import net.dv8tion.jda.api.events.message.MessageEmbedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class DiscordEventListener extends ListenerAdapter {
 
@@ -16,18 +21,15 @@ public class DiscordEventListener extends ListenerAdapter {
 
   static {
     logger = LoggerFactory.getLogger(DiscordEventListener.class);
-    pkgSearch = MessageCommand.class.getPackageName();
+    pkgSearch = DiscordCommand.class.getPackageName();
   }
 
-  public DiscordEventListener() {
-    Reflections reflections = new Reflections(pkgSearch);
-    Set<Class<? extends MessageCommand>> types = reflections.getSubTypesOf(MessageCommand.class);
-    logger.info("Found {} command(s) from package {}", types.size(), pkgSearch);
+  private final Set<DiscordCommand> commands;
+  private final String botPrefix;
 
-    for (var type : types) {
-      // Inject command that annotated from types
-      type.getDeclaredAnnotation(MessageCommand.Command.class);
-    }
+  public DiscordEventListener() {
+    this.botPrefix = ConfigManager.getEnvManager().getString(Env.ENV_BOT_PREFIX);
+    this.commands = DiscordCommand.loadCommands();
   }
 
   @Override
@@ -48,6 +50,19 @@ public class DiscordEventListener extends ListenerAdapter {
   @Override
   public void onMessageReceived(MessageReceivedEvent event) {
     super.onMessageReceived(event);
+    String rawContent = event.getMessage().getContentRaw();
+
+    if (!rawContent.startsWith(this.botPrefix)) {
+      return;
+    }
+
+    String[] commandArray = rawContent
+        .substring(this.botPrefix.length())
+        .split(" ");
+
+    for (DiscordCommand command : this.commands) {
+      command.tryExecute(commandArray, event, 0);
+    }
   }
 
   @Override

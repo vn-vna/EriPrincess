@@ -1,5 +1,8 @@
 package vn.vna.eri.v2.services;
 
+import java.time.Instant;
+import java.util.Objects;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -10,11 +13,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
+
 import vn.vna.eri.v2.configs.ConfigManager;
 import vn.vna.eri.v2.configs.Env;
 import vn.vna.eri.v2.error.ApiServiceExists;
-
-import java.util.Objects;
+import vn.vna.eri.v2.schema.ServiceStatus;
 
 @SpringBootApplication
 @EntityScan("vn.vna.eri.v2")
@@ -32,10 +35,15 @@ public class ApiService {
     logger = LoggerFactory.getLogger(ApiService.class);
   }
 
+  private final ServiceStatus status;
+
   public ApiService() {
     if (!Objects.isNull(ApiService.instance)) {
       throw new ApiServiceExists();
     }
+    this.status = new ServiceStatus();
+    this.status.setStatus(ServiceStatus.STATUS_ONLINE);
+    this.status.setLastStartUp(Instant.now().toString());
     ApiService.instance = this;
   }
 
@@ -52,7 +60,12 @@ public class ApiService {
       logger.warn("Api service is disabled by default");
       return;
     }
+
     logger.info("Starting SpingBoot service");
     ApiService.springAppCtx = SpringApplication.run(ApiService.class, args);
+  }
+
+  public ServiceStatus getStatus() {
+    return this.status;
   }
 }
