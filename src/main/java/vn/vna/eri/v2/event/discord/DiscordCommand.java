@@ -55,6 +55,7 @@ public abstract class DiscordCommand {
         .stream()
         .filter(type -> DiscordCommand.class.equals(type.getSuperclass()))
         .collect(Collectors.toSet());
+
     logger.info("Reflection found {} command class(es)", reflectedTypes.size());
 
     // Collect injection field
@@ -64,7 +65,7 @@ public abstract class DiscordCommand {
         .collect(Collectors.toSet());
 
     // Create objects
-    Set<DiscordCommand> reflectedCommands = new HashSet<>();
+    Set<DiscordCommand> commandCollection = new HashSet<>();
     for (Class<? extends DiscordCommand> reflectedType : reflectedTypes) {
       try {
         Constructor<? extends DiscordCommand> typeDefaultConstructor = reflectedType.getConstructor();
@@ -72,18 +73,14 @@ public abstract class DiscordCommand {
         DiscordCommand command = typeDefaultConstructor.newInstance();
 
         // Inject value
-        // command.setCommands(properties.commands());
-        // command.setDescription(properties.description());
-        // command.setType(properties.type());
-        // command.setParent(properties.parent());
-        // command.setSeparateThread(properties.separateThread());
-
         for (Field injectionField : injectionFields) {
           injectionField.set(command,
-              properties.getClass().getMethod(injectionField.getName()).invoke(properties));
+              CommandProperties.class
+                  .getMethod(injectionField.getName())
+                  .invoke(properties));
         }
 
-        reflectedCommands.add(command);
+        commandCollection.add(command);
       } catch (Exception ex) {
         logger.error("Create command object with type [{}] has failed due to error: {}",
             reflectedType.getName(),
@@ -92,9 +89,9 @@ public abstract class DiscordCommand {
     }
 
     // Inspect child commands
-    for (DiscordCommand command : reflectedCommands) {
+    for (DiscordCommand command : commandCollection) {
       command.setChildren(
-          reflectedCommands
+          commandCollection
               .stream()
               .filter(
                   (subcommand) -> Arrays.asList(subcommand.getParent())
@@ -103,7 +100,7 @@ public abstract class DiscordCommand {
     }
 
     // Get all root commands
-    commandObjects = reflectedCommands
+    commandObjects = commandCollection
         .stream()
         .filter((command) -> command.getParent().length == 0)
         .collect(Collectors.toSet());

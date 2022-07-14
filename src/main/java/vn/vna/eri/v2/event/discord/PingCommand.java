@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import vn.vna.eri.v2.event.discord.DiscordCommand.CommandProperties;
 
-@CommandProperties(type = MESSAGE_COMMAND, commands = {"ping", "tping", "ok"})
+@CommandProperties(type = MESSAGE_COMMAND, commands = "ping")
 public class PingCommand extends DiscordCommand {
 
   private static final Logger logger = LoggerFactory.getLogger(PingCommand.class);
