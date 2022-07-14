@@ -1,13 +1,11 @@
 package vn.vna.eri.v2.schema;
 
-import vn.vna.eri.v2.utils.JsonClass;
-
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.var;
+import vn.vna.eri.v2.utils.JsonClass;
 
 @Getter
 @Setter
@@ -15,6 +13,7 @@ import lombok.var;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class AuthorizeToken extends JsonClass {
+
   public static final String PERMOBJ_ADMIN = "admin";
   public static final String PERMOBJ_SERVICE = "service";
   public static final String PERMOBJ_DISCORD = "discord";
@@ -40,6 +39,7 @@ public class AuthorizeToken extends JsonClass {
     private PermissionStatus service;
     private PermissionStatus discord;
     private PermissionStatus config;
+
     public TokenPermission() {
       admin = false;
       config = new PermissionStatus(false, false, false);
@@ -107,6 +107,7 @@ public class AuthorizeToken extends JsonClass {
   @NoArgsConstructor
   @EqualsAndHashCode
   public static class PermissionStatus {
+
     private Boolean read;
     private Boolean write;
     private Boolean delete;

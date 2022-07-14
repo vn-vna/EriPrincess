@@ -2,7 +2,6 @@ package vn.vna.eri.v2.services;
 
 import java.time.Instant;
 import java.util.Objects;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -13,7 +12,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
-
 import vn.vna.eri.v2.configs.ConfigManager;
 import vn.vna.eri.v2.configs.Env;
 import vn.vna.eri.v2.error.ApiServiceExists;

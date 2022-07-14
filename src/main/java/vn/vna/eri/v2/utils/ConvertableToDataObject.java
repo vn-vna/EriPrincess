@@ -1,11 +1,11 @@
 package vn.vna.eri.v2.utils;
 
 import java.util.Arrays;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ConvertableToDataObject<DataClass extends JsonClass> {
+
   private static final String ERROR_STRING = "Convert [{}] to data object [{}] has failed. Due to error {}";
   private static final Logger logger;
 

@@ -11,16 +11,14 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import org.jetbrains.annotations.NotNull;
-import org.reflections.Reflections;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.dv8tion.jda.api.events.Event;
+import org.jetbrains.annotations.NotNull;
+import org.reflections.Reflections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Getter
 @Setter
@@ -81,7 +79,8 @@ public abstract class DiscordCommand {
         // command.setSeparateThread(properties.separateThread());
 
         for (Field injectionField : injectionFields) {
-          injectionField.set(command, properties.getClass().getMethod(injectionField.getName()).invoke(properties));
+          injectionField.set(command,
+              properties.getClass().getMethod(injectionField.getName()).invoke(properties));
         }
 
         reflectedCommands.add(command);
@@ -98,7 +97,8 @@ public abstract class DiscordCommand {
           reflectedCommands
               .stream()
               .filter(
-                  (subcommand) -> Arrays.asList(subcommand.getParent()).contains(command.getClass()))
+                  (subcommand) -> Arrays.asList(subcommand.getParent())
+                      .contains(command.getClass()))
               .collect(Collectors.toSet()));
     }
 
@@ -127,7 +127,8 @@ public abstract class DiscordCommand {
   public void postExecute(Event event) {
   }
 
-  public Boolean tryExecute(String @NotNull [] commandArray, Event event, @NotNull Integer commandDepth) {
+  public Boolean tryExecute(String @NotNull [] commandArray, Event event,
+      @NotNull Integer commandDepth) {
     if (this.match(commandArray[commandDepth])) {
       if (commandDepth < commandArray.length - 1) {
         for (DiscordCommand childCommandObj : this.children) {
@@ -160,6 +161,7 @@ public abstract class DiscordCommand {
   @Retention(RetentionPolicy.RUNTIME)
   @Target(ElementType.TYPE)
   public @interface CommandProperties {
+
     Class<? extends DiscordCommand>[] parent() default {};
 
     String[] commands();
@@ -174,6 +176,7 @@ public abstract class DiscordCommand {
   @Retention(RetentionPolicy.RUNTIME)
   @Target(ElementType.FIELD)
   public @interface PropertyField {
+
   }
 
 }

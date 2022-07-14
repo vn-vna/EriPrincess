@@ -1,14 +1,12 @@
 package vn.vna.eri.v2.schema;
 
 import com.google.gson.annotations.SerializedName;
-
-import vn.vna.eri.v2.utils.JsonClass;
-
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import vn.vna.eri.v2.utils.JsonClass;
 
 @Getter
 @Setter
@@ -16,6 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class ServiceStatus extends JsonClass {
+
   public static final String STATUS_ONLINE = "online";
   public static final String STATUS_OFFLINE = "offline";
   public static final String STATUS_ERROR = "error";

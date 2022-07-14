@@ -10,6 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class KeyValuePair<K, V> extends JsonClass {
+
   K key;
   V value;
 }

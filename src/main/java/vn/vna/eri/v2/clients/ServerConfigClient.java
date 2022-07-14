@@ -1,14 +1,11 @@
 package vn.vna.eri.v2.clients;
 
 import java.util.Objects;
-
 import javax.persistence.EntityNotFoundException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import vn.vna.eri.v2.configs.ConfigManager;
 import vn.vna.eri.v2.db.ServerConfigRepository;
 import vn.vna.eri.v2.schema.ServerConfigInfo;

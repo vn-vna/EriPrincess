@@ -4,21 +4,17 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
 import javax.security.auth.login.LoginException;
-
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import vn.vna.eri.v2.configs.ConfigManager;
 import vn.vna.eri.v2.configs.DiscordEventListener;
 import vn.vna.eri.v2.configs.Env;
 import vn.vna.eri.v2.error.DiscordServiceExists;
 import vn.vna.eri.v2.schema.ServiceStatus;
-
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.requests.GatewayIntent;
 
 public class DiscordService implements Runnable {
 
@@ -30,9 +26,9 @@ public class DiscordService implements Runnable {
     logger = LoggerFactory.getLogger(DiscordService.class);
   }
 
+  private final ServiceStatus serviceStatus;
   private JDA jdaContext;
   private DiscordEventListener eventListener;
-  private final ServiceStatus serviceStatus;
 
   public DiscordService() {
     if (!Objects.isNull(DiscordService.instance)) {

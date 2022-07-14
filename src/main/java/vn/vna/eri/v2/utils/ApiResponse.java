@@ -4,6 +4,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
 public class ApiResponse {
+
   public static final Integer STATUS_OK = 200;
   public static final Integer STATUS_NOTFOUND = 404;
 
