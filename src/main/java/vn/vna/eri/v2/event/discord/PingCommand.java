@@ -3,18 +3,20 @@ package vn.vna.eri.v2.event.discord;
 import static vn.vna.eri.v2.event.discord.DiscordCommand.CommandType.MESSAGE_COMMAND;
 
 import net.dv8tion.jda.api.events.Event;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import vn.vna.eri.v2.event.discord.DiscordCommand.CommandProperties;
 
 @CommandProperties(type = MESSAGE_COMMAND, commands = "ping")
 public class PingCommand extends DiscordCommand {
 
-  private static final Logger logger = LoggerFactory.getLogger(PingCommand.class);
-
   @Override
   public void execute(String[] commandList, Event event, Integer commandDepth) {
-    logger.info("Ping");
+    if (event instanceof MessageReceivedEvent messageReceived) {
+      messageReceived
+          .getChannel()
+          .sendMessage("Gateway latency: " + messageReceived.getJDA().getGatewayPing() + " ms")
+          .queue();
+    }
   }
 
 }

@@ -13,17 +13,17 @@ import vn.vna.eri.v2.event.discord.DiscordCommand;
 public class DiscordEventListener extends ListenerAdapter {
 
   private static final Logger logger;
-  private static final String pkgSearch;
 
   static {
     logger = LoggerFactory.getLogger(DiscordEventListener.class);
-    pkgSearch = DiscordCommand.class.getPackageName();
   }
 
   private final String botPrefix;
 
   public DiscordEventListener() {
+    logger.info("Configuring discord event listener");
     this.botPrefix = ConfigManager.getEnvManager().getString(Env.ENV_BOT_PREFIX);
+    logger.info("Bot prefix is being used: [{}]", this.botPrefix);
     DiscordCommand.loadCommands();
   }
 

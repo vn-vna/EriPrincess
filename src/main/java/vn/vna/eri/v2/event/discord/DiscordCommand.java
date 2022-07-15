@@ -144,15 +144,13 @@ public abstract class DiscordCommand {
     return null;
   }
 
-  public static Boolean tryExecute(String @NotNull [] commandArray, Event event) {
+  public static void tryExecute(String @NotNull [] commandArray, Event event) {
     ExecutionInfo matchedCommand = tryToMatch(commandArray);
     if (Objects.nonNull(matchedCommand)) {
       matchedCommand.getCommand().preExecute(commandArray, event, matchedCommand.getDepth());
       matchedCommand.getCommand().execute(commandArray, event, matchedCommand.getDepth());
       matchedCommand.getCommand().postExecute(commandArray, event, matchedCommand.getDepth());
-      return true;
     }
-    return false;
   }
 
   public Boolean match(String commandStr) {
