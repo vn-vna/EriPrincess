@@ -3,18 +3,20 @@ package vn.vna.eri.v2.event.discord;
 import static vn.vna.eri.v2.event.discord.DiscordCommand.CommandType.MESSAGE_COMMAND;
 
 import net.dv8tion.jda.api.events.Event;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import vn.vna.eri.v2.event.discord.DiscordCommand.CommandProperties;
 
-@CommandProperties(type = MESSAGE_COMMAND, commands = "ping")
-public class PingCommand extends DiscordCommand {
-
-  private static final Logger logger = LoggerFactory.getLogger(PingCommand.class);
+@CommandProperties(
+    commands = "help",
+    type = MESSAGE_COMMAND,
+    description = "No Description"
+)
+public class HelpCommand extends DiscordCommand {
 
   @Override
   public void execute(String[] commandList, Event event, Integer commandDepth) {
-    logger.info("Ping");
+    if (commandDepth < commandList.length - 1) {
+      // Has parameter
+    }
   }
 
 }

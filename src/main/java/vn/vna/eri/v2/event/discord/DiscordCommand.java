@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,7 +27,7 @@ import org.slf4j.LoggerFactory;
 public abstract class DiscordCommand {
 
   private static final Logger logger = LoggerFactory.getLogger(DiscordCommand.class);
-
+  private static Set<DiscordCommand> commandManager;
   @PropertyField
   protected String[] commands;
   @PropertyField
@@ -39,10 +40,12 @@ public abstract class DiscordCommand {
   protected Class<? extends DiscordCommand>[] parent;
   protected Set<DiscordCommand> children;
 
-  public static @NotNull Set<DiscordCommand> loadCommands() {
-    Long beginTime = System.currentTimeMillis();
+  public static Set<DiscordCommand> getCommandManager() {
+    return DiscordCommand.commandManager;
+  }
 
-    Set<DiscordCommand> commandObjects;
+  public static void loadCommands() {
+    Long beginTime = System.currentTimeMillis();
 
     Package packageScan = DiscordCommand.class.getPackage();
 
@@ -100,53 +103,64 @@ public abstract class DiscordCommand {
     }
 
     // Get all root commands
-    commandObjects = commandCollection
+    DiscordCommand.commandManager = commandCollection
         .stream()
         .filter((command) -> command.getParent().length == 0)
         .collect(Collectors.toSet());
 
     logger.info("Scan discord command operation finished took {} ms, found {} root command(s)",
         System.currentTimeMillis() - beginTime,
-        commandObjects.size());
+        DiscordCommand.commandManager.size());
+  }
 
-    return commandObjects;
+  private static ExecutionInfo tryToMatchRecursive(String[] commandArray,
+      DiscordCommand crrCommand, Integer depth) {
+    if (crrCommand.match(commandArray[depth])) {
+      if (depth < commandArray.length - 1) {
+        for (DiscordCommand child : crrCommand.getChildren()) {
+          ExecutionInfo matched = tryToMatchRecursive(commandArray, child, depth + 1);
+          if (Objects.nonNull(matched)) {
+            return matched;
+          }
+        }
+      }
+
+      return new ExecutionInfo(crrCommand, depth);
+    }
+    return null;
+  }
+
+  public static ExecutionInfo tryToMatch(String[] commandArray) {
+    for (DiscordCommand command : getCommandManager()) {
+      ExecutionInfo matched = tryToMatchRecursive(commandArray, command, 0);
+      if (Objects.nonNull(matched)) {
+        return matched;
+      }
+    }
+    return null;
+  }
+
+  public static Boolean tryExecute(String @NotNull [] commandArray, Event event) {
+    ExecutionInfo matchedCommand = tryToMatch(commandArray);
+    if (Objects.nonNull(matchedCommand)) {
+      matchedCommand.getCommand().preExecute(commandArray, event, matchedCommand.getDepth());
+      matchedCommand.getCommand().execute(commandArray, event, matchedCommand.getDepth());
+      matchedCommand.getCommand().postExecute(commandArray, event, matchedCommand.getDepth());
+      return true;
+    }
+    return false;
   }
 
   public Boolean match(String commandStr) {
     return Arrays.asList(this.commands).contains(commandStr);
   }
 
-  public void preExecute(Event event) {
+  public void preExecute(String[] commandList, Event event, Integer commandDepth) {
   }
 
-  public abstract void execute(Event event);
+  public abstract void execute(String[] commandList, Event event, Integer commandDepth);
 
-  public void postExecute(Event event) {
-  }
-
-  public Boolean tryExecute(String @NotNull [] commandArray, Event event,
-      @NotNull Integer commandDepth) {
-    if (this.match(commandArray[commandDepth])) {
-      if (commandDepth < commandArray.length - 1) {
-        for (DiscordCommand childCommandObj : this.children) {
-          if (childCommandObj.tryExecute(commandArray, event, commandDepth + 1)) {
-            return true;
-          }
-        }
-      }
-
-      if (this.separateThread) {
-        Thread execution = new Thread(() -> {
-          this.preExecute(event);
-          this.execute(event);
-          this.postExecute(event);
-        });
-        execution.setName(String.format("jda-exec-event-%s", event.hashCode()));
-        execution.start();
-      }
-      return true;
-    }
-    return false;
+  public void postExecute(String[] commandList, Event event, Integer commandDepth) {
   }
 
   public enum CommandType {
@@ -173,6 +187,16 @@ public abstract class DiscordCommand {
   @Retention(RetentionPolicy.RUNTIME)
   @Target(ElementType.FIELD)
   public @interface PropertyField {
+
+  }
+
+  @Getter
+  @Setter
+  @AllArgsConstructor
+  public static class ExecutionInfo {
+
+    private DiscordCommand command;
+    private Integer depth;
 
   }
 

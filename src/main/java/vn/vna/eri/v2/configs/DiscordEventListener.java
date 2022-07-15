@@ -1,6 +1,5 @@
 package vn.vna.eri.v2.configs;
 
-import java.util.Set;
 import net.dv8tion.jda.api.events.message.MessageBulkDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageEmbedEvent;
@@ -21,12 +20,11 @@ public class DiscordEventListener extends ListenerAdapter {
     pkgSearch = DiscordCommand.class.getPackageName();
   }
 
-  private final Set<DiscordCommand> commands;
   private final String botPrefix;
 
   public DiscordEventListener() {
     this.botPrefix = ConfigManager.getEnvManager().getString(Env.ENV_BOT_PREFIX);
-    this.commands = DiscordCommand.loadCommands();
+    DiscordCommand.loadCommands();
   }
 
   @Override
@@ -57,9 +55,7 @@ public class DiscordEventListener extends ListenerAdapter {
         .substring(this.botPrefix.length())
         .split(" ");
 
-    for (DiscordCommand command : this.commands) {
-      command.tryExecute(commandArray, event, 0);
-    }
+    DiscordCommand.tryExecute(commandArray, event);
   }
 
   @Override
