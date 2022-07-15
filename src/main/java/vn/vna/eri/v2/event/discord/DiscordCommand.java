@@ -18,6 +18,8 @@ import lombok.Setter;
 import net.dv8tion.jda.api.events.Event;
 import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +52,9 @@ public abstract class DiscordCommand {
     Package packageScan = DiscordCommand.class.getPackage();
 
     logger.info("Command(s) will be loaded from {}", packageScan.getName());
-    Reflections reflections = new Reflections(packageScan.getName());
+    ConfigurationBuilder reflectionConfigBuilder = new ConfigurationBuilder()
+        .setUrls(ClasspathHelper.forPackage(DiscordCommand.class.getPackageName()));
+    Reflections reflections = new Reflections(reflectionConfigBuilder);
 
     // Collect command classes
     Set<Class<? extends DiscordCommand>> reflectedTypes = reflections
