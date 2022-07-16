@@ -163,59 +163,13 @@ public abstract class CMDDiscordCommand {
       return;
     }
 
-    matchedCommand.getCommand().preExecute(commandArray, event, matchedCommand.getDepth());
     matchedCommand.getCommand().execute(commandArray, event, matchedCommand.getDepth());
-    matchedCommand.getCommand().postExecute(commandArray, event, matchedCommand.getDepth());
   }
 
   public Boolean match(String commandStr) {
     return Arrays.asList(this.commands).contains(commandStr);
   }
 
-  public void preExecute(String[] commandList, Event event, Integer commandDepth) {
-  }
-
   public abstract void execute(String[] commandList, Event event, Integer commandDepth);
-
-  public void postExecute(String[] commandList, Event event, Integer commandDepth) {
-  }
-
-  public enum CommandType {
-    MESSAGE_COMMAND,
-    SLASH_COMMAND,
-    SUBCOMMAND
-  }
-
-  @Retention(RetentionPolicy.RUNTIME)
-  @Target(ElementType.TYPE)
-  public @interface CommandProperties {
-
-    Class<? extends CMDDiscordCommand>[] parent() default {};
-
-    String[] commands();
-
-    String description() default "";
-
-    CommandType type();
-
-    boolean separateThread() default true;
-  }
-
-  @Retention(RetentionPolicy.RUNTIME)
-  @Target(ElementType.FIELD)
-  public @interface PropertyField {
-
-  }
-
-  @Getter
-  @Setter
-  @AllArgsConstructor
-  public static class ExecutionInfo {
-
-    private CMDDiscordCommand command;
-    private Integer depth;
-    private CMDDiscordCommand rootCommand;
-
-  }
 
 }
