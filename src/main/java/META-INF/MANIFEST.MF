@@ -1,3 +1,4 @@
 Manifest-Version: 1.0
-Main-Class: vn.vna.eri.v2.app.Main
-
+Main-Class: vn.vna.eri.v2.app.EPMain
+Built-By: VN VNA
+Created-By: VN VNA
