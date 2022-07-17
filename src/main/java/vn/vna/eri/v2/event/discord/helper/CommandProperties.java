@@ -4,6 +4,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import net.dv8tion.jda.api.Permission;
 import vn.vna.eri.v2.event.discord.CMDDiscordCommand;
 
 @Retention(RetentionPolicy.RUNTIME)
@@ -19,4 +20,6 @@ public @interface CommandProperties {
   CommandType type();
 
   boolean separateThread() default true;
+
+  Permission[] requiredPermissions() default {};
 }

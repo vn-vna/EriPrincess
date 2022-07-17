@@ -2,15 +2,20 @@ package vn.vna.eri.v2.event.discord;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.Event;
+import net.dv8tion.jda.internal.utils.PermissionUtil;
 import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 import org.reflections.util.ClasspathHelper;
@@ -39,6 +44,8 @@ public abstract class CMDDiscordCommand {
   protected Boolean separateThread;
   @PropertyField
   protected Class<? extends CMDDiscordCommand>[] parent;
+  @PropertyField
+  protected Permission[] requiredPermissions;
   protected Set<CMDDiscordCommand> children;
   protected CMDDiscordCommand parentCommand;
 
@@ -163,6 +170,21 @@ public abstract class CMDDiscordCommand {
     }
 
     matchedCommand.getCommand().execute(commandArray, event, matchedCommand.getDepth());
+  }
+
+  public void requirePermission(Event event, Member member, Permission... permissions) {
+    if (Objects.isNull(event)) {
+      return;
+    }
+
+    List<Permission> mismatch = new ArrayList<>();
+
+    for (Permission permission : permissions) {
+      if (!PermissionUtil.checkPermission(member, permission)) {
+        mismatch.add(permission);
+      }
+    }
+
   }
 
   public Boolean match(String commandStr) {

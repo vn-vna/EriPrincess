@@ -65,7 +65,7 @@ public class CLServerConfig {
     String value = null;
 
     try {
-      value = this.repository.getById(key).getValue();
+      value = this.getConfig(key).getValue();
     } catch (Exception ex) {
       logger.error("Request get config from database has failed due to: {}", ex.getMessage());
     }

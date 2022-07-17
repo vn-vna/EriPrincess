@@ -1,15 +1,18 @@
 package vn.vna.eri.v2.configs;
 
+import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.message.MessageBulkDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageEmbedEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import vn.vna.eri.v2.event.discord.helper.CommandType;
 import vn.vna.eri.v2.event.discord.CMDDiscordCommand;
+import vn.vna.eri.v2.event.discord.helper.CommandType;
+import vn.vna.eri.v2.utils.UTMessageBuilder;
 
 public class CFDiscordEventListener extends ListenerAdapter {
 
@@ -64,4 +67,9 @@ public class CFDiscordEventListener extends ListenerAdapter {
     super.onMessageUpdate(event);
   }
 
+  @Override
+  public void onReady(@NotNull ReadyEvent event) {
+    super.onReady(event);
+    UTMessageBuilder.initializeUtility();
+  }
 }

@@ -23,7 +23,7 @@ public class RCServerConfig {
     return SVApiControl.getApplicationContext().getBean(RCServerConfig.class);
   }
 
-  @GetMapping("/api/config")
+  @GetMapping("/api/config/server")
   public ResponseEntity<String> getConfig(@RequestParam String key) {
     Long startCounter = System.nanoTime();
     ARServerConfig apiResponse = new ARServerConfig();
@@ -41,7 +41,7 @@ public class RCServerConfig {
     return UTApiResponse.responseJson(UTApiResponse.STATUS_OK, apiResponse);
   }
 
-  @DeleteMapping("/api/config")
+  @DeleteMapping("/api/config/server")
   public ResponseEntity<String> deleteConfig(@RequestParam String key) {
     Long startCounter = System.nanoTime();
     ARServerConfig apiResponse = new ARServerConfig();
@@ -58,7 +58,7 @@ public class RCServerConfig {
     return UTApiResponse.responseJson(UTApiResponse.STATUS_OK, apiResponse);
   }
 
-  @PutMapping("/api/config")
+  @PutMapping("/api/config/server")
   public ResponseEntity<String> putConfig(@RequestParam String key, @RequestParam String value) {
     Long startCounter = System.nanoTime();
     ARServerConfig apiResponse = new ARServerConfig();

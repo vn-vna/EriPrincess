@@ -7,7 +7,9 @@ import java.util.Objects;
 import javax.security.auth.login.LoginException;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.internal.utils.PermissionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import vn.vna.eri.v2.configs.CFGlobalConfig;
@@ -48,6 +50,10 @@ public class SVDiscord implements Runnable {
     SVDiscord.logger.info("Starting Discord service");
     SVDiscord.serviceThread = new Thread(new SVDiscord());
     serviceThread.start();
+  }
+
+  public void requirePermission(List<Permission> permissions) {
+    List<Permission> mismatch = new ArrayList<>();
   }
 
   public static SVDiscord getInstance() {
