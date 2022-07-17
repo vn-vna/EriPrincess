@@ -82,7 +82,7 @@ public class DCAuthorizeToken extends UTJsonClass {
 
     @Override
     public String toString() {
-      StringBuffer builder = new StringBuffer();
+      StringBuilder builder = new StringBuilder();
 
       if (admin) {
         builder.append(PERMOBJ_ADMIN).append(" ");

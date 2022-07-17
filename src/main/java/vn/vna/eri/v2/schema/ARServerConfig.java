@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import vn.vna.eri.v2.schema.DCServerConfigInfo;
 import vn.vna.eri.v2.utils.UTJsonClass;
 
 @Getter
@@ -17,4 +16,5 @@ public class ARServerConfig extends UTJsonClass {
   private String error;
   private Long took;
   private DCServerConfigInfo result;
+
 }

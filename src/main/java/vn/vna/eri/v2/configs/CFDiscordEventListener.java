@@ -8,8 +8,8 @@ import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import vn.vna.eri.v2.event.discord.CMDDiscordCommand;
-import vn.vna.eri.v2.event.discord.CMDDiscordCommand.CommandType;
+import vn.vna.eri.v2.event.discord.CommandType;
+import vn.vna.eri.v2.event.discord.DiscordCommand;
 
 public class CFDiscordEventListener extends ListenerAdapter {
 
@@ -25,7 +25,7 @@ public class CFDiscordEventListener extends ListenerAdapter {
     logger.info("Configuring discord event listener");
     this.botPrefix = CFGlobalConfig.getInstance().getString(CFGlobalConfig.ENV_BOT_PREFIX);
     logger.info("Bot prefix is being used: [{}]", this.botPrefix);
-    CMDDiscordCommand.loadCommands();
+    DiscordCommand.loadCommands();
   }
 
   @Override
@@ -56,7 +56,7 @@ public class CFDiscordEventListener extends ListenerAdapter {
         .substring(this.botPrefix.length())
         .split(" ");
 
-    CMDDiscordCommand.tryExecute(commandArray, event, CommandType.MESSAGE_COMMAND);
+    DiscordCommand.tryExecute(commandArray, event, CommandType.MESSAGE_COMMAND);
   }
 
   @Override
