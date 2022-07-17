@@ -20,7 +20,7 @@ public class ETAuthToken extends UTGenericEntity<DCAuthorizeToken> {
   @Id
   @Column(name = "_token")
   private String token;
-  @Column(name = "_permission")
+  @Column(name = "_permissions")
   private String permissions;
 
   public ETAuthToken() {

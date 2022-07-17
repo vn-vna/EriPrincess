@@ -13,4 +13,5 @@ public class UTKeyValuePair<K, V> extends UTJsonClass {
 
   K key;
   V value;
+
 }

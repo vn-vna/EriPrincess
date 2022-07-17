@@ -1,16 +1,17 @@
 package vn.vna.eri.v2.event.discord;
 
-import static vn.vna.eri.v2.event.discord.CommandType.MESSAGE_COMMAND;
-import static vn.vna.eri.v2.event.discord.CommandType.SUBCOMMAND;
+import static vn.vna.eri.v2.event.discord.helper.CommandType.MESSAGE_COMMAND;
+import static vn.vna.eri.v2.event.discord.helper.CommandType.SUBCOMMAND;
 
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import vn.vna.eri.v2.event.discord.helper.CommandProperties;
 
 @CommandProperties(
     type = MESSAGE_COMMAND,
     commands = "ping"
 )
-public class CMDPing extends DiscordCommand {
+public class CMDPing extends CMDDiscordCommand {
 
   @Override
   public void execute(String[] commandList, Event event, Integer commandDepth) {
@@ -27,7 +28,7 @@ public class CMDPing extends DiscordCommand {
       type = SUBCOMMAND,
       parent = CMDPing.class
   )
-  public static class CMDPingHello extends DiscordCommand {
+  public static class CMDPingHello extends CMDDiscordCommand {
 
     @Override
     public void execute(String[] commandList, Event event, Integer commandDepth) {
