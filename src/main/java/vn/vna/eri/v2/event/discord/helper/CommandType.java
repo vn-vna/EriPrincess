@@ -4,4 +4,5 @@ public enum CommandType {
   MESSAGE_COMMAND,
   SLASH_COMMAND,
   SUBCOMMAND
+
 }

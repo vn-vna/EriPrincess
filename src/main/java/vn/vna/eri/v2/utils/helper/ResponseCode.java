@@ -66,9 +66,9 @@ public enum ResponseCode {
   NOT_EXTENDED(510),
   NETWORK_AUTHENTICATION_REQUIRED(511);
 
+  protected Integer code;
+
   ResponseCode(Integer code) {
     this.code = code;
   }
-
-  protected Integer code;
 }

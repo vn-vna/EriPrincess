@@ -36,13 +36,17 @@ public class CFGlobalConfig {
   public static final String CFG_BOT_EMBED_THUMB_URL = "BOT_EMBED_THUMB_URL";
   public static final String CFG_BOT_EMBED_FOOTER = "BOT_EMBED_FOOTER";
 
-  private static Logger logger;
+  private static final Logger logger;
   private static CFGlobalConfig instance;
-
-  private Set<Class<? extends UpdatableConfigTarget>> configTargets;
 
   static {
     logger = LoggerFactory.getLogger(CFGlobalConfig.class);
+  }
+
+  private Set<Class<? extends UpdatableConfigTarget>> configTargets;
+
+  public CFGlobalConfig() {
+    this.scanConfigTargets();
   }
 
   public static CFGlobalConfig getInstance() {
@@ -52,10 +56,6 @@ public class CFGlobalConfig {
       }
     }
     return CFGlobalConfig.instance;
-  }
-
-  public CFGlobalConfig() {
-    this.scanConfigTargets();
   }
 
   public String requestConfigValue(String key) {
@@ -154,7 +154,7 @@ public class CFGlobalConfig {
                 type.getSimpleName());
             UTSingleton
                 .getInstanceOf(type)
-                .ifPresent((u) -> u.update());
+                .ifPresent(UpdatableConfigTarget::update);
           }
         });
   }

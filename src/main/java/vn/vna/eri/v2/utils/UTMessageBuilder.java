@@ -7,7 +7,7 @@ public final class UTMessageBuilder {
 
   private static UTMessageBuilder instance;
 
-  private CFBotMessageBuilder msgBuilderCfg;
+  private final CFBotMessageBuilder msgBuilderCfg;
 
   public UTMessageBuilder() {
     this.msgBuilderCfg = CFBotMessageBuilder.getInstance();

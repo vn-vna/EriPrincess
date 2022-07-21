@@ -8,6 +8,9 @@ import javax.security.auth.login.LoginException;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.SelfUser;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,12 +54,12 @@ public class SVDiscord implements Runnable {
     serviceThread.start();
   }
 
-  public void requirePermission(List<Permission> permissions) {
-    List<Permission> mismatch = new ArrayList<>();
-  }
-
   public static SVDiscord getInstance() {
     return SVDiscord.instance;
+  }
+
+  public void requirePermission(List<Permission> permissions) {
+    List<Permission> mismatch = new ArrayList<>();
   }
 
   public JDA getJdaContext() {
@@ -69,6 +72,14 @@ public class SVDiscord implements Runnable {
 
   public CFDiscordEventListener getEventListener() {
     return this.eventListener;
+  }
+
+  public SelfUser getSelfUser() {
+    return this.jdaContext.getSelfUser();
+  }
+
+  public Member getSelfAsMember(Guild guild) {
+    return guild.getMember(this.getSelfUser());
   }
 
   @Override

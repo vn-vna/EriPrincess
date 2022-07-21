@@ -1,6 +1,7 @@
 package vn.vna.eri.v2.configs;
 
 import net.dv8tion.jda.api.events.ReadyEvent;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.MessageBulkDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageEmbedEvent;
@@ -25,7 +26,8 @@ public class CFDiscordEventListener extends ListenerAdapter {
 
   public CFDiscordEventListener() {
     logger.info("Configuring discord event listener");
-    this.botPrefix = CFGlobalConfig.getInstance().getString(CFGlobalConfig.ENV_BOT_PREFIX).orElse("");
+    this.botPrefix = CFGlobalConfig.getInstance().getString(CFGlobalConfig.ENV_BOT_PREFIX)
+        .orElse("");
     logger.info("Bot prefix is being used: [{}]", this.botPrefix);
     CMDDiscordCommand.loadCommands();
   }
@@ -64,6 +66,11 @@ public class CFDiscordEventListener extends ListenerAdapter {
   @Override
   public void onMessageUpdate(MessageUpdateEvent event) {
     super.onMessageUpdate(event);
+  }
+
+  @Override
+  public void onSlashCommand(SlashCommandEvent event) {
+    super.onSlashCommand(event);
   }
 
   @Override

@@ -17,6 +17,7 @@ import vn.vna.eri.v2.configs.helper.UpdatableConfigTarget;
 @ConfigTarget(DISCORD_SERVICE_READY)
 public class CFBotMessageBuilder implements UpdatableConfigTarget {
 
+  private static CFBotMessageBuilder instance;
   @LoadConfig(CFG_BOT_NAME)
   private String botName;
   @LoadConfig(CFG_BOT_EMBED_TITLE)
@@ -27,8 +28,6 @@ public class CFBotMessageBuilder implements UpdatableConfigTarget {
   private String botEmbedThumbUrl;
   @LoadConfig(CFG_BOT_EMBED_FOOTER)
   private String botEmbedFooter;
-
-  private static CFBotMessageBuilder instance;
 
   public static CFBotMessageBuilder getInstance() {
     synchronized (CFBotMessageBuilder.class) {

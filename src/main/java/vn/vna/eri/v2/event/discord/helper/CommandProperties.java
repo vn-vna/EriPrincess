@@ -21,5 +21,7 @@ public @interface CommandProperties {
 
   boolean separateThread() default true;
 
-  Permission[] requiredPermissions() default {};
+  Permission[] botPermission() default {};
+
+  Permission[] senderPermission() default {};
 }

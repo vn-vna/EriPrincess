@@ -8,9 +8,9 @@ public enum ConfigTargetLoadStage {
   SPING_SERVICE_READY("Spring boot application is ready"),
   DISCORD_SERVICE_READY("Discord bot service is ready");
 
+  String stageName;
+
   ConfigTargetLoadStage(String stageName) {
     this.stageName = stageName;
   }
-
-  String stageName;
 }

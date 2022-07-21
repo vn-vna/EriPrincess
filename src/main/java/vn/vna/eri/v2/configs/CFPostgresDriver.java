@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class CFPostgresDriver {
 
-  private CFDataSource cfDataSource;
+  private final CFDataSource cfDataSource;
 
   public CFPostgresDriver() {
     this.cfDataSource = CFDataSource.getInstance();

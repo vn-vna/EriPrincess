@@ -2,34 +2,35 @@ package vn.vna.eri.v2.event.discord;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.Event;
-import net.dv8tion.jda.internal.utils.PermissionUtil;
 import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import vn.vna.eri.v2.error.ERDiscordGuildPermissionMismatch;
 import vn.vna.eri.v2.event.discord.helper.CommandProperties;
 import vn.vna.eri.v2.event.discord.helper.CommandType;
 import vn.vna.eri.v2.event.discord.helper.ExecutionInfo;
 import vn.vna.eri.v2.event.discord.helper.PropertyField;
+import vn.vna.eri.v2.services.SVDiscord;
 
 @Getter
 @Setter
-@NoArgsConstructor
 public abstract class CMDDiscordCommand {
 
   private static final Logger logger = LoggerFactory.getLogger(CMDDiscordCommand.class);
@@ -45,9 +46,15 @@ public abstract class CMDDiscordCommand {
   @PropertyField
   protected Class<? extends CMDDiscordCommand>[] parent;
   @PropertyField
-  protected Permission[] requiredPermissions;
+  protected Permission[] botPermission;
+  @PropertyField
+  protected Permission[] senderPermission;
   protected Set<CMDDiscordCommand> children;
   protected CMDDiscordCommand parentCommand;
+
+  protected JDA jdaContext;
+  protected SVDiscord discordService;
+  protected Logger commandLogger;
 
   public static Set<CMDDiscordCommand> getCommandManager() {
     return CMDDiscordCommand.commandManager;
@@ -82,7 +89,7 @@ public abstract class CMDDiscordCommand {
     Set<CMDDiscordCommand> commandCollection = new HashSet<>();
     for (Class<? extends CMDDiscordCommand> reflectedType : reflectedTypes) {
       try {
-        Constructor<? extends CMDDiscordCommand> typeDefaultConstructor =
+        Constructor<? extends CMDDiscordCommand> typeDefaultConstructor = 
             reflectedType.getConstructor();
         CommandProperties properties = reflectedType.getAnnotation(CommandProperties.class);
         CMDDiscordCommand command = typeDefaultConstructor.newInstance();
@@ -102,6 +109,13 @@ public abstract class CMDDiscordCommand {
             reflectedType.getName(),
             ex.getMessage());
       }
+    }
+
+    // Set some needed field
+    for (CMDDiscordCommand command : commandCollection) {
+      command.setJdaContext(SVDiscord.getInstance().getJdaContext());
+      command.setDiscordService(SVDiscord.getInstance());
+      command.setCommandLogger(LoggerFactory.getLogger(command.getClass()));
     }
 
     // Inspect child commands
@@ -172,19 +186,34 @@ public abstract class CMDDiscordCommand {
     matchedCommand.getCommand().execute(commandArray, event, matchedCommand.getDepth());
   }
 
-  public void requirePermission(Event event, Member member, Permission... permissions) {
-    if (Objects.isNull(event)) {
-      return;
+  private List<Permission> getMismatchPermission(Member member, GuildChannel channel,
+      Permission[] requiredPermissions) {
+    List<Permission> mismatch;
+    EnumSet<Permission> availablePermissions = member.getPermissions(channel);
+
+    mismatch = Arrays
+        .stream(requiredPermissions)
+        .filter((permission) -> !availablePermissions.contains(permission))
+        .collect(Collectors.toList());
+
+    return mismatch;
+  }
+
+  public void requirePermissionMessageEvent(Member bot, Member sender, GuildChannel channel)
+      throws ERDiscordGuildPermissionMismatch {
+    List<Permission> botPermissionMisMatch = this.getMismatchPermission(
+        bot, channel, this.botPermission);
+
+    if (botPermissionMisMatch.size() > 0) {
+      throw new ERDiscordGuildPermissionMismatch(bot, botPermissionMisMatch);
     }
 
-    List<Permission> mismatch = new ArrayList<>();
+    List<Permission> senderPermissionMismatch = this.getMismatchPermission(
+        sender, channel, this.senderPermission);
 
-    for (Permission permission : permissions) {
-      if (!PermissionUtil.checkPermission(member, permission)) {
-        mismatch.add(permission);
-      }
+    if (senderPermissionMismatch.size() > 0) {
+      throw new ERDiscordGuildPermissionMismatch(sender, senderPermissionMismatch);
     }
-
   }
 
   public Boolean match(String commandStr) {
