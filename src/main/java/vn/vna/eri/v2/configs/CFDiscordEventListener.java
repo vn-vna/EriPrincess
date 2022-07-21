@@ -25,7 +25,7 @@ public class CFDiscordEventListener extends ListenerAdapter {
 
   public CFDiscordEventListener() {
     logger.info("Configuring discord event listener");
-    this.botPrefix = CFGlobalConfig.getInstance().getString(CFGlobalConfig.ENV_BOT_PREFIX);
+    this.botPrefix = CFGlobalConfig.getInstance().getString(CFGlobalConfig.ENV_BOT_PREFIX).orElse("");
     logger.info("Bot prefix is being used: [{}]", this.botPrefix);
     CMDDiscordCommand.loadCommands();
   }

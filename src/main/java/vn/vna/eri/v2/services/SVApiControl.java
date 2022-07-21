@@ -56,7 +56,7 @@ public class SVApiControl {
   }
 
   public static void initialize(String[] args) {
-    if (CFGlobalConfig.getInstance().getBoolean(CFGlobalConfig.ENV_DISABLE_API)) {
+    if (CFGlobalConfig.getInstance().getBoolean(CFGlobalConfig.ENV_DISABLE_API).orElse(false)) {
       logger.warn("Api service is disabled by default");
       return;
     }

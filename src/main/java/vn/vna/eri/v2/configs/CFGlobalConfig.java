@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.reflections.Reflections;
@@ -57,7 +58,7 @@ public class CFGlobalConfig {
     this.scanConfigTargets();
   }
 
-  public String getString(String key) {
+  public String requestConfigValue(String key) {
     try {
       if (Objects.nonNull(SVApiControl.getInstance()) &&
           Objects.nonNull(SVApiControl.getApplicationContext())) {
@@ -77,51 +78,47 @@ public class CFGlobalConfig {
     return System.getenv(key);
   }
 
-  public String getString(String key, String fallback) {
-    String result = this.getString(key);
-    if (Objects.nonNull(result)) {
-      return result;
-    }
-    return fallback;
+  public Optional<String> getString(String key) {
+    return Optional.ofNullable(this.requestConfigValue(key));
   }
 
-  public Boolean getBoolean(String key) {
+  public Optional<Boolean> getBoolean(String key) {
     try {
-      return Boolean.parseBoolean(this.getString(key));
-    } catch (NumberFormatException nfex) {
-      return null;
+      return Optional.of(Boolean.parseBoolean(this.getString(key).get()));
+    } catch (Exception nfex) {
+      return Optional.empty();
     }
   }
 
-  public Integer getInteger(String key) {
+  public Optional<Integer> getInteger(String key) {
     try {
-      return Integer.parseInt(this.getString(key));
-    } catch (NumberFormatException nfex) {
-      return null;
+      return Optional.of(Integer.parseInt(this.getString(key).get()));
+    } catch (Exception nfex) {
+      return Optional.empty();
     }
   }
 
-  public Long getLong(String key) {
+  public Optional<Long> getLong(String key) {
     try {
-      return Long.parseLong(this.getString(key));
-    } catch (NumberFormatException nfex) {
-      return null;
+      return Optional.of(Long.parseLong(this.getString(key).get()));
+    } catch (Exception nfex) {
+      return Optional.empty();
     }
   }
 
-  public Float getFloat(String key) {
+  public Optional<Float> getFloat(String key) {
     try {
-      return Float.parseFloat(this.getString(key));
-    } catch (NumberFormatException nfex) {
-      return null;
+      return Optional.of(Float.parseFloat(this.getString(key).get()));
+    } catch (Exception nfex) {
+      return Optional.empty();
     }
   }
 
-  public Double getDouble(String key) {
+  public Optional<Double> getDouble(String key) {
     try {
-      return Double.parseDouble(this.getString(key));
+      return Optional.of(Double.parseDouble(this.getString(key).get()));
     } catch (NumberFormatException nfex) {
-      return null;
+      return Optional.empty();
     }
   }
 
@@ -152,7 +149,9 @@ public class CFGlobalConfig {
         .forEach((type) -> {
           ConfigTarget property = type.getAnnotation(ConfigTarget.class);
           if (property.value().equals(stage)) {
-            logger.info("Loading configuration class [{}]", type.getSimpleName());
+            logger.info(
+                "Loading configuration class [{}]",
+                type.getSimpleName());
             UTSingleton
                 .getInstanceOf(type)
                 .ifPresent((u) -> u.update());
@@ -170,7 +169,7 @@ public class CFGlobalConfig {
       try {
         field.setAccessible(true);
         LoadConfig annotated = field.getAnnotation(LoadConfig.class);
-        Object value = null;
+        Optional<?> value = null;
         {
           if (annotated.type().equals(String.class)) {
             value = this.getString(annotated.value());
@@ -186,7 +185,7 @@ public class CFGlobalConfig {
             value = this.getDouble(annotated.value());
           }
         }
-        field.set(obj, value);
+        field.set(obj, value.orElse(null));
         logger.info(
             "Loaded config value for field {} with alias {}",
             field.getName(),

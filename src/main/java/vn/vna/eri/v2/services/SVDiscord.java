@@ -9,11 +9,10 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import net.dv8tion.jda.internal.utils.PermissionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import vn.vna.eri.v2.configs.CFGlobalConfig;
 import vn.vna.eri.v2.configs.CFDiscordEventListener;
+import vn.vna.eri.v2.configs.CFGlobalConfig;
 import vn.vna.eri.v2.error.ERDiscordServiceExists;
 import vn.vna.eri.v2.schema.DCServiceStatus;
 
@@ -43,7 +42,7 @@ public class SVDiscord implements Runnable {
   }
 
   public static void initialize() {
-    if (CFGlobalConfig.getInstance().getBoolean(CFGlobalConfig.ENV_DISABLE_DISCORD)) {
+    if (CFGlobalConfig.getInstance().getBoolean(CFGlobalConfig.ENV_DISABLE_DISCORD).orElse(false)) {
       logger.warn("Discord bot service is disabled by default");
       return;
     }
@@ -74,7 +73,7 @@ public class SVDiscord implements Runnable {
 
   @Override
   public void run() {
-    String token = CFGlobalConfig.getInstance().getString(CFGlobalConfig.ENV_BOT_TOKEN);
+    String token = CFGlobalConfig.getInstance().getString(CFGlobalConfig.ENV_BOT_TOKEN).orElse("");
 
     List<GatewayIntent> intents = new ArrayList<>();
     intents.add(GatewayIntent.GUILD_MESSAGES);
