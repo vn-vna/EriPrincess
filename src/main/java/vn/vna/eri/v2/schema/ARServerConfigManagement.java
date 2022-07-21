@@ -10,7 +10,7 @@ import vn.vna.eri.v2.utils.UTJsonClass;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ARServerConfig extends UTJsonClass {
+public class ARServerConfigManagement implements UTJsonClass {
 
   private Boolean success;
   private String error;

@@ -13,8 +13,8 @@ import vn.vna.eri.v2.utils.UTJsonClass;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-public class DCServerStatus extends UTJsonClass {
+@EqualsAndHashCode
+public class DCServerStatus implements UTJsonClass {
 
   @SerializedName("system_status")
   DCSystemStatus systemStatus;

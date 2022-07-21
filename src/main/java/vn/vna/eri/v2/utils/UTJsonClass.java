@@ -2,15 +2,12 @@ package vn.vna.eri.v2.utils;
 
 import com.google.gson.Gson;
 
-public class UTJsonClass {
+public interface UTJsonClass {
 
-  private static final Gson gson;
+  Gson gson = new Gson();
 
-  static {
-    gson = new Gson();
-  }
 
-  public String toJson() {
-    return gson.toJson(this);
+  default String toJson() {
+    return UTJsonClass.gson.toJson(this);
   }
 }

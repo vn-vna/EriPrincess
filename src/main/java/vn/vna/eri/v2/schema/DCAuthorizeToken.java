@@ -11,8 +11,8 @@ import vn.vna.eri.v2.utils.UTJsonClass;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-public class DCAuthorizeToken extends UTJsonClass {
+@EqualsAndHashCode
+public class DCAuthorizeToken implements UTJsonClass {
 
   private String token;
   private String permissions;

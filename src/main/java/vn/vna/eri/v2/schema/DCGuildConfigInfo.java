@@ -13,8 +13,9 @@ import vn.vna.eri.v2.utils.UTJsonClass;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-public class DCGuildConfigInfo extends UTJsonClass {
+@EqualsAndHashCode
+public class DCGuildConfigInfo implements UTJsonClass {
+
   @SerializedName("id")
   private String guildId;
   @SerializedName("joined_datetime")

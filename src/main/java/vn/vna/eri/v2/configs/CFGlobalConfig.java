@@ -4,13 +4,22 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.reflections.Reflections;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import vn.vna.eri.v2.clients.CLServerConfig;
-import vn.vna.eri.v2.configs.annotation.LoadConfig;
+import vn.vna.eri.v2.configs.helper.ConfigTarget;
+import vn.vna.eri.v2.configs.helper.ConfigTargetLoadStage;
+import vn.vna.eri.v2.configs.helper.LoadConfig;
+import vn.vna.eri.v2.configs.helper.UpdatableConfigTarget;
+import vn.vna.eri.v2.services.SVApiControl;
+import vn.vna.eri.v2.utils.UTSingleton;
 
 public class CFGlobalConfig {
-
 
   public static final String ENV_DATASOURCE = "DATASOURCE";
   public static final String ENV_DBUSER = "DBUSER";
@@ -26,8 +35,10 @@ public class CFGlobalConfig {
   public static final String CFG_BOT_EMBED_THUMB_URL = "BOT_EMBED_THUMB_URL";
   public static final String CFG_BOT_EMBED_FOOTER = "BOT_EMBED_FOOTER";
 
-  public static Logger logger;
+  private static Logger logger;
   private static CFGlobalConfig instance;
+
+  private Set<Class<? extends UpdatableConfigTarget>> configTargets;
 
   static {
     logger = LoggerFactory.getLogger(CFGlobalConfig.class);
@@ -42,12 +53,20 @@ public class CFGlobalConfig {
     return CFGlobalConfig.instance;
   }
 
+  public CFGlobalConfig() {
+    this.scanConfigTargets();
+  }
 
   public String getString(String key) {
     try {
-      String result = CLServerConfig.getClient().getString(key);
-      if (Objects.nonNull(result)) {
-        return result;
+      if (Objects.nonNull(SVApiControl.getInstance()) &&
+          Objects.nonNull(SVApiControl.getApplicationContext())) {
+        String result = CLServerConfig
+            .getClient()
+            .getString(key);
+        if (Objects.nonNull(result)) {
+          return result;
+        }
       }
     } catch (Exception ex) {
       logger.warn(
@@ -106,6 +125,41 @@ public class CFGlobalConfig {
     }
   }
 
+  public void scanConfigTargets() {
+    logger.info("Triggered scan config target");
+
+    ConfigurationBuilder reflectionConfigBuilder = new ConfigurationBuilder()
+        .setUrls(ClasspathHelper.forPackage(CFGlobalConfig.class.getPackageName()));
+    Reflections reflections = new Reflections(reflectionConfigBuilder);
+
+    this.configTargets = reflections
+        .getSubTypesOf(UpdatableConfigTarget.class)
+        .stream()
+        .filter((type) -> Objects.nonNull(type.getAnnotation(ConfigTarget.class)))
+        .collect(Collectors.toSet());
+
+    logger.info("Scanned {} config target(s)", this.configTargets.size());
+
+    this.configTargets
+        .forEach((type) -> {
+          UTSingleton.getInstanceOf(type);
+        });
+  }
+
+  public void invokeUpdateAtStage(ConfigTargetLoadStage stage) {
+    logger.info("Invoking configuration loader from stage {}", stage.getStageName());
+    this.configTargets
+        .forEach((type) -> {
+          ConfigTarget property = type.getAnnotation(ConfigTarget.class);
+          if (property.value().equals(stage)) {
+            logger.info("Loading configuration class [{}]", type.getSimpleName());
+            UTSingleton
+                .getInstanceOf(type)
+                .ifPresent((u) -> u.update());
+          }
+        });
+  }
+
   public void loadConfigForObject(Object obj) {
     List<Field> configFields = Arrays
         .stream(obj.getClass().getDeclaredFields())
@@ -136,14 +190,12 @@ public class CFGlobalConfig {
         logger.info(
             "Loaded config value for field {} with alias {}",
             field.getName(),
-            annotated.value()
-        );
+            annotated.value());
       } catch (Exception ex) {
         CFGlobalConfig.logger.error(
             "Can't inject value for field {} due to error: {}",
             field.getName(),
-            ex.getMessage()
-        );
+            ex.getMessage());
       } finally {
         field.setAccessible(false);
       }

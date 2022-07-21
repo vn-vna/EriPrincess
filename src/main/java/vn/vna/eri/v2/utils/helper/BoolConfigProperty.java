@@ -1,4 +1,4 @@
-package vn.vna.eri.v2.configs.annotation;
+package vn.vna.eri.v2.utils.helper;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,9 +7,9 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface LoadConfig {
+public @interface BoolConfigProperty {
 
-  String value();
+  String alias() default "";
 
-  Class<?> type() default String.class;
+  String description() default "";
 }

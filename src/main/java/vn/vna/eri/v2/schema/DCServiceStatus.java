@@ -12,8 +12,8 @@ import vn.vna.eri.v2.utils.UTJsonClass;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-public class DCServiceStatus extends UTJsonClass {
+@EqualsAndHashCode
+public class DCServiceStatus implements UTJsonClass {
 
   public static final String STATUS_ONLINE = "online";
   public static final String STATUS_OFFLINE = "offline";

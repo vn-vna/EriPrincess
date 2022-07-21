@@ -3,7 +3,7 @@ package vn.vna.eri.v2.schema;
 import lombok.Getter;
 import lombok.Setter;
 import vn.vna.eri.v2.utils.UTCombinedBoolConfigString;
-import vn.vna.eri.v2.utils.annotation.BoolConfigProperty;
+import vn.vna.eri.v2.utils.helper.BoolConfigProperty;
 
 @Getter
 @Setter

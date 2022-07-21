@@ -4,7 +4,7 @@ import lombok.EqualsAndHashCode;
 import vn.vna.eri.v2.db.ETServerConfig;
 import vn.vna.eri.v2.utils.UTKeyValuePair;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode
 public class DCServerConfigInfo extends UTKeyValuePair<String, String> {
 
   public DCServerConfigInfo() {

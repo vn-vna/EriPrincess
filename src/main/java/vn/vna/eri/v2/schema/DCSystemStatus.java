@@ -13,8 +13,8 @@ import vn.vna.eri.v2.utils.UTJsonClass;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-public class DCSystemStatus extends UTJsonClass {
+@EqualsAndHashCode
+public class DCSystemStatus implements UTJsonClass {
 
   @SerializedName("cpu_count")
   private Integer cpuCount;

@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UTKeyValuePair<K, V> extends UTJsonClass {
+public class UTKeyValuePair<K, V> implements UTJsonClass {
 
   K key;
   V value;
