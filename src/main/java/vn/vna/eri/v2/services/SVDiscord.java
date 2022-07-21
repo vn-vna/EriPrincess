@@ -1,13 +1,24 @@
 package vn.vna.eri.v2.services;
 
+import static net.dv8tion.jda.api.requests.GatewayIntent.GUILD_BANS;
+import static net.dv8tion.jda.api.requests.GatewayIntent.GUILD_EMOJIS;
+import static net.dv8tion.jda.api.requests.GatewayIntent.GUILD_INVITES;
+import static net.dv8tion.jda.api.requests.GatewayIntent.GUILD_MEMBERS;
+import static net.dv8tion.jda.api.requests.GatewayIntent.GUILD_MESSAGES;
+import static net.dv8tion.jda.api.requests.GatewayIntent.GUILD_MESSAGE_REACTIONS;
+import static net.dv8tion.jda.api.requests.GatewayIntent.GUILD_MESSAGE_TYPING;
+import static net.dv8tion.jda.api.requests.GatewayIntent.GUILD_PRESENCES;
+import static net.dv8tion.jda.api.requests.GatewayIntent.GUILD_VOICE_STATES;
+import static net.dv8tion.jda.api.requests.GatewayIntent.GUILD_WEBHOOKS;
+
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import javax.security.auth.login.LoginException;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.SelfUser;
@@ -58,10 +69,6 @@ public class SVDiscord implements Runnable {
     return SVDiscord.instance;
   }
 
-  public void requirePermission(List<Permission> permissions) {
-    List<Permission> mismatch = new ArrayList<>();
-  }
-
   public JDA getJdaContext() {
     return this.jdaContext;
   }
@@ -87,16 +94,11 @@ public class SVDiscord implements Runnable {
     String token = CFGlobalConfig.getInstance().getString(CFGlobalConfig.ENV_BOT_TOKEN).orElse("");
 
     List<GatewayIntent> intents = new ArrayList<>();
-    intents.add(GatewayIntent.GUILD_MESSAGES);
-    intents.add(GatewayIntent.GUILD_MEMBERS);
-    intents.add(GatewayIntent.GUILD_BANS);
-    intents.add(GatewayIntent.GUILD_EMOJIS);
-    intents.add(GatewayIntent.GUILD_INVITES);
-    intents.add(GatewayIntent.GUILD_MESSAGE_TYPING);
-    intents.add(GatewayIntent.GUILD_PRESENCES);
-    intents.add(GatewayIntent.GUILD_VOICE_STATES);
-    intents.add(GatewayIntent.GUILD_WEBHOOKS);
-    intents.add(GatewayIntent.GUILD_MESSAGE_REACTIONS);
+    Collections.addAll(intents,
+        GUILD_MESSAGES, GUILD_MEMBERS, GUILD_BANS,
+        GUILD_EMOJIS, GUILD_INVITES, GUILD_MESSAGE_TYPING,
+        GUILD_PRESENCES, GUILD_VOICE_STATES, GUILD_WEBHOOKS,
+        GUILD_MESSAGE_REACTIONS);
 
     this.eventListener = new CFDiscordEventListener();
 
