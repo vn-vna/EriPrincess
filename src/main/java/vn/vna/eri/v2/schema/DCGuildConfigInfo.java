@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import vn.vna.eri.v2.configs.helper.LangPackEnum;
 import vn.vna.eri.v2.utils.UTJsonClass;
 
 @Getter
@@ -20,9 +21,16 @@ public class DCGuildConfigInfo implements UTJsonClass {
   private String guildId;
   @SerializedName("joined_datetime")
   private Instant joinedDateTime;
+  @SerializedName("language")
+  private String language;
+  @SerializedName("tz")
+  private Integer timeZone;
 
   public DCGuildConfigInfo(String guildId) {
     this.guildId = guildId;
     this.joinedDateTime = Instant.now();
+    this.language = LangPackEnum.EN_US.getName();
+    this.timeZone = +7;
   }
+
 }

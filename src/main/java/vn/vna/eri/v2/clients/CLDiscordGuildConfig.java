@@ -3,6 +3,8 @@ package vn.vna.eri.v2.clients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import vn.vna.eri.v2.db.ETGuildConfig;
 import vn.vna.eri.v2.db.RPGuildConfig;
@@ -13,6 +15,11 @@ import vn.vna.eri.v2.services.SVApiControl;
 public class CLDiscordGuildConfig {
 
   private static final Logger logger;
+
+  /**
+   * Client Guild config cache name
+   */
+  public static final String CL_GC_CACHE_NAME = "discord-guild-config";
 
   static {
     logger = LoggerFactory.getLogger(CLDiscordGuildConfig.class);
@@ -29,6 +36,7 @@ public class CLDiscordGuildConfig {
     return SVApiControl.getApplicationContext().getBean(CLDiscordGuildConfig.class);
   }
 
+  @Cacheable(cacheNames = CL_GC_CACHE_NAME, key = "#guildId")
   public DCGuildConfigInfo findConfigurationById(String guildId) {
     try {
       var result = this.repository.findById(guildId);
@@ -44,6 +52,7 @@ public class CLDiscordGuildConfig {
     return null;
   }
 
+  @CacheEvict(cacheNames = CL_GC_CACHE_NAME, key = "#guildId")
   public DCGuildConfigInfo createConfigForId(String guildId) {
     try {
       var saveData = new DCGuildConfigInfo(guildId);

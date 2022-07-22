@@ -25,6 +25,10 @@ public class ETGuildConfig extends UTGenericEntity<DCGuildConfigInfo> {
   private String guildId;
   @Column(name = "_joined_datetime")
   private Instant joinedDateTime;
+  @Column(name = "_lang")
+  private String language;
+  @Column(name = "_tz")
+  private Integer timeZone;
 
   public ETGuildConfig() {
     super(DCGuildConfigInfo.class);

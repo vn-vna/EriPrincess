@@ -3,6 +3,8 @@ package vn.vna.eri.v2.clients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import vn.vna.eri.v2.db.ETServerConfig;
 import vn.vna.eri.v2.db.RPServerConfig;
@@ -12,11 +14,12 @@ import vn.vna.eri.v2.services.SVApiControl;
 @Component
 public class CLServerConfig {
 
-  private static final Logger logger;
+  private static final Logger logger = LoggerFactory.getLogger(CLServerConfig.class);
 
-  static {
-    logger = LoggerFactory.getLogger(CLServerConfig.class);
-  }
+  /**
+   * Client Server config cache name
+   */
+  public static final String CL_SC_CACHE_NAME = "server-config";
 
   @Autowired
   private RPServerConfig repository;
@@ -29,6 +32,7 @@ public class CLServerConfig {
     return SVApiControl.getApplicationContext().getBean(CLServerConfig.class);
   }
 
+  @CacheEvict(cacheNames = CL_SC_CACHE_NAME, key = "#key")
   public void removeConfig(String key) {
     try {
       this.repository.deleteById(key);
@@ -37,6 +41,7 @@ public class CLServerConfig {
     }
   }
 
+  @CacheEvict(cacheNames = CL_SC_CACHE_NAME, key = "#key")
   public DCServerConfigInfo setConfig(String key, String value) {
     try {
       var saveValue = new ETServerConfig();
@@ -49,6 +54,7 @@ public class CLServerConfig {
     return null;
   }
 
+  @Cacheable(cacheNames = CL_SC_CACHE_NAME, key = "#key")
   public DCServerConfigInfo getConfig(String key) {
     try {
       var result = this.repository.findById(key);
