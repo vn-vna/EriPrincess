@@ -42,9 +42,10 @@ public class RCServerConfig {
     ARServerConfigManagement apiResponse = new ARServerConfigManagement();
 
     try {
-      DCServerConfigInfo result = this.serverConfigClient.getConfig(key);
-      apiResponse.setResult(result);
-      apiResponse.setSuccess(true);
+      this.serverConfigClient.getConfig(key).ifPresent((t) -> {
+        apiResponse.setResult(t);
+        apiResponse.setSuccess(true);
+      });
     } catch (Exception ex) {
       apiResponse.setSuccess(false);
       apiResponse.setError(ex.getMessage());
