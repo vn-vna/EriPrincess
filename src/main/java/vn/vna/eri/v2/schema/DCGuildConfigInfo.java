@@ -2,19 +2,11 @@ package vn.vna.eri.v2.schema;
 
 import com.google.gson.annotations.SerializedName;
 import java.time.Instant;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 import vn.vna.eri.v2.configs.helper.LangPackEnum;
 import vn.vna.eri.v2.utils.UTJsonClass;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode
+@Data
 public class DCGuildConfigInfo implements UTJsonClass {
 
   @SerializedName("id")

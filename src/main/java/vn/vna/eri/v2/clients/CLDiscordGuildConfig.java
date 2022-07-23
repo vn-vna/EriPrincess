@@ -17,7 +17,7 @@ public class CLDiscordGuildConfig {
   private static final Logger logger;
 
   /**
-   * Client Guild config cache name
+   * Guild config client cache name
    */
   public static final String CL_GC_CACHE_NAME = "discord-guild-config";
 
@@ -67,6 +67,11 @@ public class CLDiscordGuildConfig {
           ex.getMessage());
     }
 
+    return null;
+  }
+
+  @CacheEvict(cacheNames = CL_GC_CACHE_NAME, key = "#guildId")
+  public DCGuildConfigInfo updateConfigForId(String guildId) {
     return null;
   }
 

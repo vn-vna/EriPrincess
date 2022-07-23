@@ -2,6 +2,7 @@ package vn.vna.eri.v2.services;
 
 import java.time.Instant;
 import java.util.Objects;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -35,7 +36,8 @@ public class SVApiControl {
     logger = LoggerFactory.getLogger(SVApiControl.class);
   }
 
-  private final DCServiceStatus status;
+  @Getter
+  private DCServiceStatus status;
 
   public SVApiControl() {
     if (!Objects.isNull(SVApiControl.instance)) {
@@ -63,10 +65,6 @@ public class SVApiControl {
 
     logger.info("Starting SpingBoot service");
     SVApiControl.springAppCtx = SpringApplication.run(SVApiControl.class, args);
-  }
-
-  public DCServiceStatus getStatus() {
-    return this.status;
   }
 
   @EventListener(ApplicationReadyEvent.class)

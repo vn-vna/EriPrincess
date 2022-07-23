@@ -1,12 +1,10 @@
 package vn.vna.eri.v2.schema;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import vn.vna.eri.v2.utils.UTCombinedBoolConfigString;
 import vn.vna.eri.v2.utils.helper.BoolConfigProperty;
 
-@Getter
-@Setter
+@Data
 public class CSPermissions extends UTCombinedBoolConfigString {
 
   @BoolConfigProperty

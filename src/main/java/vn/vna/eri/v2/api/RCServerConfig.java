@@ -73,16 +73,21 @@ public class RCServerConfig {
   }
 
   @PutMapping("/api/config/server")
-  public ResponseEntity<String> putConfig(@RequestParam String key, @RequestParam String value) {
+  public ResponseEntity<String> putConfig(
+      @RequestParam String key,
+      @RequestParam String value) {
     Long startCounter = System.nanoTime();
     ARServerConfigManagement apiResponse = new ARServerConfigManagement();
 
-    DCServerConfigInfo result = this.serverConfigClient.setConfig(key, value);
+    DCServerConfigInfo result = this.serverConfigClient
+        .setConfig(key, value)
+        .orElse(null);
     apiResponse.setResult(result);
     apiResponse.setSuccess(true);
 
     apiResponse.setTook(System.nanoTime() - startCounter);
-    return UTApiResponse.responseJson(ResponseCode.OK, apiResponse);
+    return UTApiResponse
+        .responseJson(ResponseCode.OK, apiResponse);
   }
 
   @GetMapping("/api/config/discord/reload")

@@ -1,14 +1,10 @@
 package vn.vna.eri.v2.schema;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import vn.vna.eri.v2.utils.UTBoolConfigString;
 import vn.vna.eri.v2.utils.helper.BoolConfigProperty;
 
-@Getter
-@Setter
-@EqualsAndHashCode(callSuper = true)
+@Data
 public class CSPermissionStatus extends UTBoolConfigString {
 
   @BoolConfigProperty

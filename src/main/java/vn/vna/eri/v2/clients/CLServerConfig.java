@@ -71,7 +71,9 @@ public class CLServerConfig {
     try {
       this.repository.deleteById(key);
     } catch (Exception ex) {
-      logger.error("Request get config from database has failed due to: {}", ex.getMessage());
+      logger.error(
+          "Request get config from database has failed due to: {}",
+          ex.getMessage());
     }
   }
 
@@ -87,16 +89,18 @@ public class CLServerConfig {
    * @see {@link vn.vna.eri.v2.schema.DCServerConfigInfo ServerConfig Dataclass}
    */
   @CacheEvict(cacheNames = CL_SC_CACHE_NAME, key = "#key")
-  public DCServerConfigInfo setConfig(String key, String value) {
+  public Optional<DCServerConfigInfo> setConfig(String key, String value) {
     try {
       var saveValue = new ETServerConfig();
       saveValue.importFromDataObject(new DCServerConfigInfo(key, value));
 
-      return this.repository.save(saveValue).toDataObject();
+      return Optional.ofNullable(this.repository.save(saveValue).toDataObject());
     } catch (Exception ex) {
-      logger.error("Request set config to database has failed due to: {}", ex.getMessage());
+      logger.error(
+          "Request set config to database has failed due to: {}",
+          ex.getMessage());
     }
-    return null;
+    return Optional.empty();
   }
 
   /**
@@ -113,7 +117,9 @@ public class CLServerConfig {
     try {
       return Optional.ofNullable(this.repository.findById(key).get().toDataObject());
     } catch (Exception ex) {
-      logger.error("Request get config from database has failed due to: {}", ex.getMessage());
+      logger.error(
+          "Request get config from database has failed due to: {}",
+          ex.getMessage());
     }
     return Optional.empty();
   }
@@ -135,7 +141,9 @@ public class CLServerConfig {
         value = info.get().getValue();
       }
     } catch (Exception ex) {
-      logger.error("Request get config from database has failed due to: {}", ex.getMessage());
+      logger.error(
+          "Request get config from database has failed due to: {}",
+          ex.getMessage());
     }
 
     return value;

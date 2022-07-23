@@ -1,17 +1,9 @@
 package vn.vna.eri.v2.schema;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 import vn.vna.eri.v2.utils.UTJsonClass;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@EqualsAndHashCode
+@Data
 public class DCAuthorizeToken implements UTJsonClass {
 
   private String token;

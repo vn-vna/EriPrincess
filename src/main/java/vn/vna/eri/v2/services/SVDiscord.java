@@ -10,6 +10,8 @@ import static net.dv8tion.jda.api.requests.GatewayIntent.GUILD_MESSAGE_TYPING;
 import static net.dv8tion.jda.api.requests.GatewayIntent.GUILD_PRESENCES;
 import static net.dv8tion.jda.api.requests.GatewayIntent.GUILD_VOICE_STATES;
 import static net.dv8tion.jda.api.requests.GatewayIntent.GUILD_WEBHOOKS;
+import static vn.vna.eri.v2.configs.CFGlobalConfig.ENV_DISABLE_DISCORD;
+import static vn.vna.eri.v2.schema.DCServiceStatus.STATUS_OFFLINE;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -17,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import javax.security.auth.login.LoginException;
+import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -40,7 +43,9 @@ public class SVDiscord implements Runnable {
     logger = LoggerFactory.getLogger(SVDiscord.class);
   }
 
-  private final DCServiceStatus serviceStatus;
+  @Getter
+  private DCServiceStatus status;
+  @Getter
   private JDA jdaContext;
   private CFDiscordEventListener eventListener;
 
@@ -48,15 +53,15 @@ public class SVDiscord implements Runnable {
     if (!Objects.isNull(SVDiscord.instance)) {
       throw new ERDiscordServiceExists();
     }
-    this.serviceStatus = new DCServiceStatus();
-    this.serviceStatus.setStatus(DCServiceStatus.STATUS_OFFLINE);
-    this.serviceStatus.setLastStartUp(null);
+    this.status = new DCServiceStatus();
+    this.status.setStatus(STATUS_OFFLINE);
+    this.status.setLastStartUp(null);
 
     SVDiscord.instance = this;
   }
 
   public static void initialize() {
-    if (CFGlobalConfig.getInstance().getBoolean(CFGlobalConfig.ENV_DISABLE_DISCORD).orElse(false)) {
+    if (CFGlobalConfig.getInstance().getBoolean(ENV_DISABLE_DISCORD).orElse(false)) {
       logger.warn("Discord bot service is disabled by default");
       return;
     }
@@ -67,18 +72,6 @@ public class SVDiscord implements Runnable {
 
   public static SVDiscord getInstance() {
     return SVDiscord.instance;
-  }
-
-  public JDA getJdaContext() {
-    return this.jdaContext;
-  }
-
-  public DCServiceStatus getStatus() {
-    return this.serviceStatus;
-  }
-
-  public CFDiscordEventListener getEventListener() {
-    return this.eventListener;
   }
 
   public SelfUser getSelfUser() {
@@ -108,11 +101,11 @@ public class SVDiscord implements Runnable {
       this.jdaContext = jdaBuilder.build();
 
       // Update status
-      this.serviceStatus.setStatus(DCServiceStatus.STATUS_ONLINE);
-      this.serviceStatus.setLastStartUp(Instant.now().toString());
+      this.status.setStatus(DCServiceStatus.STATUS_ONLINE);
+      this.status.setLastStartUp(Instant.now().toString());
     } catch (LoginException lex) {
       SVDiscord.logger.error("Can't login to discord.");
-      this.serviceStatus.setStatus(DCServiceStatus.STATUS_ERROR);
+      this.status.setStatus(DCServiceStatus.STATUS_ERROR);
     }
   }
 
