@@ -9,7 +9,7 @@ import vn.vna.eri.v2.utils.UTJsonClass;
 
 @Data
 @NoArgsConstructor
-public class DCGuildConfigInfo implements UTJsonClass {
+public class DCGuildConfig implements UTJsonClass {
 
   @SerializedName("id")
   private String guildId;
@@ -20,11 +20,11 @@ public class DCGuildConfigInfo implements UTJsonClass {
   @SerializedName("tz")
   private Integer timeZone;
 
-  public DCGuildConfigInfo(String guildId) {
+  public DCGuildConfig(String guildId) {
     this.guildId = guildId;
     this.joinedDateTime = Instant.now();
     this.language = LangPackEnum.EN_US.getName();
-    this.timeZone = +7;
+    this.timeZone = 7;
   }
 
 }

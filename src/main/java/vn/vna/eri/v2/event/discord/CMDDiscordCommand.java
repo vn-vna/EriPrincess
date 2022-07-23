@@ -61,7 +61,7 @@ public abstract class CMDDiscordCommand {
   }
 
   public static void loadCommands() {
-    Long beginTime = System.currentTimeMillis();
+    long beginTime = System.currentTimeMillis();
 
     Package packageScan = CMDDiscordCommand.class.getPackage();
 
@@ -89,7 +89,7 @@ public abstract class CMDDiscordCommand {
     Set<CMDDiscordCommand> commandCollection = new HashSet<>();
     for (Class<? extends CMDDiscordCommand> reflectedType : reflectedTypes) {
       try {
-        Constructor<? extends CMDDiscordCommand> typeDefaultConstructor = 
+        Constructor<? extends CMDDiscordCommand> typeDefaultConstructor =
             reflectedType.getConstructor();
         CommandProperties properties = reflectedType.getAnnotation(CommandProperties.class);
         CMDDiscordCommand command = typeDefaultConstructor.newInstance();

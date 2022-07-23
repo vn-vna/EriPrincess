@@ -9,6 +9,6 @@ public class ARServerConfigManagement implements UTJsonClass {
   private Boolean success;
   private String error;
   private Long took;
-  private DCServerConfigInfo result;
+  private DCServerConfig result;
 
 }

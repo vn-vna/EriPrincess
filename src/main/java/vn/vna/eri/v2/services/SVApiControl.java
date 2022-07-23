@@ -37,7 +37,7 @@ public class SVApiControl {
   }
 
   @Getter
-  private DCServiceStatus status;
+  private final DCServiceStatus status;
 
   public SVApiControl() {
     if (!Objects.isNull(SVApiControl.instance)) {

@@ -1,6 +1,8 @@
 package vn.vna.eri.v2.api;
 
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,7 +15,6 @@ import vn.vna.eri.v2.configs.CFGlobalConfig;
 import vn.vna.eri.v2.configs.helper.UpdatableConfigTarget;
 import vn.vna.eri.v2.schema.ARReloadConfig;
 import vn.vna.eri.v2.schema.ARServerConfigManagement;
-import vn.vna.eri.v2.schema.DCServerConfigInfo;
 import vn.vna.eri.v2.services.SVApiControl;
 import vn.vna.eri.v2.utils.UTApiResponse;
 import vn.vna.eri.v2.utils.UTSingleton;
@@ -23,7 +24,7 @@ import vn.vna.eri.v2.utils.helper.ResponseCode;
 public class RCServerConfig {
 
   public static final String DSC_RT_ALL = "all";
-  public static final String DSC_RT_MESSAGE_BUILDER = "msg-builder";
+  private static final Logger logger = LoggerFactory.getLogger(RCServerConfig.class);
 
   protected Map<String, Class<? extends UpdatableConfigTarget>> reloadTarget;
 
@@ -35,23 +36,22 @@ public class RCServerConfig {
   }
 
   public static RCServerConfig getServerConfigRestController() {
-    return SVApiControl.getApplicationContext().getBean(RCServerConfig.class);
+    return SVApiControl
+        .getApplicationContext()
+        .getBean(RCServerConfig.class);
   }
 
   @GetMapping("/api/config/server")
   public ResponseEntity<String> getConfig(@RequestParam String key) {
     Long beginTime = System.nanoTime();
     ARServerConfigManagement apiResponse = new ARServerConfigManagement();
+    apiResponse.setSuccess(false);
 
-    try {
-      this.serverConfigClient.getConfig(key).ifPresent((t) -> {
-        apiResponse.setResult(t);
-        apiResponse.setSuccess(true);
-      });
-    } catch (Exception ex) {
-      apiResponse.setSuccess(false);
-      apiResponse.setError(ex.getMessage());
-    }
+    this.serverConfigClient.getConfig(key).ifPresentOrElse((result) -> {
+      apiResponse.setSuccess(true);
+      apiResponse.setResult(result);
+    }, () ->
+        apiResponse.setError("No configuration found for key [%s]".formatted(key)));
 
     apiResponse.setTook(System.nanoTime() - beginTime);
     return UTApiResponse.responseJson(ResponseCode.OK, apiResponse);
@@ -59,16 +59,17 @@ public class RCServerConfig {
 
   @DeleteMapping("/api/config/server")
   public ResponseEntity<String> deleteConfig(@RequestParam String key) {
-    Long beginTime = System.nanoTime();
+    long beginTime = System.nanoTime();
     ARServerConfigManagement apiResponse = new ARServerConfigManagement();
+    apiResponse.setSuccess(false);
 
-    try {
-      this.serverConfigClient.removeConfig(key);
-      apiResponse.setSuccess(true);
-    } catch (Exception ex) {
-      apiResponse.setSuccess(false);
-      apiResponse.setError(ex.getMessage());
-    }
+    this.serverConfigClient
+        .removeConfig(key)
+        .ifPresentOrElse((result) -> {
+          apiResponse.setSuccess(true);
+          apiResponse.setResult(result);
+        }, () ->
+            apiResponse.setError("No configuration found for key [%s]".formatted(key)));
 
     apiResponse.setTook(System.nanoTime() - beginTime);
     return UTApiResponse.responseJson(ResponseCode.OK, apiResponse);
@@ -78,14 +79,16 @@ public class RCServerConfig {
   public ResponseEntity<String> putConfig(
       @RequestParam String key,
       @RequestParam String value) {
-    Long beginTime = System.nanoTime();
+    long beginTime = System.nanoTime();
     ARServerConfigManagement apiResponse = new ARServerConfigManagement();
 
-    DCServerConfigInfo result = this.serverConfigClient
+    this.serverConfigClient
         .setConfig(key, value)
-        .orElse(null);
-    apiResponse.setResult(result);
-    apiResponse.setSuccess(true);
+        .ifPresentOrElse((result) -> {
+          apiResponse.setResult(result);
+          apiResponse.setSuccess(true);
+        }, () ->
+            apiResponse.setError("No configuration found for key [%s]".formatted(key)));
 
     apiResponse.setTook(System.nanoTime() - beginTime);
     return UTApiResponse
@@ -94,10 +97,11 @@ public class RCServerConfig {
 
   @GetMapping("/api/config/reload")
   public ResponseEntity<String> requestReloadConfig(@RequestParam String target) {
-    ResponseCode status = null;
+    ResponseCode status;
     ARReloadConfig response = new ARReloadConfig();
 
     if (DSC_RT_ALL.equals(target)) {
+      logger.warn("Triggered all config reload");
       this.reloadTarget.forEach((key, targetClass) -> {
         UTSingleton
             .getInstanceOf(targetClass)

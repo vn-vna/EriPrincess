@@ -9,7 +9,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
-import vn.vna.eri.v2.schema.DCGuildConfigInfo;
+import vn.vna.eri.v2.schema.DCGuildConfig;
 import vn.vna.eri.v2.utils.UTGenericEntity;
 
 @Getter
@@ -17,7 +17,7 @@ import vn.vna.eri.v2.utils.UTGenericEntity;
 @Entity
 @Table(name = "_dsc_guilds")
 @DynamicUpdate
-public class ETGuildConfig extends UTGenericEntity<DCGuildConfigInfo> {
+public class ETGuildConfig extends UTGenericEntity<DCGuildConfig> {
 
   @Id
   @Nonnull
@@ -31,6 +31,6 @@ public class ETGuildConfig extends UTGenericEntity<DCGuildConfigInfo> {
   private Integer timeZone;
 
   public ETGuildConfig() {
-    super(DCGuildConfigInfo.class);
+    super(DCGuildConfig.class);
   }
 }

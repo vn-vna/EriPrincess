@@ -9,6 +9,6 @@ public final class ARDiscordGuildConfig implements UTJsonClass {
   private Boolean success;
   private String error;
   private Long took;
-  private DCGuildConfigInfo result;
+  private DCGuildConfig result;
 
 }

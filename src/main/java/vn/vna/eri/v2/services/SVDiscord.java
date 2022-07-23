@@ -44,10 +44,9 @@ public class SVDiscord implements Runnable {
   }
 
   @Getter
-  private DCServiceStatus status;
+  private final DCServiceStatus status;
   @Getter
   private JDA jdaContext;
-  private CFDiscordEventListener eventListener;
 
   public SVDiscord() {
     if (!Objects.isNull(SVDiscord.instance)) {
@@ -93,7 +92,7 @@ public class SVDiscord implements Runnable {
         GUILD_PRESENCES, GUILD_VOICE_STATES, GUILD_WEBHOOKS,
         GUILD_MESSAGE_REACTIONS);
 
-    this.eventListener = CFDiscordEventListener.getInstance();
+    CFDiscordEventListener eventListener = CFDiscordEventListener.getInstance();
 
     JDABuilder jdaBuilder = JDABuilder.create(token, intents).addEventListeners(eventListener);
 

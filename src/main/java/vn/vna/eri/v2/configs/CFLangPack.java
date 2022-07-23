@@ -18,6 +18,7 @@ import vn.vna.eri.v2.configs.helper.LangPackEnum;
 @Getter
 @Setter
 public final class CFLangPack {
+
   private static CFLangPack instance;
   private static Logger logger = LoggerFactory.getLogger(CFLangPack.class);
 
@@ -37,11 +38,11 @@ public final class CFLangPack {
     this.langPacks = new HashMap<>();
     try {
       Optional
-          .ofNullable(CFLangPack.class.getResource("/lang").toURI())
+          .of(Objects.requireNonNull(CFLangPack.class.getResource("/lang")).toURI())
           .ifPresent((uri) -> {
             File folder = new File(uri);
             List<File> langPackFiles = Arrays
-                .stream(folder.listFiles())
+                .stream(Objects.requireNonNull(folder.listFiles()))
                 .filter((file) -> file.isFile() && file.getName().endsWith(".ini"))
                 .toList();
 

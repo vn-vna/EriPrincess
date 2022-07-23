@@ -7,9 +7,9 @@ public enum LangPackEnum {
   VI_VN("vi-vn"),
   EN_US("en-us");
 
+  final String name;
+
   LangPackEnum(String name) {
     this.name = name;
   }
-
-  String name;
 }

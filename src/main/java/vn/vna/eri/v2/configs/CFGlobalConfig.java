@@ -22,6 +22,7 @@ import vn.vna.eri.v2.services.SVApiControl;
 import vn.vna.eri.v2.utils.UTSingleton;
 
 public class CFGlobalConfig {
+
   public static final String CT_NAME_DSC_EVLISTENER = "bot-event-listener";
   public static final String CT_NAME_DSC_MSG_BUILDER = "bot-msg-builder";
   public static final String CT_NAME_SPRING_DATASOURCE = "spring-data-source";
@@ -40,7 +41,7 @@ public class CFGlobalConfig {
   public static final String CFG_BOT_EMBED_THUMB_URL = "BOT_EMBED_THUMB_URL";
   public static final String CFG_BOT_EMBED_FOOTER = "BOT_EMBED_FOOTER";
 
-  private static final Logger logger = LoggerFactory.getLogger(CFGlobalConfig.class);;
+  private static final Logger logger = LoggerFactory.getLogger(CFGlobalConfig.class);
   private static CFGlobalConfig instance;
 
   @Getter
@@ -84,43 +85,23 @@ public class CFGlobalConfig {
   }
 
   public Optional<Boolean> getBoolean(String key) {
-    try {
-      return Optional.of(Boolean.parseBoolean(this.getString(key).get()));
-    } catch (Exception nfex) {
-      return Optional.empty();
-    }
+    return this.getString(key).map(Boolean::parseBoolean);
   }
 
   public Optional<Integer> getInteger(String key) {
-    try {
-      return Optional.of(Integer.parseInt(this.getString(key).get()));
-    } catch (Exception nfex) {
-      return Optional.empty();
-    }
+    return this.getString(key).map(Integer::parseInt);
   }
 
   public Optional<Long> getLong(String key) {
-    try {
-      return Optional.of(Long.parseLong(this.getString(key).get()));
-    } catch (Exception nfex) {
-      return Optional.empty();
-    }
+    return this.getString(key).map(Long::parseLong);
   }
 
   public Optional<Float> getFloat(String key) {
-    try {
-      return Optional.of(Float.parseFloat(this.getString(key).get()));
-    } catch (Exception nfex) {
-      return Optional.empty();
-    }
+    return this.getString(key).map(Float::parseFloat);
   }
 
   public Optional<Double> getDouble(String key) {
-    try {
-      return Optional.of(Double.parseDouble(this.getString(key).get()));
-    } catch (NumberFormatException nfex) {
-      return Optional.empty();
-    }
+    return this.getString(key).map(Double::parseDouble);
   }
 
   public void scanConfigTargets() {
@@ -139,30 +120,25 @@ public class CFGlobalConfig {
           ConfigTarget properties = type.getAnnotation(ConfigTarget.class);
           this.configTargets.put(properties.name(), type);
         });
-    ;
 
     logger.info("Scanned {} config target(s)", this.configTargets.size());
 
     // Invoke getInstance once to construct all of them
     this.configTargets
-        .entrySet()
-        .forEach((entry) -> {
-          UTSingleton.getInstanceOf(entry.getValue());
-        });
+        .forEach((key, type) -> UTSingleton.getInstanceOf(type));
   }
 
   public void invokeUpdateAtStage(ConfigTargetLoadStage stage) {
     logger.info("Invoking configuration loader from stage {}", stage.getStageName());
     this.configTargets
-        .entrySet()
-        .forEach((entry) -> {
-          ConfigTarget property = entry.getValue().getAnnotation(ConfigTarget.class);
+        .forEach((key, type) -> {
+          ConfigTarget property = type.getAnnotation(ConfigTarget.class);
           if (property.stage().equals(stage)) {
             logger.info(
                 "Loading configuration class [{}]",
-                entry.getValue().getSimpleName());
+                type.getSimpleName());
             UTSingleton
-                .getInstanceOf(entry.getValue())
+                .getInstanceOf(type)
                 .ifPresent(UpdatableConfigTarget::update);
           }
         });
