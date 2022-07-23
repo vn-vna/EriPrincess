@@ -1,10 +1,12 @@
 package vn.vna.eri.v2.schema;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import vn.vna.eri.v2.utils.UTBoolConfigString;
 import vn.vna.eri.v2.utils.helper.BoolConfigProperty;
 
-@Data
+@Getter
+@Setter
 public class CSPermissionStatus extends UTBoolConfigString {
 
   @BoolConfigProperty
