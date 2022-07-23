@@ -1,5 +1,6 @@
 package vn.vna.eri.v2.clients;
 
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,15 +34,17 @@ public class CLDiscordGuildConfig {
   }
 
   public static CLDiscordGuildConfig getClient() {
-    return SVApiControl.getApplicationContext().getBean(CLDiscordGuildConfig.class);
+    return SVApiControl
+        .getApplicationContext()
+        .getBean(CLDiscordGuildConfig.class);
   }
 
   @Cacheable(cacheNames = CL_GC_CACHE_NAME, key = "#guildId")
-  public DCGuildConfigInfo findConfigurationById(String guildId) {
+  public Optional<DCGuildConfigInfo> findConfigurationById(String guildId) {
     try {
       var result = this.repository.findById(guildId);
       if (result.isPresent()) {
-        return result.get().toDataObject();
+        return Optional.ofNullable(result.get().toDataObject());
       }
     } catch (Exception ex) {
       logger.error(
@@ -49,30 +52,48 @@ public class CLDiscordGuildConfig {
           ex.getMessage());
     }
 
-    return null;
+    return Optional.empty();
   }
 
   @CacheEvict(cacheNames = CL_GC_CACHE_NAME, key = "#guildId")
-  public DCGuildConfigInfo createConfigForId(String guildId) {
+  public Optional<DCGuildConfigInfo> createConfigForId(String guildId) {
     try {
       var saveData = new DCGuildConfigInfo(guildId);
 
       var saveInfo = new ETGuildConfig();
       saveInfo.importFromDataObject(saveData);
 
-      return this.repository.save(saveInfo).toDataObject();
+      return Optional.ofNullable(this.repository.save(saveInfo).toDataObject());
     } catch (Exception ex) {
       logger.error(
           "Request create new guild configuration from database has failed due to error: {}",
           ex.getMessage());
     }
 
-    return null;
+    return Optional.empty();
   }
 
-  @CacheEvict(cacheNames = CL_GC_CACHE_NAME, key = "#guildId")
-  public DCGuildConfigInfo updateConfigForId(String guildId) {
-    return null;
+  @CacheEvict(cacheNames = CL_GC_CACHE_NAME, key = "#info.guildId")
+  public Optional<DCGuildConfigInfo> updateConfigForId(DCGuildConfigInfo info) {
+
+    return this.findConfigurationById(info.getGuildId())
+        .map((result) -> {
+          try {
+            ETGuildConfig newEntity = new ETGuildConfig();
+            newEntity.importFromDataObject(result, true);
+            newEntity.importFromDataObject(info, true);
+
+            return this.repository
+                .save(newEntity)
+                .toDataObject();
+
+          } catch (Exception ex) {
+            logger.error(
+                "Request update discord guild config has failed due to error: {}",
+                ex.getMessage());
+          }
+          return null;
+        });
   }
 
   public RPGuildConfig getRepository() {

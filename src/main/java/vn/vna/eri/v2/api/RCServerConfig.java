@@ -1,5 +1,6 @@
 package vn.vna.eri.v2.api;
 
+import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import vn.vna.eri.v2.clients.CLServerConfig;
+import vn.vna.eri.v2.configs.CFBotMessageBuilder;
 import vn.vna.eri.v2.configs.helper.UpdatableConfigTarget;
 import vn.vna.eri.v2.schema.ARReloadConfig;
 import vn.vna.eri.v2.schema.ARServerConfigManagement;
@@ -22,7 +24,7 @@ import vn.vna.eri.v2.utils.helper.ResponseCode;
 public class RCServerConfig {
 
   public static final String DSC_RT_ALL = "all";
-  public static final String DSC_RT_MESSAGE_UTIL = "msg-ult";
+  public static final String DSC_RT_MESSAGE_BUILDER = "msg-builder";
 
   protected Map<String, Class<? extends UpdatableConfigTarget>> reloadTarget;
 
@@ -30,6 +32,8 @@ public class RCServerConfig {
   private CLServerConfig serverConfigClient;
 
   public RCServerConfig() {
+    this.reloadTarget = new HashMap<>();
+    this.reloadTarget.put(DSC_RT_MESSAGE_BUILDER, CFBotMessageBuilder.class);
   }
 
   public static RCServerConfig getServerConfigRestController() {
@@ -38,7 +42,7 @@ public class RCServerConfig {
 
   @GetMapping("/api/config/server")
   public ResponseEntity<String> getConfig(@RequestParam String key) {
-    Long startCounter = System.nanoTime();
+    Long beginTime = System.nanoTime();
     ARServerConfigManagement apiResponse = new ARServerConfigManagement();
 
     try {
@@ -51,13 +55,13 @@ public class RCServerConfig {
       apiResponse.setError(ex.getMessage());
     }
 
-    apiResponse.setTook(System.nanoTime() - startCounter);
+    apiResponse.setTook(System.nanoTime() - beginTime);
     return UTApiResponse.responseJson(ResponseCode.OK, apiResponse);
   }
 
   @DeleteMapping("/api/config/server")
   public ResponseEntity<String> deleteConfig(@RequestParam String key) {
-    Long startCounter = System.nanoTime();
+    Long beginTime = System.nanoTime();
     ARServerConfigManagement apiResponse = new ARServerConfigManagement();
 
     try {
@@ -68,7 +72,7 @@ public class RCServerConfig {
       apiResponse.setError(ex.getMessage());
     }
 
-    apiResponse.setTook(System.nanoTime() - startCounter);
+    apiResponse.setTook(System.nanoTime() - beginTime);
     return UTApiResponse.responseJson(ResponseCode.OK, apiResponse);
   }
 
@@ -76,7 +80,7 @@ public class RCServerConfig {
   public ResponseEntity<String> putConfig(
       @RequestParam String key,
       @RequestParam String value) {
-    Long startCounter = System.nanoTime();
+    Long beginTime = System.nanoTime();
     ARServerConfigManagement apiResponse = new ARServerConfigManagement();
 
     DCServerConfigInfo result = this.serverConfigClient
@@ -85,7 +89,7 @@ public class RCServerConfig {
     apiResponse.setResult(result);
     apiResponse.setSuccess(true);
 
-    apiResponse.setTook(System.nanoTime() - startCounter);
+    apiResponse.setTook(System.nanoTime() - beginTime);
     return UTApiResponse
         .responseJson(ResponseCode.OK, apiResponse);
   }

@@ -3,6 +3,7 @@ package vn.vna.eri.v2.utils;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +45,7 @@ public class UTGenericEntity<DataClass extends UTJsonClass> {
     return obj;
   }
 
-  public void importFromDataObject(DataClass object) {
+  public void importFromDataObject(DataClass object, Boolean excludeNull) {
     try {
       List<Method> setMethods = Arrays.stream(this.getClass().getMethods())
           .filter((method) -> method.getName().startsWith("set"))
@@ -58,6 +59,10 @@ public class UTGenericEntity<DataClass extends UTJsonClass> {
             .getMethod(getMethodName)
             .invoke(object);
 
+        if (!excludeNull && Objects.isNull(ret)) {
+          continue;
+        }
+
         setMethod.invoke(this, ret);
       }
     } catch (Exception ex) {
@@ -66,5 +71,9 @@ public class UTGenericEntity<DataClass extends UTJsonClass> {
           this.getClass().getName(),
           ex.getMessage());
     }
+  }
+
+  public void importFromDataObject(DataClass object) {
+    this.importFromDataObject(object, false);
   }
 }
