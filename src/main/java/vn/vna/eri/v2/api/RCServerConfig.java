@@ -1,6 +1,5 @@
 package vn.vna.eri.v2.api;
 
-import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +9,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import vn.vna.eri.v2.clients.CLServerConfig;
-import vn.vna.eri.v2.configs.CFBotMessageBuilder;
+import vn.vna.eri.v2.configs.CFGlobalConfig;
 import vn.vna.eri.v2.configs.helper.UpdatableConfigTarget;
 import vn.vna.eri.v2.schema.ARReloadConfig;
 import vn.vna.eri.v2.schema.ARServerConfigManagement;
@@ -32,8 +31,7 @@ public class RCServerConfig {
   private CLServerConfig serverConfigClient;
 
   public RCServerConfig() {
-    this.reloadTarget = new HashMap<>();
-    this.reloadTarget.put(DSC_RT_MESSAGE_BUILDER, CFBotMessageBuilder.class);
+    this.reloadTarget = CFGlobalConfig.getInstance().getConfigTargets();
   }
 
   public static RCServerConfig getServerConfigRestController() {
@@ -94,7 +92,7 @@ public class RCServerConfig {
         .responseJson(ResponseCode.OK, apiResponse);
   }
 
-  @GetMapping("/api/config/discord/reload")
+  @GetMapping("/api/config/reload")
   public ResponseEntity<String> requestReloadConfig(@RequestParam String target) {
     ResponseCode status = null;
     ARReloadConfig response = new ARReloadConfig();

@@ -72,8 +72,8 @@ public class CLServerConfig {
       this.repository.deleteById(key);
     } catch (Exception ex) {
       logger.error(
-          "Request get config from database has failed due to: {}",
-          ex.getMessage());
+          "Request remove config {} from database has failed due to: {}",
+          key, ex.getMessage());
     }
   }
 
@@ -97,8 +97,8 @@ public class CLServerConfig {
       return Optional.ofNullable(this.repository.save(saveValue).toDataObject());
     } catch (Exception ex) {
       logger.error(
-          "Request set config to database has failed due to: {}",
-          ex.getMessage());
+          "Request set config {} from database has failed due to: {}",
+          key, ex.getMessage());
     }
     return Optional.empty();
   }
@@ -118,8 +118,8 @@ public class CLServerConfig {
       return Optional.ofNullable(this.repository.findById(key).get().toDataObject());
     } catch (Exception ex) {
       logger.error(
-          "Request get config from database has failed due to: {}",
-          ex.getMessage());
+          "Request get config {} from database has failed due to: {}",
+          key, ex.getMessage());
     }
     return Optional.empty();
   }
@@ -143,8 +143,8 @@ public class CLServerConfig {
       }
     } catch (Exception ex) {
       logger.error(
-          "Request get config from database has failed due to: {}",
-          ex.getMessage());
+          "Request get config {} from database has failed due to: {}",
+          key, ex.getMessage());
     }
 
     return value;

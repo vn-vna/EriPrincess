@@ -1,5 +1,6 @@
 package vn.vna.eri.v2.configs;
 
+import static vn.vna.eri.v2.configs.CFGlobalConfig.CT_NAME_SPRING_DATASOURCE;
 import static vn.vna.eri.v2.configs.CFGlobalConfig.ENV_DATASOURCE;
 import static vn.vna.eri.v2.configs.CFGlobalConfig.ENV_DBPWD;
 import static vn.vna.eri.v2.configs.CFGlobalConfig.ENV_DBUSER;
@@ -12,7 +13,7 @@ import vn.vna.eri.v2.configs.helper.LoadConfig;
 import vn.vna.eri.v2.configs.helper.UpdatableConfigTarget;
 
 @Getter
-@ConfigTarget(PRE_START)
+@ConfigTarget(name = CT_NAME_SPRING_DATASOURCE, stage = PRE_START)
 public class CFDataSource implements UpdatableConfigTarget {
 
   private static CFDataSource instance;

@@ -1,5 +1,10 @@
 package vn.vna.eri.v2.configs;
 
+import static vn.vna.eri.v2.configs.CFGlobalConfig.CT_NAME_DSC_EVLISTENER;
+import static vn.vna.eri.v2.configs.helper.ConfigTargetLoadStage.DISCORD_SERVICE_READY;
+
+import java.util.Objects;
+import lombok.NoArgsConstructor;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.MessageBulkDeleteEvent;
@@ -10,26 +15,32 @@ import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import vn.vna.eri.v2.configs.helper.ConfigTarget;
 import vn.vna.eri.v2.configs.helper.ConfigTargetLoadStage;
+import vn.vna.eri.v2.configs.helper.LoadConfig;
+import vn.vna.eri.v2.configs.helper.UpdatableConfigTarget;
 import vn.vna.eri.v2.event.discord.CMDDiscordCommand;
 import vn.vna.eri.v2.event.discord.helper.CommandType;
 
-public class CFDiscordEventListener extends ListenerAdapter {
+@NoArgsConstructor
+@ConfigTarget(name = CT_NAME_DSC_EVLISTENER, stage = DISCORD_SERVICE_READY)
+public class CFDiscordEventListener
+    extends ListenerAdapter
+    implements UpdatableConfigTarget {
 
-  private static final Logger logger;
+  private static final Logger logger = LoggerFactory.getLogger(CFDiscordEventListener.class);
+  private static CFDiscordEventListener instance;
 
-  static {
-    logger = LoggerFactory.getLogger(CFDiscordEventListener.class);
-  }
+  @LoadConfig(CFGlobalConfig.CFG_BOT_PREFIX)
+  private String botPrefix;
 
-  private final String botPrefix;
-
-  public CFDiscordEventListener() {
-    logger.info("Configuring discord event listener");
-    this.botPrefix = CFGlobalConfig.getInstance().getString(CFGlobalConfig.ENV_BOT_PREFIX)
-        .orElse("");
-    logger.info("Bot prefix is being used: [{}]", this.botPrefix);
-    CMDDiscordCommand.loadCommands();
+  public static CFDiscordEventListener getInstance() {
+    synchronized (CFDiscordEventListener.class) {
+      if (Objects.isNull(CFDiscordEventListener.instance)) {
+        CFDiscordEventListener.instance = new CFDiscordEventListener();
+      }
+    }
+    return CFDiscordEventListener.instance;
   }
 
   @Override
@@ -79,5 +90,6 @@ public class CFDiscordEventListener extends ListenerAdapter {
     CFGlobalConfig
         .getInstance()
         .invokeUpdateAtStage(ConfigTargetLoadStage.DISCORD_SERVICE_READY);
+    CMDDiscordCommand.loadCommands();
   }
 }

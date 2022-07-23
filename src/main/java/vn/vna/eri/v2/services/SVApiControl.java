@@ -70,6 +70,6 @@ public class SVApiControl {
   @EventListener(ApplicationReadyEvent.class)
   public void onReady() {
     logger.info("Spring boot application is initialized successfully");
-    CFGlobalConfig.getInstance().invokeUpdateAtStage(ConfigTargetLoadStage.SPING_SERVICE_READY);
+    CFGlobalConfig.getInstance().invokeUpdateAtStage(ConfigTargetLoadStage.SPRING_SERVICE_READY);
   }
 }

@@ -2,11 +2,12 @@ package vn.vna.eri.v2.configs;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+import lombok.Getter;
 import org.reflections.Reflections;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
@@ -21,6 +22,9 @@ import vn.vna.eri.v2.services.SVApiControl;
 import vn.vna.eri.v2.utils.UTSingleton;
 
 public class CFGlobalConfig {
+  public static final String CT_NAME_DSC_EVLISTENER = "bot-event-listener";
+  public static final String CT_NAME_DSC_MSG_BUILDER = "bot-msg-builder";
+  public static final String CT_NAME_SPRING_DATASOURCE = "spring-data-source";
 
   public static final String ENV_DATASOURCE = "DATASOURCE";
   public static final String ENV_DBUSER = "DBUSER";
@@ -28,22 +32,19 @@ public class CFGlobalConfig {
   public static final String ENV_BOT_TOKEN = "BOT_TOKEN";
   public static final String ENV_DISABLE_DISCORD = "DISABLE_DISCORD";
   public static final String ENV_DISABLE_API = "DISABLE_API";
-  public static final String ENV_BOT_PREFIX = "BOT_PREFIX";
 
+  public static final String CFG_BOT_PREFIX = "BOT_PREFIX";
   public static final String CFG_BOT_NAME = "BOT_NAME";
   public static final String CFG_BOT_EMBED_TITLE = "BOT_EMBED_TITLE";
   public static final String CFG_BOT_EMBED_TITLE_URL = "BOT_EMBED_TITLE_URL";
   public static final String CFG_BOT_EMBED_THUMB_URL = "BOT_EMBED_THUMB_URL";
   public static final String CFG_BOT_EMBED_FOOTER = "BOT_EMBED_FOOTER";
 
-  private static final Logger logger;
+  private static final Logger logger = LoggerFactory.getLogger(CFGlobalConfig.class);;
   private static CFGlobalConfig instance;
 
-  static {
-    logger = LoggerFactory.getLogger(CFGlobalConfig.class);
-  }
-
-  private Set<Class<? extends UpdatableConfigTarget>> configTargets;
+  @Getter
+  private Map<String, Class<? extends UpdatableConfigTarget>> configTargets;
 
   public CFGlobalConfig() {
     this.scanConfigTargets();
@@ -124,36 +125,44 @@ public class CFGlobalConfig {
 
   public void scanConfigTargets() {
     logger.info("Triggered scan config target");
+    this.configTargets = new HashMap<>();
 
     ConfigurationBuilder reflectionConfigBuilder = new ConfigurationBuilder()
         .setUrls(ClasspathHelper.forPackage(CFGlobalConfig.class.getPackageName()));
     Reflections reflections = new Reflections(reflectionConfigBuilder);
 
-    this.configTargets = reflections
+    reflections
         .getSubTypesOf(UpdatableConfigTarget.class)
         .stream()
         .filter((type) -> Objects.nonNull(type.getAnnotation(ConfigTarget.class)))
-        .collect(Collectors.toSet());
+        .forEach((type) -> {
+          ConfigTarget properties = type.getAnnotation(ConfigTarget.class);
+          this.configTargets.put(properties.name(), type);
+        });
+    ;
 
     logger.info("Scanned {} config target(s)", this.configTargets.size());
 
+    // Invoke getInstance once to construct all of them
     this.configTargets
-        .forEach((type) -> {
-          UTSingleton.getInstanceOf(type);
+        .entrySet()
+        .forEach((entry) -> {
+          UTSingleton.getInstanceOf(entry.getValue());
         });
   }
 
   public void invokeUpdateAtStage(ConfigTargetLoadStage stage) {
     logger.info("Invoking configuration loader from stage {}", stage.getStageName());
     this.configTargets
-        .forEach((type) -> {
-          ConfigTarget property = type.getAnnotation(ConfigTarget.class);
-          if (property.value().equals(stage)) {
+        .entrySet()
+        .forEach((entry) -> {
+          ConfigTarget property = entry.getValue().getAnnotation(ConfigTarget.class);
+          if (property.stage().equals(stage)) {
             logger.info(
                 "Loading configuration class [{}]",
-                type.getSimpleName());
+                entry.getValue().getSimpleName());
             UTSingleton
-                .getInstanceOf(type)
+                .getInstanceOf(entry.getValue())
                 .ifPresent(UpdatableConfigTarget::update);
           }
         });

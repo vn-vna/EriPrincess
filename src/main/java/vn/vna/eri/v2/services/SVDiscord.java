@@ -93,7 +93,7 @@ public class SVDiscord implements Runnable {
         GUILD_PRESENCES, GUILD_VOICE_STATES, GUILD_WEBHOOKS,
         GUILD_MESSAGE_REACTIONS);
 
-    this.eventListener = new CFDiscordEventListener();
+    this.eventListener = CFDiscordEventListener.getInstance();
 
     JDABuilder jdaBuilder = JDABuilder.create(token, intents).addEventListeners(eventListener);
 
