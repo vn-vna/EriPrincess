@@ -30,7 +30,7 @@ public class CFGlobalConfig {
   public static final String ENV_DATASOURCE = "DATASOURCE";
   public static final String ENV_DBUSER = "DBUSER";
   public static final String ENV_DBPWD = "DBPWD";
-  public static final String ENV_BOT_TOKEN = "BOT_TOKEN";
+  public static final String CFG_BOT_TOKEN = "BOT_TOKEN";
   public static final String ENV_DISABLE_DISCORD = "DISABLE_DISCORD";
   public static final String ENV_DISABLE_API = "DISABLE_API";
 

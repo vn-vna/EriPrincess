@@ -28,9 +28,9 @@ import net.dv8tion.jda.api.entities.SelfUser;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import vn.vna.eri.v2.configs.CFDiscordEventListener;
 import vn.vna.eri.v2.configs.CFGlobalConfig;
 import vn.vna.eri.v2.error.ERDiscordServiceExists;
+import vn.vna.eri.v2.event.discord.EMMessageEvent;
 import vn.vna.eri.v2.schema.DCServiceStatus;
 
 public class SVDiscord implements Runnable {
@@ -83,7 +83,7 @@ public class SVDiscord implements Runnable {
 
   @Override
   public void run() {
-    String token = CFGlobalConfig.getInstance().getString(CFGlobalConfig.ENV_BOT_TOKEN).orElse("");
+    String token = CFGlobalConfig.getInstance().getString(CFGlobalConfig.CFG_BOT_TOKEN).orElse("");
 
     List<GatewayIntent> intents = new ArrayList<>();
     Collections.addAll(intents,
@@ -92,7 +92,7 @@ public class SVDiscord implements Runnable {
         GUILD_PRESENCES, GUILD_VOICE_STATES, GUILD_WEBHOOKS,
         GUILD_MESSAGE_REACTIONS);
 
-    CFDiscordEventListener eventListener = CFDiscordEventListener.getInstance();
+    EMMessageEvent eventListener = EMMessageEvent.getInstance();
 
     JDABuilder jdaBuilder = JDABuilder.create(token, intents).addEventListeners(eventListener);
 
