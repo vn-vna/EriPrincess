@@ -40,7 +40,7 @@ public class CLDiscordGuildConfig {
   }
 
   @Cacheable(cacheNames = CL_GC_CACHE_NAME, key = "#guildId")
-  public Optional<DCGuildConfigInfo> findConfigurationById(String guildId) {
+  public Optional<DCGuildConfigInfo> getConfigurationById(String guildId) {
     try {
       var result = this.repository.findById(guildId);
       if (result.isPresent()) {
@@ -57,26 +57,31 @@ public class CLDiscordGuildConfig {
 
   @CacheEvict(cacheNames = CL_GC_CACHE_NAME, key = "#guildId")
   public Optional<DCGuildConfigInfo> createConfigForId(String guildId) {
-    try {
-      var saveData = new DCGuildConfigInfo(guildId);
 
-      var saveInfo = new ETGuildConfig();
-      saveInfo.importFromDataObject(saveData);
+    if (!this.getConfigurationById(guildId).isPresent()) {
+      try {
+        var saveData = new DCGuildConfigInfo(guildId);
 
-      return Optional.ofNullable(this.repository.save(saveInfo).toDataObject());
-    } catch (Exception ex) {
-      logger.error(
-          "Request create new guild configuration from database has failed due to error: {}",
-          ex.getMessage());
+        var saveInfo = new ETGuildConfig();
+        saveInfo.importFromDataObject(saveData);
+
+        return Optional.ofNullable(this.repository.save(saveInfo).toDataObject());
+      } catch (Exception ex) {
+        logger.error(
+            "Request create new guild configuration from database has failed due to error: {}",
+            ex.getMessage());
+      }
     }
 
     return Optional.empty();
   }
 
-  @CacheEvict(cacheNames = CL_GC_CACHE_NAME, key = "#info.guildId")
-  public Optional<DCGuildConfigInfo> updateConfigForId(DCGuildConfigInfo info) {
+  @CacheEvict(cacheNames = CL_GC_CACHE_NAME, key = "#guildId")
+  public Optional<DCGuildConfigInfo> updateConfigForId(
+      String guildId,
+      DCGuildConfigInfo info) {
 
-    return this.findConfigurationById(info.getGuildId())
+    return this.getConfigurationById(guildId)
         .map((result) -> {
           try {
             ETGuildConfig newEntity = new ETGuildConfig();

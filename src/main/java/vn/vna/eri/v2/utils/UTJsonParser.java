@@ -35,4 +35,8 @@ public class UTJsonParser {
     return UTJsonParser.getInstance().getParser().toJson(object);
   }
 
+  public static <T extends UTJsonClass> T fromJson(String json, Class<T> clazz) {
+    return UTJsonParser.getInstance().getParser().fromJson(json, clazz);
+  }
+
 }

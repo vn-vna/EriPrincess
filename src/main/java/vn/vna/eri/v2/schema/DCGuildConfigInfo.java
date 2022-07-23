@@ -3,10 +3,12 @@ package vn.vna.eri.v2.schema;
 import com.google.gson.annotations.SerializedName;
 import java.time.Instant;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import vn.vna.eri.v2.configs.helper.LangPackEnum;
 import vn.vna.eri.v2.utils.UTJsonClass;
 
 @Data
+@NoArgsConstructor
 public class DCGuildConfigInfo implements UTJsonClass {
 
   @SerializedName("id")

@@ -2,10 +2,12 @@ package vn.vna.eri.v2.schema;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import oshi.SystemInfo;
 import vn.vna.eri.v2.utils.UTJsonClass;
 
 @Data
+@NoArgsConstructor
 public class DCSystemStatus implements UTJsonClass {
 
   @SerializedName("cpu_count")

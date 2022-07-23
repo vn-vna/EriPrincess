@@ -8,7 +8,4 @@ public interface UTJsonClass extends Serializable {
     return UTJsonParser.getInstance().getParser().toJson(this);
   }
 
-  static <T extends UTJsonClass> T fromJson(String json, Class<T> clazz) {
-    return UTJsonParser.getInstance().getParser().fromJson(json, clazz);
-  }
 }
