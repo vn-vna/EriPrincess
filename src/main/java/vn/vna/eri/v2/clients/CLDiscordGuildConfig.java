@@ -40,7 +40,7 @@ public class CLDiscordGuildConfig {
   }
 
   @Cacheable(cacheNames = CL_GC_CACHE_NAME, key = "#guildId")
-  public Optional<DCGuildConfigInfo> getConfigurationById(String guildId) {
+  public Optional<DCGuildConfigInfo> getConfiguration(String guildId) {
     try {
       var result = this.repository.findById(guildId);
       if (result.isPresent()) {
@@ -56,9 +56,9 @@ public class CLDiscordGuildConfig {
   }
 
   @CacheEvict(cacheNames = CL_GC_CACHE_NAME, key = "#guildId")
-  public Optional<DCGuildConfigInfo> createConfigForId(String guildId) {
+  public Optional<DCGuildConfigInfo> createConfig(String guildId) {
 
-    if (!this.getConfigurationById(guildId).isPresent()) {
+    if (!this.getConfiguration(guildId).isPresent()) {
       try {
         var saveData = new DCGuildConfigInfo(guildId);
 
@@ -77,11 +77,10 @@ public class CLDiscordGuildConfig {
   }
 
   @CacheEvict(cacheNames = CL_GC_CACHE_NAME, key = "#guildId")
-  public Optional<DCGuildConfigInfo> updateConfigForId(
+  public Optional<DCGuildConfigInfo> updateConfig(
       String guildId,
       DCGuildConfigInfo info) {
-
-    return this.getConfigurationById(guildId)
+    return this.getConfiguration(guildId)
         .map((result) -> {
           try {
             ETGuildConfig newEntity = new ETGuildConfig();
@@ -99,6 +98,12 @@ public class CLDiscordGuildConfig {
           }
           return null;
         });
+  }
+
+  @CacheEvict(cacheNames = CL_GC_CACHE_NAME, key = "#guildId")
+  public Optional<DCGuildConfigInfo> deleteConfig(String guildId) {
+
+    return Optional.empty();
   }
 
   public RPGuildConfig getRepository() {

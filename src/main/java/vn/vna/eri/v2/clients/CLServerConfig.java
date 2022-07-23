@@ -130,7 +130,8 @@ public class CLServerConfig {
    * @param key - the key of config value to get
    * @return value of the config or null if it is not exists
    * 
-   * @see {@link vn.vna.eri.v2.clients.CLServerConfig#getConfig(String) getConfig}
+   * @see {@link vn.vna.eri.v2.clients.CLServerConfig#getConfig(String)
+   *      getConfig}
    */
   public String getString(String key) {
     String value = null;
