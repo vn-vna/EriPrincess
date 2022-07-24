@@ -16,6 +16,7 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.Event;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 import org.reflections.util.ClasspathHelper;
@@ -60,6 +61,10 @@ public abstract class CMDDiscordCommand {
     return CMDDiscordCommand.commandManager;
   }
 
+  public static <T extends CMDDiscordCommand> boolean isRootCommand(T command) {
+    return ArrayUtils.isEmpty(command.getParent());
+  }
+
   public static void loadCommands() {
     long beginTime = System.currentTimeMillis();
 
@@ -89,8 +94,7 @@ public abstract class CMDDiscordCommand {
     Set<CMDDiscordCommand> commandCollection = new HashSet<>();
     for (Class<? extends CMDDiscordCommand> reflectedType : reflectedTypes) {
       try {
-        Constructor<? extends CMDDiscordCommand> typeDefaultConstructor =
-            reflectedType.getConstructor();
+        Constructor<? extends CMDDiscordCommand> typeDefaultConstructor = reflectedType.getConstructor();
         CommandProperties properties = reflectedType.getAnnotation(CommandProperties.class);
         CMDDiscordCommand command = typeDefaultConstructor.newInstance();
 
@@ -133,7 +137,7 @@ public abstract class CMDDiscordCommand {
     // Get all root commands
     CMDDiscordCommand.commandManager = commandCollection
         .stream()
-        .filter((command) -> command.getParent().length == 0)
+        .filter(CMDDiscordCommand::isRootCommand)
         .collect(Collectors.toSet());
 
     logger.info("Scan discord command operation finished took {} ms, found {} root command(s)",
