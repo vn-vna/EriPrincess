@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import vn.vna.eri.v2.configs.CFGlobalConfig;
 import vn.vna.eri.v2.error.ERDiscordServiceExists;
 import vn.vna.eri.v2.event.discord.EMMessageEvent;
+import vn.vna.eri.v2.event.discord.EMServiceEvent;
 import vn.vna.eri.v2.schema.DCServiceStatus;
 
 public class SVDiscord implements Runnable {
@@ -92,9 +93,11 @@ public class SVDiscord implements Runnable {
         GUILD_PRESENCES, GUILD_VOICE_STATES, GUILD_WEBHOOKS,
         GUILD_MESSAGE_REACTIONS);
 
-    EMMessageEvent eventListener = EMMessageEvent.getInstance();
+    EMMessageEvent msgEventListener = EMMessageEvent.getInstance();
+    EMServiceEvent serviceEventListener = EMServiceEvent.getInstance();
 
-    JDABuilder jdaBuilder = JDABuilder.create(token, intents).addEventListeners(eventListener);
+    JDABuilder jdaBuilder = JDABuilder.create(token, intents)
+        .addEventListeners(msgEventListener, serviceEventListener);
 
     try {
       this.jdaContext = jdaBuilder.build();
