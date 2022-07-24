@@ -9,6 +9,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.jetbrains.annotations.NotNull;
+import org.reflections.Reflections;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.JDA;
@@ -16,12 +24,6 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.Event;
-import org.jetbrains.annotations.NotNull;
-import org.reflections.Reflections;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import vn.vna.eri.v2.error.ERDiscordGuildPermissionMismatch;
 import vn.vna.eri.v2.event.discord.helper.CommandProperties;
 import vn.vna.eri.v2.event.discord.helper.CommandType;
@@ -89,8 +91,7 @@ public abstract class CMDDiscordCommand {
     Set<CMDDiscordCommand> commandCollection = new HashSet<>();
     for (Class<? extends CMDDiscordCommand> reflectedType : reflectedTypes) {
       try {
-        Constructor<? extends CMDDiscordCommand> typeDefaultConstructor =
-            reflectedType.getConstructor();
+        Constructor<? extends CMDDiscordCommand> typeDefaultConstructor = reflectedType.getConstructor();
         CommandProperties properties = reflectedType.getAnnotation(CommandProperties.class);
         CMDDiscordCommand command = typeDefaultConstructor.newInstance();
 
@@ -120,14 +121,12 @@ public abstract class CMDDiscordCommand {
 
     // Inspect child commands
     for (CMDDiscordCommand command : commandCollection) {
-      command.setChildren(
-          commandCollection
-              .stream()
-              .filter(
-                  (subcommand) -> Arrays
-                      .asList(subcommand.getParent())
-                      .contains(command.getClass()))
-              .collect(Collectors.toSet()));
+      command.setChildren(commandCollection
+          .stream()
+          .filter((subcommand) -> Arrays
+              .asList(subcommand.getParent())
+              .contains(command.getClass()))
+          .collect(Collectors.toSet()));
     }
 
     // Get all root commands

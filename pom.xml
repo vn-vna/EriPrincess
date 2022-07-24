@@ -10,7 +10,7 @@
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
   <groupId>vn.vna</groupId>
-  <artifactId>erivampir</artifactId>
+  <artifactId>eri</artifactId>
   <version>0.2.2</version>
   <name>Eri</name>
   <description>Eri</description>
