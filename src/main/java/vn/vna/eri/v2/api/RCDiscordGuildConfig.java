@@ -33,7 +33,7 @@ public class RCDiscordGuildConfig {
         .getConfiguration(guildId)
         .ifPresentOrElse((result) -> {
           apiResponse.setSuccess(true);
-          apiResponse.setResult(result);
+          apiResponse.getResults().add(result);
         }, () -> {
           apiResponse.setError(
               "No configuration found for id [%s]".formatted(guildId));
@@ -58,7 +58,7 @@ public class RCDiscordGuildConfig {
         .updateConfig(guildId, newInfo)
         .ifPresentOrElse((result) -> {
           apiResponse.setSuccess(true);
-          apiResponse.setResult(result);
+          apiResponse.getResults().add(result);
         }, () -> {
           apiResponse.setError(
               "No configuration found for id [%s]".formatted(guildId));
@@ -79,7 +79,7 @@ public class RCDiscordGuildConfig {
         .createConfig(guildId)
         .ifPresentOrElse((result) -> {
           apiResponse.setSuccess(true);
-          apiResponse.setResult(result);
+          apiResponse.getResults().add(result);
         }, () -> {
           apiResponse.setError(
               "Unable to generate configuration for id [%s]".formatted(guildId));
@@ -100,7 +100,7 @@ public class RCDiscordGuildConfig {
         .deleteConfig(guildId)
         .ifPresentOrElse((result) -> {
           apiResponse.setSuccess(true);
-          apiResponse.setResult(result);
+          apiResponse.getResults().add(result);
         }, () -> {
           apiResponse.setError(
               "No configuration found for id [%s]".formatted(guildId));

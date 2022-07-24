@@ -1,9 +1,9 @@
 package vn.vna.eri.v2.schema;
 
-import lombok.Data;
-import vn.vna.eri.v2.utils.UTJsonClass;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-public class ARReloadConfig implements UTJsonClass {
-
+@Getter
+@Setter
+public class ARReloadConfig extends ARTemplate<String> {
 }

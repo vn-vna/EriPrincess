@@ -1,6 +1,7 @@
 package vn.vna.eri.v2.api;
 
 import java.util.Map;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,16 +43,20 @@ public class RCServerConfig {
   }
 
   @GetMapping("/api/config/server")
-  public ResponseEntity<String> getConfig(@RequestParam String key) {
+  public ResponseEntity<String> getConfig(@RequestParam(required = false) String key) {
     Long beginTime = System.nanoTime();
     ARServerConfigManagement apiResponse = new ARServerConfigManagement();
     apiResponse.setSuccess(false);
 
-    this.serverConfigClient.getConfig(key).ifPresentOrElse((result) -> {
+    if (Objects.nonNull(key)) {
+      this.serverConfigClient.getConfig(key).ifPresentOrElse((result) -> {
+        apiResponse.setSuccess(true);
+        apiResponse.getResults().add(result);
+      }, () -> apiResponse.setError("No configuration found for key [%s]".formatted(key)));
+    } else {
       apiResponse.setSuccess(true);
-      apiResponse.setResult(result);
-    }, () ->
-        apiResponse.setError("No configuration found for key [%s]".formatted(key)));
+      apiResponse.setResults(this.serverConfigClient.getAllConfig());
+    }
 
     apiResponse.setTook(System.nanoTime() - beginTime);
     return UTApiResponse.responseJson(ResponseCode.OK, apiResponse);
@@ -67,9 +72,8 @@ public class RCServerConfig {
         .removeConfig(key)
         .ifPresentOrElse((result) -> {
           apiResponse.setSuccess(true);
-          apiResponse.setResult(result);
-        }, () ->
-            apiResponse.setError("No configuration found for key [%s]".formatted(key)));
+          apiResponse.getResults().add(result);
+        }, () -> apiResponse.setError("No configuration found for key [%s]".formatted(key)));
 
     apiResponse.setTook(System.nanoTime() - beginTime);
     return UTApiResponse.responseJson(ResponseCode.OK, apiResponse);
@@ -85,10 +89,9 @@ public class RCServerConfig {
     this.serverConfigClient
         .setConfig(key, value)
         .ifPresentOrElse((result) -> {
-          apiResponse.setResult(result);
+          apiResponse.getResults().add(result);
           apiResponse.setSuccess(true);
-        }, () ->
-            apiResponse.setError("No configuration found for key [%s]".formatted(key)));
+        }, () -> apiResponse.setError("No configuration found for key [%s]".formatted(key)));
 
     apiResponse.setTook(System.nanoTime() - beginTime);
     return UTApiResponse

@@ -1,5 +1,6 @@
 package vn.vna.eri.v2.clients;
 
+import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
 import org.slf4j.Logger;
@@ -92,6 +93,15 @@ public class CLServerConfig {
           key, ex.getMessage());
     }
     return Optional.empty();
+  }
+
+
+  public List<DCServerConfig> getAllConfig() {
+    return this.repository
+        .findAll()
+        .stream()
+        .map(ETServerConfig::toDataObject)
+        .toList();
   }
 
   /**

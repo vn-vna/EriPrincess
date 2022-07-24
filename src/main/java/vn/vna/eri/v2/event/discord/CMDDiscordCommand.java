@@ -124,14 +124,12 @@ public abstract class CMDDiscordCommand {
 
     // Inspect child commands
     for (CMDDiscordCommand command : commandCollection) {
-      command.setChildren(
-          commandCollection
-              .stream()
-              .filter(
-                  (subcommand) -> Arrays
-                      .asList(subcommand.getParent())
-                      .contains(command.getClass()))
-              .collect(Collectors.toSet()));
+      command.setChildren(commandCollection
+          .stream()
+          .filter((subcommand) -> Arrays
+              .asList(subcommand.getParent())
+              .contains(command.getClass()))
+          .collect(Collectors.toSet()));
     }
 
     // Get all root commands
