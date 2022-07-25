@@ -1,9 +1,7 @@
 package vn.vna.eri.v2.utils;
 
 import java.awt.Color;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -17,6 +15,7 @@ import vn.vna.eri.v2.configs.CFBotMessageBuilder;
 import vn.vna.eri.v2.configs.CFLangPack;
 import vn.vna.eri.v2.error.ERDiscordGuildPermissionMismatch;
 import vn.vna.eri.v2.schema.DCGuildConfig;
+import vn.vna.eri.v2.utils.helper.Placeholder;
 
 public final class UTMessageBuilder {
 
@@ -75,20 +74,20 @@ public final class UTMessageBuilder {
         .orElse("");
 
     for (Permission perm : mismatch) {
-      Map<String, String> fmtPermData = new HashMap<>();
-      fmtPermData.put("emoji", ":no_entry_sign:");
-      fmtPermData.put("perm_name", perm.getName());
-      fmtPermData.put("endl", "\n");
-      permErrStr.append(StrSubstitutor.replace(templateElem, fmtPermData));
+      Placeholder pl = this.createPlaceholder()
+          .place("emoji", ":no_entry_sign:")
+          .place("perm_name", perm.getName())
+          .place("endl", "\n");
+      permErrStr.append(this.formatMessage(templateElem, pl));
     }
 
-    Map<String, String> fmtTitleData = new HashMap<>();
-    fmtTitleData.put("count", "" + mismatch.size());
-    fmtTitleData.put("plural", mismatch.size() > 1 ? "s" : "");
-    fmtTitleData.put("user", pmex.getMember().getEffectiveName());
+    Placeholder pl = this.createPlaceholder()
+        .place("count", Objects.toString(mismatch.size()))
+        .place("plural", mismatch.size() > 1 ? "s" : "")
+        .place("user", pmex.getMember().getEffectiveName());
 
     errEmbed.addField(
-        StrSubstitutor.replace(templateTitle, fmtTitleData),
+        this.formatMessage(templateTitle, pl),
         permErrStr.toString(),
         false);
 
@@ -99,6 +98,14 @@ public final class UTMessageBuilder {
     msg.setEmbeds(errEmbed.build());
 
     return msg.build();
+  }
+
+  public String formatMessage(String format, Placeholder placeholders) {
+    return StrSubstitutor.replace(format, placeholders.getPlaceholder());
+  }
+
+  public Placeholder createPlaceholder() {
+    return Placeholder.createPlaceholder();
   }
 
 }
