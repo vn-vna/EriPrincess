@@ -6,14 +6,15 @@ import net.dv8tion.jda.api.events.Event;
 import vn.vna.eri.v2.event.discord.helper.CommandProperties;
 
 @CommandProperties(
-    commands = "help",
-    type = MESSAGE_COMMAND,
-    description = "No Description")
-public class CMDHelp
+    commands = "query",
+    type = MESSAGE_COMMAND
+)
+public class CMDQuery
     extends CMDTemplate {
 
   @Override
   public void execute(String[] commandList, Event event, Integer commandDepth) {
+
   }
 
 }

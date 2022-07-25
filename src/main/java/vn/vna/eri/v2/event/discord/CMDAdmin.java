@@ -12,10 +12,11 @@ import vn.vna.eri.v2.error.ERDiscordGuildPermissionMismatch;
 import vn.vna.eri.v2.event.discord.helper.CommandProperties;
 
 @CommandProperties(
-    type = MESSAGE_COMMAND, commands = "admin", botPermission = { Permission.ADMINISTRATOR }
-)
+    type = MESSAGE_COMMAND,
+    commands = "admin",
+    botPermission = { Permission.ADMINISTRATOR })
 public class CMDAdmin
-    extends CMDDiscordCommand {
+    extends CMDTemplate {
 
   @Override
   public void execute(String[] commandList, Event event, Integer commandDepth) {

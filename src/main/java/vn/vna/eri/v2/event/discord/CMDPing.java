@@ -8,10 +8,10 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import vn.vna.eri.v2.event.discord.helper.CommandProperties;
 
 @CommandProperties(
-    type = MESSAGE_COMMAND, commands = "ping"
-)
+    type = MESSAGE_COMMAND,
+    commands = "ping")
 public class CMDPing
-    extends CMDDiscordCommand {
+    extends CMDTemplate {
 
   @Override
   public void execute(String[] commandList, Event event, Integer commandDepth) {
@@ -23,10 +23,12 @@ public class CMDPing
   }
 
   @CommandProperties(
-      commands = "hello", type = SUBCOMMAND, parent = CMDPing.class
+      commands = "hello",
+      type = SUBCOMMAND,
+      parent = CMDPing.class
   )
   public static class CMDPingHello
-      extends CMDDiscordCommand {
+      extends CMDTemplate {
 
     @Override
     public void execute(String[] commandList, Event event, Integer commandDepth) {

@@ -30,7 +30,7 @@ public class EMServiceEvent
     logger.info("Logged in as [{}] successfully", SVDiscord.getInstance().getSelfUser().getAsTag());
     super.onReady(event);
     CFGlobalConfig.getInstance().invokeUpdateAtStage(ConfigTargetLoadStage.DISCORD_SERVICE_READY);
-    CMDDiscordCommand.loadCommands();
+    CMDTemplate.loadCommands();
   }
 
 }

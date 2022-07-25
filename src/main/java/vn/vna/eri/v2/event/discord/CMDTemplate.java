@@ -32,73 +32,72 @@ import vn.vna.eri.v2.services.SVDiscord;
 
 @Getter
 @Setter
-public abstract class CMDDiscordCommand {
+public abstract class CMDTemplate {
+  private static final Logger     logger = LoggerFactory.getLogger(CMDTemplate.class);
+  private static Set<CMDTemplate> commandManager;
 
-  private static final Logger                    logger = LoggerFactory
-      .getLogger(CMDDiscordCommand.class);
-  private static Set<CMDDiscordCommand>          commandManager;
   @PropertyField
-  protected String[]                             commands;
+  protected String[]                       commands;
   @PropertyField
-  protected String                               description;
+  protected String                         description;
   @PropertyField
-  protected CommandType                          type;
+  protected CommandType                    type;
   @PropertyField
-  protected Boolean                              separateThread;
+  protected Boolean                        separateThread;
   @PropertyField
-  protected Class<? extends CMDDiscordCommand>[] parent;
+  protected Class<? extends CMDTemplate>[] parent;
   @PropertyField
-  protected Permission[]                         botPermission;
+  protected Permission[]                   botPermission;
   @PropertyField
-  protected Permission[]                         senderPermission;
-  protected Set<CMDDiscordCommand>               children;
-  protected CMDDiscordCommand                    parentCommand;
+  protected Permission[]                   senderPermission;
+  protected Set<CMDTemplate>               children;
+  protected CMDTemplate                    parentCommand;
 
   protected JDA       jdaContext;
   protected SVDiscord discordService;
   protected Logger    commandLogger;
 
-  public static Set<CMDDiscordCommand> getCommandManager() {
-    return CMDDiscordCommand.commandManager;
+  public static Set<CMDTemplate> getCommandManager() {
+    return CMDTemplate.commandManager;
   }
 
-  public static <T extends CMDDiscordCommand> boolean isRootCommand(T command) {
+  public static <T extends CMDTemplate> boolean isRootCommand(T command) {
     return ArrayUtils.isEmpty(command.getParent());
   }
 
   public static void loadCommands() {
     long beginTime = System.currentTimeMillis();
 
-    Package packageScan = CMDDiscordCommand.class.getPackage();
+    Package packageScan = CMDTemplate.class.getPackage();
 
     logger.info("Command(s) will be loaded from {}", packageScan.getName());
     ConfigurationBuilder reflectionConfigBuilder = new ConfigurationBuilder()
-        .setUrls(ClasspathHelper.forPackage(CMDDiscordCommand.class.getPackageName()));
+        .setUrls(ClasspathHelper.forPackage(CMDTemplate.class.getPackageName()));
     Reflections          reflections             = new Reflections(reflectionConfigBuilder);
 
     // Collect command classes
-    Set<Class<? extends CMDDiscordCommand>> reflectedTypes = reflections
-        .getSubTypesOf(CMDDiscordCommand.class).stream()
-        .filter(type -> CMDDiscordCommand.class.equals(type.getSuperclass()))
+    Set<Class<? extends CMDTemplate>> reflectedTypes = reflections
+        .getSubTypesOf(CMDTemplate.class).stream()
+        .filter(type -> CMDTemplate.class.equals(type.getSuperclass()))
         .collect(Collectors.toSet());
 
     logger.info("Reflection found {} command class(es)", reflectedTypes.size());
 
     // Collect injection field
-    Set<Field> injectionFields = Arrays.stream(CMDDiscordCommand.class.getDeclaredFields())
+    Set<Field> injectionFields = Arrays.stream(CMDTemplate.class.getDeclaredFields())
         .filter((field -> !Objects.isNull(field.getAnnotation(PropertyField.class))))
         .collect(Collectors.toSet());
 
     // Create objects
-    Set<CMDDiscordCommand> commandCollection = new HashSet<>();
-    for (Class<? extends CMDDiscordCommand> reflectedType : reflectedTypes) {
+    Set<CMDTemplate> commandCollection = new HashSet<>();
+    for (Class<? extends CMDTemplate> reflectedType : reflectedTypes) {
       try {
-        Constructor<? extends CMDDiscordCommand> typeDefaultConstructor = reflectedType
+        Constructor<? extends CMDTemplate> typeDefaultConstructor = reflectedType
             .getConstructor();
-        CommandProperties                        properties             = reflectedType
-            .getAnnotation(CommandProperties.class);
-        CMDDiscordCommand                        command                = typeDefaultConstructor
-            .newInstance();
+
+        CommandProperties properties = reflectedType.getAnnotation(CommandProperties.class);
+
+        CMDTemplate command = typeDefaultConstructor.newInstance();
 
         // Inject value
         for (Field injectionField : injectionFields) {
@@ -114,14 +113,14 @@ public abstract class CMDDiscordCommand {
     }
 
     // Set some needed field
-    for (CMDDiscordCommand command : commandCollection) {
+    for (CMDTemplate command : commandCollection) {
       command.setJdaContext(SVDiscord.getInstance().getJdaContext());
       command.setDiscordService(SVDiscord.getInstance());
       command.setCommandLogger(LoggerFactory.getLogger(command.getClass()));
     }
 
     // Inspect child commands
-    for (CMDDiscordCommand command : commandCollection) {
+    for (CMDTemplate command : commandCollection) {
       command.setChildren(commandCollection.stream()
           .filter(
               (subcommand) -> Arrays.asList(subcommand.getParent()).contains(command.getClass()))
@@ -129,22 +128,22 @@ public abstract class CMDDiscordCommand {
     }
 
     // Get all root commands
-    CMDDiscordCommand.commandManager = commandCollection.stream()
-        .filter(CMDDiscordCommand::isRootCommand).collect(Collectors.toSet());
+    CMDTemplate.commandManager = commandCollection.stream()
+        .filter(CMDTemplate::isRootCommand).collect(Collectors.toSet());
 
     logger.info("Scan discord command operation finished took {} ms, found {} root command(s)",
-        System.currentTimeMillis() - beginTime, CMDDiscordCommand.commandManager.size());
+        System.currentTimeMillis() - beginTime, CMDTemplate.commandManager.size());
   }
 
   private static ExecutionInfo tryToMatchRecursive(String[] commandArray,
-      CMDDiscordCommand crrCommand, Integer depth, CMDDiscordCommand root) {
+      CMDTemplate crrCommand, Integer depth, CMDTemplate root) {
     if (crrCommand.match(commandArray[depth])) {
       if (Objects.isNull(root)) {
         root = crrCommand;
       }
 
       if (depth < commandArray.length - 1) {
-        for (CMDDiscordCommand child : crrCommand.getChildren()) {
+        for (CMDTemplate child : crrCommand.getChildren()) {
           ExecutionInfo matched = tryToMatchRecursive(commandArray, child, depth + 1, root);
           if (Objects.nonNull(matched)) {
             return matched;
@@ -158,7 +157,7 @@ public abstract class CMDDiscordCommand {
   }
 
   public static ExecutionInfo tryToMatch(String[] commandArray) {
-    for (CMDDiscordCommand command : getCommandManager()) {
+    for (CMDTemplate command : getCommandManager()) {
       ExecutionInfo matched = tryToMatchRecursive(commandArray, command, 0, null);
       if (Objects.nonNull(matched)) {
         return matched;

@@ -56,7 +56,7 @@ public class EMMessageEvent
     String[] commandArray = rawContent
         .substring(CFDiscordService.getInstance().getBotPrefix().length()).split(" ");
 
-    CMDDiscordCommand.tryExecute(commandArray, event, CommandType.MESSAGE_COMMAND);
+    CMDTemplate.tryExecute(commandArray, event, CommandType.MESSAGE_COMMAND);
   }
 
   @Override
