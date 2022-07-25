@@ -56,7 +56,16 @@ public class EMMessageEvent
     String[] commandArray = rawContent
         .substring(CFDiscordService.getInstance().getBotPrefix().length()).split(" ");
 
-    CMDTemplate.tryExecute(commandArray, event, CommandType.MESSAGE_COMMAND);
+    long    beginEx = System.currentTimeMillis();
+    boolean success = CMDTemplate.tryExecute(commandArray, event, CommandType.MESSAGE_COMMAND);
+    if (success) {
+      logger.info(
+          "Took {} ms: Executed a command required by {} on guild {} with message \"{}\"",
+          System.currentTimeMillis() - beginEx,
+          event.getMember().getEffectiveName(),
+          event.getGuild().getName(),
+          event.getMessage().getContentRaw());
+    }
   }
 
   @Override

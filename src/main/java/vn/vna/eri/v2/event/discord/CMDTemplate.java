@@ -166,18 +166,19 @@ public abstract class CMDTemplate {
     return null;
   }
 
-  public static void tryExecute(String @NotNull [] commandArray, Event event, CommandType type) {
+  public static boolean tryExecute(String @NotNull [] commandArray, Event event, CommandType type) {
     ExecutionInfo matchedCommand = tryToMatch(commandArray);
 
     if (Objects.isNull(matchedCommand)) {
-      return;
+      return false;
     }
 
     if (!matchedCommand.getRootCommand().getType().equals(type)) {
-      return;
+      return false;
     }
 
     matchedCommand.getCommand().execute(commandArray, event, matchedCommand.getDepth());
+    return true;
   }
 
   private List<Permission> getMismatchPermission(Member member, GuildChannel channel,

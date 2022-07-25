@@ -19,6 +19,8 @@ import vn.vna.eri.v2.configs.helper.LangPackEnum;
 @Setter
 public final class CFLangPack {
 
+  public static final LangPackEnum DEFAULT_LANG_PACK = LangPackEnum.EN_US;
+
   private static CFLangPack instance;
   private static Logger     logger = LoggerFactory.getLogger(CFLangPack.class);
 
@@ -63,7 +65,11 @@ public final class CFLangPack {
   }
 
   public Optional<Ini> getLangPack(LangPackEnum pack) {
-    return Optional.ofNullable(this.langPacks.get(pack.getName()));
+    return this.getLangPack(pack.getName());
+  }
+
+  public Optional<Ini> getLangPack(String packName) {
+    return Optional.ofNullable(this.langPacks.get(packName));
   }
 
   public Optional<String> getString(LangPackEnum pack, String section, String key) {

@@ -11,21 +11,28 @@ import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import org.apache.commons.text.StrSubstitutor;
+import org.ini4j.Ini;
+import vn.vna.eri.v2.clients.CLDiscordGuildConfig;
 import vn.vna.eri.v2.configs.CFBotMessageBuilder;
+import vn.vna.eri.v2.configs.CFLangPack;
 import vn.vna.eri.v2.error.ERDiscordGuildPermissionMismatch;
+import vn.vna.eri.v2.schema.DCGuildConfig;
 
 public final class UTMessageBuilder {
 
-  public static final String ZEROWIDTH_WHITE_SPACE  = "\u200b";
-  public static final String TPL_PERM_MISSING_STR   = "${emoji} -- [${perm_name}]\n";
-  public static final String TPL_PERM_MISSING_TITLE = "Missing ${count} permission${plural} for user [${user}]";
+  public static final String ZEROWIDTH_WHITE_SPACE   = "\u200b";
+  public static final String LANG_PACK_SECTION       = "msg-builder";
+  public static final String LPK_PERMMISSING_TITLE   = "tpl.perm-missing.title";
+  public static final String LPK_PERMMISSING_PERMSTR = "tpl.perm-missing.perm-str";
 
   private static UTMessageBuilder instance;
 
-  private final CFBotMessageBuilder msgBuilderCfg;
+  private final CFBotMessageBuilder  msgBuilderCfg;
+  private final CLDiscordGuildConfig guildConfigClient;
 
   public UTMessageBuilder() {
-    this.msgBuilderCfg = CFBotMessageBuilder.getInstance();
+    this.msgBuilderCfg     = CFBotMessageBuilder.getInstance();
+    this.guildConfigClient = CLDiscordGuildConfig.getClient();
   }
 
   public static UTMessageBuilder getInstance() {
@@ -37,24 +44,42 @@ public final class UTMessageBuilder {
     return UTMessageBuilder.instance;
   }
 
-  public EmbedBuilder getBotDefaultEmbedBuilder() {
+  public EmbedBuilder getDefaultEmbedBuilder() {
     EmbedBuilder builder = new EmbedBuilder();
-    Optional.ofNullable(this.msgBuilderCfg.getBotEmbedTitle()).ifPresent(builder::setTitle);
-    Optional.ofNullable(this.msgBuilderCfg.getBotEmbedThumbUrl()).ifPresent(builder::setThumbnail);
-    Optional.ofNullable(this.msgBuilderCfg.getBotEmbedFooter()).ifPresent(builder::setFooter);
+    Optional.ofNullable(this.msgBuilderCfg.getBotEmbedTitle())
+        .ifPresent(builder::setTitle);
+    Optional.ofNullable(this.msgBuilderCfg.getBotEmbedThumbUrl())
+        .ifPresent(builder::setThumbnail);
+    Optional.ofNullable(this.msgBuilderCfg.getBotEmbedFooter())
+        .ifPresent(builder::setFooter);
     return builder;
   }
 
   public Message getPermissionMissingMessage(ERDiscordGuildPermissionMismatch pmex) {
-    EmbedBuilder     errEmbed   = UTMessageBuilder.getInstance().getBotDefaultEmbedBuilder();
-    StringBuilder    permErrStr = new StringBuilder();
-    List<Permission> mismatch   = pmex.getMismatchPermission();
+    String                  guildId     = pmex.getMember().getGuild().getId();
+    EmbedBuilder            errEmbed    = this.getDefaultEmbedBuilder();
+    StringBuilder           permErrStr  = new StringBuilder();
+    List<Permission>        mismatch    = pmex.getMismatchPermission();
+    Optional<DCGuildConfig> guildConfig = this.guildConfigClient.getConfiguration(guildId);
+
+    Optional<Ini> langPack = CFLangPack
+        .getInstance()
+        .getLangPack(guildConfig
+            .map((cfg) -> cfg.getLanguage()).orElse(CFLangPack.DEFAULT_LANG_PACK.getName()));
+
+    String templateTitle = langPack
+        .map((pack) -> pack.get(LANG_PACK_SECTION, LPK_PERMMISSING_TITLE))
+        .orElse("");
+    String templateElem  = langPack
+        .map((pack) -> pack.get(LANG_PACK_SECTION, LPK_PERMMISSING_PERMSTR))
+        .orElse("");
 
     for (Permission perm : mismatch) {
       Map<String, String> fmtPermData = new HashMap<>();
       fmtPermData.put("emoji", ":no_entry_sign:");
       fmtPermData.put("perm_name", perm.getName());
-      permErrStr.append(StrSubstitutor.replace(TPL_PERM_MISSING_STR, fmtPermData));
+      fmtPermData.put("endl", "\n");
+      permErrStr.append(StrSubstitutor.replace(templateElem, fmtPermData));
     }
 
     Map<String, String> fmtTitleData = new HashMap<>();
@@ -63,7 +88,7 @@ public final class UTMessageBuilder {
     fmtTitleData.put("user", pmex.getMember().getEffectiveName());
 
     errEmbed.addField(
-        StrSubstitutor.replace(TPL_PERM_MISSING_TITLE, fmtTitleData),
+        StrSubstitutor.replace(templateTitle, fmtTitleData),
         permErrStr.toString(),
         false);
 
