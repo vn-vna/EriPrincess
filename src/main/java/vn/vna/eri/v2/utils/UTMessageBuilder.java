@@ -1,5 +1,7 @@
 package vn.vna.eri.v2.utils;
 
+import static vn.vna.eri.v2.utils.helper.PlaceholderEntry.entry;
+
 import java.awt.Color;
 import java.util.List;
 import java.util.Objects;
@@ -16,6 +18,7 @@ import vn.vna.eri.v2.configs.CFLangPack;
 import vn.vna.eri.v2.error.ERDiscordGuildPermissionMismatch;
 import vn.vna.eri.v2.schema.DCGuildConfig;
 import vn.vna.eri.v2.utils.helper.Placeholder;
+import vn.vna.eri.v2.utils.helper.PlaceholderEntry;
 
 public final class UTMessageBuilder {
 
@@ -26,12 +29,10 @@ public final class UTMessageBuilder {
 
   private static UTMessageBuilder instance;
 
-  private final CFBotMessageBuilder  msgBuilderCfg;
-  private final CLDiscordGuildConfig guildConfigClient;
+  private final CFBotMessageBuilder msgBuilderCfg;
 
   public UTMessageBuilder() {
-    this.msgBuilderCfg     = CFBotMessageBuilder.getInstance();
-    this.guildConfigClient = CLDiscordGuildConfig.getClient();
+    this.msgBuilderCfg = CFBotMessageBuilder.getInstance();
   }
 
   public static UTMessageBuilder getInstance() {
@@ -55,11 +56,12 @@ public final class UTMessageBuilder {
   }
 
   public Message getPermissionMissingMessage(ERDiscordGuildPermissionMismatch pmex) {
-    String                  guildId     = pmex.getMember().getGuild().getId();
-    EmbedBuilder            errEmbed    = this.getDefaultEmbedBuilder();
-    StringBuilder           permErrStr  = new StringBuilder();
-    List<Permission>        mismatch    = pmex.getMismatchPermission();
-    Optional<DCGuildConfig> guildConfig = this.guildConfigClient.getConfiguration(guildId);
+    CLDiscordGuildConfig    guildConfigClient = CLDiscordGuildConfig.getClient();
+    String                  guildId           = pmex.getMember().getGuild().getId();
+    EmbedBuilder            errEmbed          = this.getDefaultEmbedBuilder();
+    StringBuilder           permErrStr        = new StringBuilder();
+    List<Permission>        mismatch          = pmex.getMismatchPermission();
+    Optional<DCGuildConfig> guildConfig       = guildConfigClient.getConfiguration(guildId);
 
     Optional<Ini> langPack = CFLangPack
         .getInstance()
@@ -74,20 +76,17 @@ public final class UTMessageBuilder {
         .orElse("");
 
     for (Permission perm : mismatch) {
-      Placeholder pl = this.createPlaceholder()
-          .place("emoji", ":no_entry_sign:")
-          .place("perm_name", perm.getName())
-          .place("endl", "\n");
-      permErrStr.append(this.formatMessage(templateElem, pl));
+      permErrStr.append(this.formatMessage(templateElem,
+          entry("emoji", ":no_entry_sign:"),
+          entry("perm_name", perm.getName()),
+          entry("endl", "\n")));
     }
 
-    Placeholder pl = this.createPlaceholder()
-        .place("count", Objects.toString(mismatch.size()))
-        .place("plural", mismatch.size() > 1 ? "s" : "")
-        .place("user", pmex.getMember().getEffectiveName());
-
     errEmbed.addField(
-        this.formatMessage(templateTitle, pl),
+        this.formatMessage(templateTitle,
+            entry("count", Objects.toString(mismatch.size())),
+            entry("plural", mismatch.size() > 1 ? "s" : ""),
+            entry("user", pmex.getMember().getEffectiveName())),
         permErrStr.toString(),
         false);
 
@@ -100,8 +99,13 @@ public final class UTMessageBuilder {
     return msg.build();
   }
 
-  public String formatMessage(String format, Placeholder placeholders) {
-    return StrSubstitutor.replace(format, placeholders.getPlaceholder());
+  public String formatMessage(String format, Placeholder pl) {
+    return StrSubstitutor.replace(format, pl.getPlaceholder());
+  }
+
+  public String formatMessage(String format, PlaceholderEntry... entries) {
+    Placeholder pl = this.createPlaceholder().placeAll(entries);
+    return this.formatMessage(format, pl);
   }
 
   public Placeholder createPlaceholder() {

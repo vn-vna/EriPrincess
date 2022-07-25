@@ -19,6 +19,13 @@ public class Placeholder {
     return this;
   }
 
+  public Placeholder placeAll(PlaceholderEntry... entries) {
+    for (PlaceholderEntry entry : entries) {
+      this.placeholder.put(entry.getKey(), entry.getValue());
+    }
+    return this;
+  }
+
   public static Placeholder createPlaceholder() {
     return new Placeholder();
   }

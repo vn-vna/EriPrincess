@@ -50,8 +50,9 @@ public abstract class CMDTemplate {
   protected Permission[]                   botPermission;
   @PropertyField
   protected Permission[]                   senderPermission;
-  protected Set<CMDTemplate>               children;
-  protected CMDTemplate                    parentCommand;
+
+  protected Set<CMDTemplate> children;
+  protected CMDTemplate      parentCommand;
 
   protected JDA       jdaContext;
   protected SVDiscord discordService;
