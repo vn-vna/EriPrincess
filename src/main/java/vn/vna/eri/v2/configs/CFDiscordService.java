@@ -12,7 +12,8 @@ import vn.vna.eri.v2.configs.helper.UpdatableConfigTarget;
 
 @Getter
 @ConfigTarget(name = "dsc-service", stage = SPRING_SERVICE_READY)
-public class CFDiscordService implements UpdatableConfigTarget {
+public class CFDiscordService
+    implements UpdatableConfigTarget {
 
   private static CFDiscordService instance;
 

@@ -15,7 +15,8 @@ import vn.vna.eri.v2.utils.UTGenericEntity;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "_tokens")
-public class ETAuthToken extends UTGenericEntity<DCAuthorizeToken> {
+public class ETAuthToken
+    extends UTGenericEntity<DCAuthorizeToken> {
 
   @Id
   @Column(name = "_token")

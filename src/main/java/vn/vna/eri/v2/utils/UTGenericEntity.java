@@ -27,14 +27,11 @@ public class UTGenericEntity<DataClass extends UTJsonClass> {
       obj = type.getConstructor().newInstance();
 
       var setMethods = Arrays.stream(type.getMethods())
-          .filter((method) -> method.getName().startsWith("set"))
-          .toList();
+          .filter((method) -> method.getName().startsWith("set")).toList();
 
       for (var setMethod : setMethods) {
         String getMethodName = "get" + setMethod.getName().substring(3);
-        Object ret = this.getClass()
-            .getMethod(getMethodName)
-            .invoke(this);
+        Object ret           = this.getClass().getMethod(getMethodName).invoke(this);
         setMethod.invoke(obj, ret);
       }
 
@@ -48,16 +45,14 @@ public class UTGenericEntity<DataClass extends UTJsonClass> {
   public void importFromDataObject(DataClass object, Boolean excludeNull) {
     try {
       List<Method> setMethods = Arrays.stream(this.getClass().getMethods())
-          .filter((method) -> method.getName().startsWith("set"))
-          .toList();
+          .filter((method) -> method.getName().startsWith("set")).toList();
 
       for (Method setMethod : setMethods) {
-        String getMethodName =
-            "get" + setMethod.getName().substring(3); // setSomething -> getSomething
+        String getMethodName = "get" + setMethod.getName().substring(3); // setSomething
+                                                                         // ->
+                                                                         // getSomething
 
-        Object ret = object.getClass()
-            .getMethod(getMethodName)
-            .invoke(object);
+        Object ret = object.getClass().getMethod(getMethodName).invoke(object);
 
         if (!excludeNull && Objects.isNull(ret)) {
           continue;
@@ -67,9 +62,7 @@ public class UTGenericEntity<DataClass extends UTJsonClass> {
       }
     } catch (Exception ex) {
       logger.error("Import data from data object [{}] into [{}] has failed due to error: {}",
-          object.getClass().getName(),
-          this.getClass().getName(),
-          ex.getMessage());
+          object.getClass().getName(), this.getClass().getName(), ex.getMessage());
     }
   }
 

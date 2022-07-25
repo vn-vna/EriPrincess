@@ -7,5 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ARServerConfigManagement extends ARTemplate<DCServerConfig> {
+public class ARServerConfigManagement
+    extends ARTemplate<DCServerConfig> {
 }

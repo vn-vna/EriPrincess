@@ -14,9 +14,10 @@ import vn.vna.eri.v2.configs.CFDiscordService;
 import vn.vna.eri.v2.event.discord.helper.CommandType;
 
 @NoArgsConstructor
-public class EMMessageEvent extends ListenerAdapter {
+public class EMMessageEvent
+    extends ListenerAdapter {
 
-  private static final Logger logger = LoggerFactory.getLogger(EMMessageEvent.class);
+  private static final Logger   logger = LoggerFactory.getLogger(EMMessageEvent.class);
   private static EMMessageEvent instance;
 
   public static EMMessageEvent getInstance() {
@@ -53,11 +54,9 @@ public class EMMessageEvent extends ListenerAdapter {
     }
 
     String[] commandArray = rawContent
-        .substring(CFDiscordService.getInstance().getBotPrefix().length())
-        .split(" ");
+        .substring(CFDiscordService.getInstance().getBotPrefix().length()).split(" ");
 
-    CMDDiscordCommand
-        .tryExecute(commandArray, event, CommandType.MESSAGE_COMMAND);
+    CMDDiscordCommand.tryExecute(commandArray, event, CommandType.MESSAGE_COMMAND);
   }
 
   @Override

@@ -8,21 +8,22 @@ import vn.vna.eri.v2.utils.UTJsonClass;
 
 @Data
 @NoArgsConstructor
-public class DCServerStatus implements UTJsonClass {
+public class DCServerStatus
+    implements UTJsonClass {
 
   @SerializedName("system_status")
   DCSystemStatus systemStatus;
   @SerializedName("up_time")
-  Long upTime;
+  Long           upTime;
   @SerializedName("discord_service")
-  String discordService;
+  String         discordService;
   @SerializedName("api_service")
-  String apiService;
+  String         apiService;
 
   public static DCServerStatus getStatus() {
     DCServerStatus result = new DCServerStatus();
     result.systemStatus = DCSystemStatus.getCurrentStatus();
-    result.upTime = ManagementFactory.getRuntimeMXBean().getUptime();
+    result.upTime       = ManagementFactory.getRuntimeMXBean().getUptime();
     return result;
   }
 }

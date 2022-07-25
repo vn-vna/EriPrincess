@@ -34,28 +34,29 @@ import vn.vna.eri.v2.services.SVDiscord;
 @Setter
 public abstract class CMDDiscordCommand {
 
-  private static final Logger logger = LoggerFactory.getLogger(CMDDiscordCommand.class);
-  private static Set<CMDDiscordCommand> commandManager;
+  private static final Logger                    logger = LoggerFactory
+      .getLogger(CMDDiscordCommand.class);
+  private static Set<CMDDiscordCommand>          commandManager;
   @PropertyField
-  protected String[] commands;
+  protected String[]                             commands;
   @PropertyField
-  protected String description;
+  protected String                               description;
   @PropertyField
-  protected CommandType type;
+  protected CommandType                          type;
   @PropertyField
-  protected Boolean separateThread;
+  protected Boolean                              separateThread;
   @PropertyField
   protected Class<? extends CMDDiscordCommand>[] parent;
   @PropertyField
-  protected Permission[] botPermission;
+  protected Permission[]                         botPermission;
   @PropertyField
-  protected Permission[] senderPermission;
-  protected Set<CMDDiscordCommand> children;
-  protected CMDDiscordCommand parentCommand;
+  protected Permission[]                         senderPermission;
+  protected Set<CMDDiscordCommand>               children;
+  protected CMDDiscordCommand                    parentCommand;
 
-  protected JDA jdaContext;
+  protected JDA       jdaContext;
   protected SVDiscord discordService;
-  protected Logger commandLogger;
+  protected Logger    commandLogger;
 
   public static Set<CMDDiscordCommand> getCommandManager() {
     return CMDDiscordCommand.commandManager;
@@ -73,20 +74,18 @@ public abstract class CMDDiscordCommand {
     logger.info("Command(s) will be loaded from {}", packageScan.getName());
     ConfigurationBuilder reflectionConfigBuilder = new ConfigurationBuilder()
         .setUrls(ClasspathHelper.forPackage(CMDDiscordCommand.class.getPackageName()));
-    Reflections reflections = new Reflections(reflectionConfigBuilder);
+    Reflections          reflections             = new Reflections(reflectionConfigBuilder);
 
     // Collect command classes
     Set<Class<? extends CMDDiscordCommand>> reflectedTypes = reflections
-        .getSubTypesOf(CMDDiscordCommand.class)
-        .stream()
+        .getSubTypesOf(CMDDiscordCommand.class).stream()
         .filter(type -> CMDDiscordCommand.class.equals(type.getSuperclass()))
         .collect(Collectors.toSet());
 
     logger.info("Reflection found {} command class(es)", reflectedTypes.size());
 
     // Collect injection field
-    Set<Field> injectionFields = Arrays
-        .stream(CMDDiscordCommand.class.getDeclaredFields())
+    Set<Field> injectionFields = Arrays.stream(CMDDiscordCommand.class.getDeclaredFields())
         .filter((field -> !Objects.isNull(field.getAnnotation(PropertyField.class))))
         .collect(Collectors.toSet());
 
@@ -94,24 +93,23 @@ public abstract class CMDDiscordCommand {
     Set<CMDDiscordCommand> commandCollection = new HashSet<>();
     for (Class<? extends CMDDiscordCommand> reflectedType : reflectedTypes) {
       try {
-        Constructor<? extends CMDDiscordCommand> typeDefaultConstructor = reflectedType.getConstructor();
-        CommandProperties properties = reflectedType.getAnnotation(CommandProperties.class);
-        CMDDiscordCommand command = typeDefaultConstructor.newInstance();
+        Constructor<? extends CMDDiscordCommand> typeDefaultConstructor = reflectedType
+            .getConstructor();
+        CommandProperties                        properties             = reflectedType
+            .getAnnotation(CommandProperties.class);
+        CMDDiscordCommand                        command                = typeDefaultConstructor
+            .newInstance();
 
         // Inject value
         for (Field injectionField : injectionFields) {
           injectionField.set(command,
-              CommandProperties.class
-                  .getMethod(injectionField.getName())
-                  .invoke(properties));
+              CommandProperties.class.getMethod(injectionField.getName()).invoke(properties));
         }
 
         commandCollection.add(command);
       } catch (Exception ex) {
-        logger.error(
-            "Create command object with type [{}] has failed due to error: {}",
-            reflectedType.getName(),
-            ex.getMessage());
+        logger.error("Create command object with type [{}] has failed due to error: {}",
+            reflectedType.getName(), ex.getMessage());
       }
     }
 
@@ -124,23 +122,18 @@ public abstract class CMDDiscordCommand {
 
     // Inspect child commands
     for (CMDDiscordCommand command : commandCollection) {
-      command.setChildren(commandCollection
-          .stream()
-          .filter((subcommand) -> Arrays
-              .asList(subcommand.getParent())
-              .contains(command.getClass()))
+      command.setChildren(commandCollection.stream()
+          .filter(
+              (subcommand) -> Arrays.asList(subcommand.getParent()).contains(command.getClass()))
           .collect(Collectors.toSet()));
     }
 
     // Get all root commands
-    CMDDiscordCommand.commandManager = commandCollection
-        .stream()
-        .filter(CMDDiscordCommand::isRootCommand)
-        .collect(Collectors.toSet());
+    CMDDiscordCommand.commandManager = commandCollection.stream()
+        .filter(CMDDiscordCommand::isRootCommand).collect(Collectors.toSet());
 
     logger.info("Scan discord command operation finished took {} ms, found {} root command(s)",
-        System.currentTimeMillis() - beginTime,
-        CMDDiscordCommand.commandManager.size());
+        System.currentTimeMillis() - beginTime, CMDDiscordCommand.commandManager.size());
   }
 
   private static ExecutionInfo tryToMatchRecursive(String[] commandArray,
@@ -190,11 +183,10 @@ public abstract class CMDDiscordCommand {
 
   private List<Permission> getMismatchPermission(Member member, GuildChannel channel,
       Permission[] requiredPermissions) {
-    List<Permission> mismatch;
+    List<Permission>    mismatch;
     EnumSet<Permission> availablePermissions = member.getPermissions(channel);
 
-    mismatch = Arrays
-        .stream(requiredPermissions)
+    mismatch = Arrays.stream(requiredPermissions)
         .filter((permission) -> !availablePermissions.contains(permission))
         .collect(Collectors.toList());
 
@@ -203,15 +195,15 @@ public abstract class CMDDiscordCommand {
 
   public void requirePermissionMessageEvent(Member bot, Member sender, GuildChannel channel)
       throws ERDiscordGuildPermissionMismatch {
-    List<Permission> botPermissionMisMatch = this.getMismatchPermission(
-        bot, channel, this.botPermission);
+    List<Permission> botPermissionMisMatch = this.getMismatchPermission(bot, channel,
+        this.botPermission);
 
     if (botPermissionMisMatch.size() > 0) {
       throw new ERDiscordGuildPermissionMismatch(bot, botPermissionMisMatch);
     }
 
-    List<Permission> senderPermissionMismatch = this.getMismatchPermission(
-        sender, channel, this.senderPermission);
+    List<Permission> senderPermissionMismatch = this.getMismatchPermission(sender, channel,
+        this.senderPermission);
 
     if (senderPermissionMismatch.size() > 0) {
       throw new ERDiscordGuildPermissionMismatch(sender, senderPermissionMismatch);

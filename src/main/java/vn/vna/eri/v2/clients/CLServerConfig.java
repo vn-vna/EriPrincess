@@ -16,11 +16,13 @@ import vn.vna.eri.v2.services.SVApiControl;
 import vn.vna.eri.v2.utils.UTGenericEntity;
 
 /**
- * Server config client is used to perform transaction with server config database. This client is
- * only accessible when {@link vn.vna.eri.v2.services.SVApiControl ApiControl service} is enabled
- * and works fine.
+ * Server config client is used to perform transaction with server config
+ * database. This client is only accessible when
+ * {@link vn.vna.eri.v2.services.SVApiControl ApiControl service} is enabled and
+ * works fine.
  *
- * @see vn.vna.eri.v2.clients.CLServerConfig#getClient() Get the instance of this client
+ * @see vn.vna.eri.v2.clients.CLServerConfig#getClient() Get the instance of
+ *      this client
  */
 @Component
 public class CLServerConfig {
@@ -29,15 +31,17 @@ public class CLServerConfig {
    * Client Server config cache name
    */
   public static final String CL_SC_CACHE_NAME = "server-config";
+
   private static final Logger logger = LoggerFactory.getLogger(CLServerConfig.class);
   @Autowired
   @Getter
-  private RPServerConfig repository;
+  private RPServerConfig      repository;
 
   /**
    * Don't use the constructor to create a new client
    *
-   * @see vn.vna.eri.v2.clients.CLServerConfig#getClient() Get the instance from Spring Boot
+   * @see vn.vna.eri.v2.clients.CLServerConfig#getClient() Get the instance from
+   *      Spring Boot
    */
   public CLServerConfig() {
     logger.info("Initializing server config client");
@@ -49,9 +53,7 @@ public class CLServerConfig {
    * @return {@link vn.vna.eri.v2.clients.CLServerConfig} this client instance
    */
   public static CLServerConfig getClient() {
-    return SVApiControl
-        .getApplicationContext()
-        .getBean(CLServerConfig.class);
+    return SVApiControl.getApplicationContext().getBean(CLServerConfig.class);
   }
 
   /**
@@ -64,20 +66,20 @@ public class CLServerConfig {
    */
   @CacheEvict(cacheNames = CL_SC_CACHE_NAME, key = "#key")
   public Optional<DCServerConfig> removeConfig(String key) {
-    return this.getConfig(key)
-        .map((result) -> {
-          this.repository.deleteById(key);
-          return result;
-        });
+    return this.getConfig(key).map((result) -> {
+      this.repository.deleteById(key);
+      return result;
+    });
   }
 
   /**
-   * Edit the value of the config with specified key and also require an cache eviction to require
-   * reload cache if this config value is used again.
+   * Edit the value of the config with specified key and also require an cache
+   * eviction to require reload cache if this config value is used again.
    *
    * @param key   - the key of config should be modified
    * @param value - new value
-   * @return new config object if the config is modified successfully or null if any error occured
+   * @return new config object if the config is modified successfully or null if
+   *         any error occured
    * @see DCServerConfig ServerConfig Dataclass
    */
   @CacheEvict(cacheNames = CL_SC_CACHE_NAME, key = "#key")
@@ -88,20 +90,14 @@ public class CLServerConfig {
 
       return Optional.ofNullable(this.repository.save(saveValue).toDataObject());
     } catch (Exception ex) {
-      logger.error(
-          "Request set config {} from database has failed due to: {}",
-          key, ex.getMessage());
+      logger.error("Request set config {} from database has failed due to: {}", key,
+          ex.getMessage());
     }
     return Optional.empty();
   }
 
-
   public List<DCServerConfig> getAllConfig() {
-    return this.repository
-        .findAll()
-        .stream()
-        .map(ETServerConfig::toDataObject)
-        .toList();
+    return this.repository.findAll().stream().map(ETServerConfig::toDataObject).toList();
   }
 
   /**
@@ -133,9 +129,8 @@ public class CLServerConfig {
         value = info.get().getValue();
       }
     } catch (Exception ex) {
-      logger.error(
-          "Request get config {} from database has failed due to: {}",
-          key, ex.getMessage());
+      logger.error("Request get config {} from database has failed due to: {}", key,
+          ex.getMessage());
     }
 
     return value;

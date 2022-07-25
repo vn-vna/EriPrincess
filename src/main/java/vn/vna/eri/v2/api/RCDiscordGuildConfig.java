@@ -23,88 +23,71 @@ public class RCDiscordGuildConfig {
   private CLDiscordGuildConfig client;
 
   @GetMapping("/api/config/discord/{id}")
-  public ResponseEntity<String> getGuildConfigbyId(
-      @PathVariable("id") String guildId) {
-    long beginTime = System.nanoTime();
+  public ResponseEntity<String> getGuildConfigbyId(@PathVariable("id") String guildId) {
+    long                 beginTime   = System.nanoTime();
     ARDiscordGuildConfig apiResponse = new ARDiscordGuildConfig();
     apiResponse.setSuccess(false);
 
-    this.client
-        .getConfiguration(guildId)
-        .ifPresentOrElse((result) -> {
-          apiResponse.setSuccess(true);
-          apiResponse.getResults().add(result);
-        }, () -> {
-          apiResponse.setError(
-              "No configuration found for id [%s]".formatted(guildId));
-        });
+    this.client.getConfiguration(guildId).ifPresentOrElse((result) -> {
+      apiResponse.setSuccess(true);
+      apiResponse.getResults().add(result);
+    }, () -> {
+      apiResponse.setError("No configuration found for id [%s]".formatted(guildId));
+    });
 
     apiResponse.setTook(System.nanoTime() - beginTime);
     return UTApiResponse.responseJson(ResponseCode.OK, apiResponse);
   }
 
   @PutMapping("/api/config/discord/{id}")
-  public ResponseEntity<String> putGuildConfigById(
-      @PathVariable("id") String guildId,
+  public ResponseEntity<String> putGuildConfigById(@PathVariable("id") String guildId,
       @RequestBody String info) {
-    Long beginTime = System.nanoTime();
+    Long                 beginTime   = System.nanoTime();
     ARDiscordGuildConfig apiResponse = new ARDiscordGuildConfig();
     apiResponse.setSuccess(false);
 
-    DCGuildConfig newInfo = UTJsonParser
-        .fromJson(info, DCGuildConfig.class);
+    DCGuildConfig newInfo = UTJsonParser.fromJson(info, DCGuildConfig.class);
 
-    this.client
-        .updateConfig(guildId, newInfo)
-        .ifPresentOrElse((result) -> {
-          apiResponse.setSuccess(true);
-          apiResponse.getResults().add(result);
-        }, () -> {
-          apiResponse.setError(
-              "No configuration found for id [%s]".formatted(guildId));
-        });
+    this.client.updateConfig(guildId, newInfo).ifPresentOrElse((result) -> {
+      apiResponse.setSuccess(true);
+      apiResponse.getResults().add(result);
+    }, () -> {
+      apiResponse.setError("No configuration found for id [%s]".formatted(guildId));
+    });
 
     apiResponse.setTook(System.nanoTime() - beginTime);
     return UTApiResponse.responseJson(ResponseCode.OK, apiResponse);
   }
 
   @PostMapping("/api/config/discord/{id}")
-  public ResponseEntity<String> createGuildConfigById(
-      @PathVariable("id") String guildId) {
-    Long beginTime = System.nanoTime();
+  public ResponseEntity<String> createGuildConfigById(@PathVariable("id") String guildId) {
+    Long                 beginTime   = System.nanoTime();
     ARDiscordGuildConfig apiResponse = new ARDiscordGuildConfig();
     apiResponse.setSuccess(false);
 
-    this.client
-        .createConfig(guildId)
-        .ifPresentOrElse((result) -> {
-          apiResponse.setSuccess(true);
-          apiResponse.getResults().add(result);
-        }, () -> {
-          apiResponse.setError(
-              "Unable to generate configuration for id [%s]".formatted(guildId));
-        });
+    this.client.createConfig(guildId).ifPresentOrElse((result) -> {
+      apiResponse.setSuccess(true);
+      apiResponse.getResults().add(result);
+    }, () -> {
+      apiResponse.setError("Unable to generate configuration for id [%s]".formatted(guildId));
+    });
 
     apiResponse.setTook(System.nanoTime() - beginTime);
     return UTApiResponse.responseJson(ResponseCode.OK, apiResponse);
   }
 
   @DeleteMapping("/api/config/discord/{id}")
-  public ResponseEntity<String> deleteGuildEntity(
-      @PathVariable("id") String guildId) {
-    long beginTime = System.nanoTime();
+  public ResponseEntity<String> deleteGuildEntity(@PathVariable("id") String guildId) {
+    long                 beginTime   = System.nanoTime();
     ARDiscordGuildConfig apiResponse = new ARDiscordGuildConfig();
     apiResponse.setSuccess(false);
 
-    this.client
-        .deleteConfig(guildId)
-        .ifPresentOrElse((result) -> {
-          apiResponse.setSuccess(true);
-          apiResponse.getResults().add(result);
-        }, () -> {
-          apiResponse.setError(
-              "No configuration found for id [%s]".formatted(guildId));
-        });
+    this.client.deleteConfig(guildId).ifPresentOrElse((result) -> {
+      apiResponse.setSuccess(true);
+      apiResponse.getResults().add(result);
+    }, () -> {
+      apiResponse.setError("No configuration found for id [%s]".formatted(guildId));
+    });
 
     apiResponse.setTook(System.nanoTime() - beginTime);
     return UTApiResponse.responseJson(ResponseCode.OK, apiResponse);

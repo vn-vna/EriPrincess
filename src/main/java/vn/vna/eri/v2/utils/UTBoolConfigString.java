@@ -11,12 +11,12 @@ import vn.vna.eri.v2.utils.helper.BoolConfigProperty;
 
 public class UTBoolConfigString {
 
-  protected Logger logger;
-  protected String separator;
+  protected Logger      logger;
+  protected String      separator;
   protected List<Field> configFields;
 
   public UTBoolConfigString() {
-    this.logger = LoggerFactory.getLogger(this.getClass());
+    this.logger    = LoggerFactory.getLogger(this.getClass());
     this.separator = ",";
     initializeObject();
   }
@@ -41,17 +41,14 @@ public class UTBoolConfigString {
   public void importConfigString(String str) {
     this.clearConfig();
 
-    List<String> tokens = Arrays
-        .stream(str.split(this.separator))
-        .filter(token -> !"".equals(token))
-        .toList();
+    List<String> tokens = Arrays.stream(str.split(this.separator))
+        .filter(token -> !"".equals(token)).toList();
 
     for (Field configField : this.configFields) {
       try {
         configField.setAccessible(true);
         BoolConfigProperty property = configField.getAnnotation(BoolConfigProperty.class);
-        if (tokens.contains(configField.getName()) ||
-            tokens.contains(property.alias())) {
+        if (tokens.contains(configField.getName()) || tokens.contains(property.alias())) {
           configField.set(this, true);
         } else {
           configField.set(this, false);
@@ -59,8 +56,7 @@ public class UTBoolConfigString {
       } catch (Exception ex) {
         this.logger.error(
             "Can't inject value of field {} while parsing config string due to error: {}",
-            configField.getName(),
-            ex.getMessage());
+            configField.getName(), ex.getMessage());
       } finally {
         configField.setAccessible(false);
       }
@@ -69,13 +65,10 @@ public class UTBoolConfigString {
 
   private List<Field> gatherConfigField() {
     // Gather fields
-    return Arrays
-        .stream(this.getClass().getDeclaredFields())
-        .filter(field ->
-            Objects.nonNull(field.getAnnotation(BoolConfigProperty.class)) &&
-                field.getType().equals(Boolean.class))
-        .sorted(Comparator.comparing(Field::getName))
-        .toList();
+    return Arrays.stream(this.getClass().getDeclaredFields())
+        .filter(field -> Objects.nonNull(field.getAnnotation(BoolConfigProperty.class))
+            && field.getType().equals(Boolean.class))
+        .sorted(Comparator.comparing(Field::getName)).toList();
   }
 
   public String toConfigString() {
@@ -88,7 +81,7 @@ public class UTBoolConfigString {
 
         if (configField.get(this) instanceof Boolean value && value) {
           // Get config name if field has alias
-          String configName;
+          String             configName;
           BoolConfigProperty property = configField.getAnnotation(BoolConfigProperty.class);
           if ("".equals(property.alias())) {
             configName = configField.getName();
@@ -97,15 +90,11 @@ public class UTBoolConfigString {
           }
 
           // Append to string
-          builder
-              .append(configName)
-              .append(this.separator);
+          builder.append(configName).append(this.separator);
         }
       } catch (Exception ex) {
-        this.logger.error(
-            "Unable to parse config field [{}] due to error: {}",
-            configField.getName(),
-            ex.getMessage());
+        this.logger.error("Unable to parse config field [{}] due to error: {}",
+            configField.getName(), ex.getMessage());
       } finally {
         configField.setAccessible(false);
       }

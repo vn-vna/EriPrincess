@@ -34,11 +34,12 @@ import vn.vna.eri.v2.event.discord.EMMessageEvent;
 import vn.vna.eri.v2.event.discord.EMServiceEvent;
 import vn.vna.eri.v2.schema.DCServiceStatus;
 
-public class SVDiscord implements Runnable {
+public class SVDiscord
+    implements Runnable {
 
   private static final Logger logger;
-  private static Thread serviceThread;
-  private static SVDiscord instance;
+  private static Thread       serviceThread;
+  private static SVDiscord    instance;
 
   static {
     logger = LoggerFactory.getLogger(SVDiscord.class);
@@ -47,7 +48,7 @@ public class SVDiscord implements Runnable {
   @Getter
   private final DCServiceStatus status;
   @Getter
-  private JDA jdaContext;
+  private JDA                   jdaContext;
 
   public SVDiscord() {
     if (!Objects.isNull(SVDiscord.instance)) {
@@ -87,17 +88,15 @@ public class SVDiscord implements Runnable {
     String token = CFGlobalConfig.getInstance().getString(CFGlobalConfig.CFG_BOT_TOKEN).orElse("");
 
     List<GatewayIntent> intents = new ArrayList<>();
-    Collections.addAll(intents,
-        GUILD_MESSAGES, GUILD_MEMBERS, GUILD_BANS,
-        GUILD_EMOJIS, GUILD_INVITES, GUILD_MESSAGE_TYPING,
-        GUILD_PRESENCES, GUILD_VOICE_STATES, GUILD_WEBHOOKS,
+    Collections.addAll(intents, GUILD_MESSAGES, GUILD_MEMBERS, GUILD_BANS, GUILD_EMOJIS,
+        GUILD_INVITES, GUILD_MESSAGE_TYPING, GUILD_PRESENCES, GUILD_VOICE_STATES, GUILD_WEBHOOKS,
         GUILD_MESSAGE_REACTIONS);
 
-    EMMessageEvent msgEventListener = EMMessageEvent.getInstance();
+    EMMessageEvent msgEventListener     = EMMessageEvent.getInstance();
     EMServiceEvent serviceEventListener = EMServiceEvent.getInstance();
 
-    JDABuilder jdaBuilder = JDABuilder.create(token, intents)
-        .addEventListeners(msgEventListener, serviceEventListener);
+    JDABuilder jdaBuilder = JDABuilder.create(token, intents).addEventListeners(msgEventListener,
+        serviceEventListener);
 
     try {
       this.jdaContext = jdaBuilder.build();

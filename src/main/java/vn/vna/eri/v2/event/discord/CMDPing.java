@@ -8,40 +8,33 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import vn.vna.eri.v2.event.discord.helper.CommandProperties;
 
 @CommandProperties(
-    type = MESSAGE_COMMAND,
-    commands = "ping"
+    type = MESSAGE_COMMAND, commands = "ping"
 )
-public class CMDPing extends CMDDiscordCommand {
+public class CMDPing
+    extends CMDDiscordCommand {
 
   @Override
   public void execute(String[] commandList, Event event, Integer commandDepth) {
     if (event instanceof MessageReceivedEvent messageReceived) {
-      messageReceived
-          .getChannel()
+      messageReceived.getChannel()
           .sendMessage("Gateway latency: " + messageReceived.getJDA().getGatewayPing() + " ms")
           .queue();
     }
   }
 
   @CommandProperties(
-      commands = "hello",
-      type = SUBCOMMAND,
-      parent = CMDPing.class
+      commands = "hello", type = SUBCOMMAND, parent = CMDPing.class
   )
-  public static class CMDPingHello extends CMDDiscordCommand {
+  public static class CMDPingHello
+      extends CMDDiscordCommand {
 
     @Override
     public void execute(String[] commandList, Event event, Integer commandDepth) {
       if (event instanceof MessageReceivedEvent messageReceived) {
-        messageReceived
-            .getMessage()
-            .getChannel()
-            .sendMessage("Called nested ping")
-            .queue();
+        messageReceived.getMessage().getChannel().sendMessage("Called nested ping").queue();
       }
     }
 
   }
-
 
 }
