@@ -20,6 +20,8 @@ import vn.vna.eri.v2.configs.helper.LangPackEnum;
 public final class CFLangPack {
 
   public static final LangPackEnum DEFAULT_LANG_PACK = LangPackEnum.EN_US;
+  public static final String       SECTION_CMD       = "cmd";
+  public static final String       SECTION_TEMPLATE  = "template";
 
   private static CFLangPack instance;
   private static Logger     logger = LoggerFactory.getLogger(CFLangPack.class);

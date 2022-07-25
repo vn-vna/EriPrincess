@@ -15,7 +15,7 @@ public @interface CommandProperties {
 
   String[] commands();
 
-  String description() default "";
+  String descriptionKey() default "";
 
   CommandType type();
 

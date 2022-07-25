@@ -10,6 +10,7 @@ import vn.vna.eri.v2.event.discord.helper.CommandProperties;
 
 @CommandProperties(
     commands = "query",
+    descriptionKey = "cmd.desc.cmd-query",
     type = MESSAGE_COMMAND
 )
 public class CMDQuery

@@ -18,6 +18,7 @@ import vn.vna.eri.v2.utils.UTMessageBuilder;
 @CommandProperties(
     type = SUBCOMMAND,
     commands = "register",
+    descriptionKey = "cmd.desc.cmd-admin-register",
     parent = CMDAdmin.class,
     senderPermission = {
         MANAGE_SERVER,

@@ -14,6 +14,7 @@ import vn.vna.eri.v2.event.discord.helper.CommandProperties;
 @CommandProperties(
     type = MESSAGE_COMMAND,
     commands = "admin",
+    descriptionKey = "cmd.desc.cmd-admin",
     botPermission = { Permission.ADMINISTRATOR })
 public class CMDAdmin
     extends CMDTemplate {

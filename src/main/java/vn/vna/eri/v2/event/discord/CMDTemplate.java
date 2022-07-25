@@ -1,5 +1,8 @@
 package vn.vna.eri.v2.event.discord;
 
+import static vn.vna.eri.v2.configs.CFLangPack.SECTION_CMD;
+import static vn.vna.eri.v2.utils.helper.PlaceholderEntry.entry;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -23,23 +26,28 @@ import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import vn.vna.eri.v2.configs.CFLangPack;
 import vn.vna.eri.v2.error.ERDiscordGuildPermissionMismatch;
 import vn.vna.eri.v2.event.discord.helper.CommandProperties;
 import vn.vna.eri.v2.event.discord.helper.CommandType;
 import vn.vna.eri.v2.event.discord.helper.ExecutionInfo;
 import vn.vna.eri.v2.event.discord.helper.PropertyField;
 import vn.vna.eri.v2.services.SVDiscord;
+import vn.vna.eri.v2.utils.UTMessageBuilder;
 
 @Getter
 @Setter
 public abstract class CMDTemplate {
+
+  public static String LPK_HELP_CHILD_PROPS = "tpl.help.child-cmd-props";
+
   private static final Logger     logger = LoggerFactory.getLogger(CMDTemplate.class);
   private static Set<CMDTemplate> commandManager;
 
   @PropertyField
   protected String[]                       commands;
   @PropertyField
-  protected String                         description;
+  protected String                         descriptionKey;
   @PropertyField
   protected CommandType                    type;
   @PropertyField
@@ -209,6 +217,28 @@ public abstract class CMDTemplate {
     if (senderPermissionMismatch.size() > 0) {
       throw new ERDiscordGuildPermissionMismatch(sender, senderPermissionMismatch);
     }
+  }
+
+  public String getHelpString(String lang) {
+    StringBuilder    sb      = new StringBuilder();
+    UTMessageBuilder builder = UTMessageBuilder.getInstance();
+
+    CFLangPack
+        .getInstance()
+        .getLangPack(lang)
+        .ifPresent((langPack) -> {
+          String commandDescription = langPack.get(SECTION_CMD, this.getDescriptionKey());
+          String templateChildInfo = langPack.get(SECTION_CMD, LPK_HELP_CHILD_PROPS);
+          sb.append(commandDescription).append("\n");
+          for (CMDTemplate child : this.getChildren()) {
+            String childDescription = langPack.get(SECTION_CMD, child.getDescriptionKey());
+            sb.append(builder.formatMessage(templateChildInfo,
+                entry("cmds", String.join(",", child.getCommands())),
+                entry("description", childDescription)));
+          }
+        });
+
+    return sb.toString();
   }
 
   public Boolean match(String commandStr) {
