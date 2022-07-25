@@ -17,16 +17,17 @@ import vn.vna.eri.v2.utils.UTGenericEntity;
 @Entity
 @Table(name = "_dsc_guilds")
 @DynamicUpdate
-public class ETGuildConfig extends UTGenericEntity<DCGuildConfig> {
+public class ETGuildConfig
+    extends UTGenericEntity<DCGuildConfig> {
 
   @Id
   @Nonnull
   @Column(name = "_id")
-  private String guildId;
+  private String  guildId;
   @Column(name = "_joined_datetime")
   private Instant joinedDateTime;
   @Column(name = "_lang")
-  private String language;
+  private String  language;
   @Column(name = "_tz")
   private Integer timeZone;
 

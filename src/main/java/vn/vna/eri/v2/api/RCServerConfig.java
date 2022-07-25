@@ -24,8 +24,8 @@ import vn.vna.eri.v2.utils.helper.ResponseCode;
 @RestController
 public class RCServerConfig {
 
-  public static final String DSC_RT_ALL = "all";
-  private static final Logger logger = LoggerFactory.getLogger(RCServerConfig.class);
+  public static final String  DSC_RT_ALL = "all";
+  private static final Logger logger     = LoggerFactory.getLogger(RCServerConfig.class);
 
   protected Map<String, Class<? extends UpdatableConfigTarget>> reloadTarget;
 
@@ -37,14 +37,12 @@ public class RCServerConfig {
   }
 
   public static RCServerConfig getServerConfigRestController() {
-    return SVApiControl
-        .getApplicationContext()
-        .getBean(RCServerConfig.class);
+    return SVApiControl.getApplicationContext().getBean(RCServerConfig.class);
   }
 
   @GetMapping("/api/config/server")
   public ResponseEntity<String> getConfig(@RequestParam(required = false) String key) {
-    Long beginTime = System.nanoTime();
+    Long                     beginTime   = System.nanoTime();
     ARServerConfigManagement apiResponse = new ARServerConfigManagement();
     apiResponse.setSuccess(false);
 
@@ -64,56 +62,46 @@ public class RCServerConfig {
 
   @DeleteMapping("/api/config/server")
   public ResponseEntity<String> deleteConfig(@RequestParam String key) {
-    long beginTime = System.nanoTime();
+    long                     beginTime   = System.nanoTime();
     ARServerConfigManagement apiResponse = new ARServerConfigManagement();
     apiResponse.setSuccess(false);
 
-    this.serverConfigClient
-        .removeConfig(key)
-        .ifPresentOrElse((result) -> {
-          apiResponse.setSuccess(true);
-          apiResponse.getResults().add(result);
-        }, () -> apiResponse.setError("No configuration found for key [%s]".formatted(key)));
+    this.serverConfigClient.removeConfig(key).ifPresentOrElse((result) -> {
+      apiResponse.setSuccess(true);
+      apiResponse.getResults().add(result);
+    }, () -> apiResponse.setError("No configuration found for key [%s]".formatted(key)));
 
     apiResponse.setTook(System.nanoTime() - beginTime);
     return UTApiResponse.responseJson(ResponseCode.OK, apiResponse);
   }
 
   @PutMapping("/api/config/server")
-  public ResponseEntity<String> putConfig(
-      @RequestParam String key,
-      @RequestParam String value) {
-    long beginTime = System.nanoTime();
+  public ResponseEntity<String> putConfig(@RequestParam String key, @RequestParam String value) {
+    long                     beginTime   = System.nanoTime();
     ARServerConfigManagement apiResponse = new ARServerConfigManagement();
 
-    this.serverConfigClient
-        .setConfig(key, value)
-        .ifPresentOrElse((result) -> {
-          apiResponse.getResults().add(result);
-          apiResponse.setSuccess(true);
-        }, () -> apiResponse.setError("No configuration found for key [%s]".formatted(key)));
+    this.serverConfigClient.setConfig(key, value).ifPresentOrElse((result) -> {
+      apiResponse.getResults().add(result);
+      apiResponse.setSuccess(true);
+    }, () -> apiResponse.setError("No configuration found for key [%s]".formatted(key)));
 
     apiResponse.setTook(System.nanoTime() - beginTime);
-    return UTApiResponse
-        .responseJson(ResponseCode.OK, apiResponse);
+    return UTApiResponse.responseJson(ResponseCode.OK, apiResponse);
   }
 
   @GetMapping("/api/config/reload")
   public ResponseEntity<String> requestReloadConfig(@RequestParam String target) {
-    ResponseCode status;
+    ResponseCode   status;
     ARReloadConfig response = new ARReloadConfig();
 
     if (DSC_RT_ALL.equals(target)) {
       logger.warn("Triggered all config reload");
       this.reloadTarget.forEach((key, targetClass) -> {
-        UTSingleton
-            .getInstanceOf(targetClass)
-            .ifPresent(UpdatableConfigTarget::update);
+        UTSingleton.getInstanceOf(targetClass).ifPresent(UpdatableConfigTarget::update);
       });
       status = ResponseCode.OK;
     } else if (this.reloadTarget.containsKey(target)) {
-      UTSingleton
-          .getInstanceOf(this.reloadTarget.get(target))
+      UTSingleton.getInstanceOf(this.reloadTarget.get(target))
           .ifPresent(UpdatableConfigTarget::update);
       status = ResponseCode.OK;
     } else {

@@ -14,29 +14,24 @@ import vn.vna.eri.v2.event.discord.helper.CommandProperties;
 @CommandProperties(
     type = MESSAGE_COMMAND,
     commands = "admin",
-    separateThread = false,
-    botPermission = {
-        Permission.ADMINISTRATOR
-    }
-)
-public class CMDAdmin extends CMDDiscordCommand {
+    descriptionKey = "cmd.desc.cmd-admin",
+    botPermission = { Permission.ADMINISTRATOR })
+public class CMDAdmin
+    extends CMDTemplate {
 
   @Override
   public void execute(String[] commandList, Event event, Integer commandDepth) {
     if (event instanceof MessageReceivedEvent messageReceivedEvent) {
       try {
-        Guild guild = messageReceivedEvent.getGuild();
-        Member sender = messageReceivedEvent.getMember();
-        Member bot = this.getDiscordService().getSelfAsMember(guild);
+        Guild        guild   = messageReceivedEvent.getGuild();
+        Member       sender  = messageReceivedEvent.getMember();
+        Member       bot     = this.getDiscordService().getSelfAsMember(guild);
         GuildChannel channel = messageReceivedEvent.getGuildChannel();
 
         this.requirePermissionMessageEvent(bot, sender, channel);
       } catch (ERDiscordGuildPermissionMismatch pex) {
-        this.getCommandLogger()
-            .error(
-                "Execution failed due to missing permission {} of member {}",
-                pex.getMismatchPermission(),
-                pex.getMember().getEffectiveName());
+        this.getCommandLogger().error("Execution failed due to missing permission {} of member {}",
+            pex.getMismatchPermission(), pex.getMember().getEffectiveName());
       }
     }
   }

@@ -4,8 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum LangPackEnum {
-  VI_VN("vi-vn"),
-  EN_US("en-us");
+  VI_VN("vi-vn"), EN_US("en-us");
 
   final String name;
 

@@ -15,25 +15,21 @@ import vn.vna.eri.v2.utils.helper.BoolConfigProperty;
 @Setter
 public class UTCombinedBoolConfigString {
 
-
   protected Character combinedSeparator;
   protected Character pairSeparator;
-  protected Logger logger;
+  protected Logger    logger;
 
   public UTCombinedBoolConfigString() {
     this.combinedSeparator = ' ';
-    this.pairSeparator = ':';
-    logger = LoggerFactory.getLogger(this.getClass());
+    this.pairSeparator     = ':';
+    logger                 = LoggerFactory.getLogger(this.getClass());
   }
 
   private List<Field> gatherConfigField() {
-    return Arrays
-        .stream(this.getClass().getDeclaredFields())
-        .filter((field) ->
-            UTBoolConfigString.class.isAssignableFrom(field.getType()) &&
-                Objects.nonNull(field.getAnnotation(BoolConfigProperty.class)))
-        .sorted(Comparator.comparing(Field::getName))
-        .toList();
+    return Arrays.stream(this.getClass().getDeclaredFields())
+        .filter((field) -> UTBoolConfigString.class.isAssignableFrom(field.getType())
+            && Objects.nonNull(field.getAnnotation(BoolConfigProperty.class)))
+        .sorted(Comparator.comparing(Field::getName)).toList();
   }
 
   public void importFromConfigString(String str) {
@@ -42,21 +38,19 @@ public class UTCombinedBoolConfigString {
     for (String token : tokens) {
       String[] configPair = token.split(String.valueOf(this.pairSeparator));
       if (configPair.length != 2) {
-        this.logger.warn(
-            "Parse config string [{}] failed due to error: Token is invalid",
-            token);
+        this.logger.warn("Parse config string [{}] failed due to error: Token is invalid", token);
         continue;
       }
 
-      String configName = configPair[0];
+      String configName   = configPair[0];
       String configString = configPair[1];
 
       try {
         Field configField = this.getClass().getDeclaredField(configName);
         if (UTBoolConfigString.class.isAssignableFrom(configField.getType())) {
           configField.setAccessible(true);
-          UTBoolConfigString configObj =
-              (UTBoolConfigString) configField.getType().getConstructor().newInstance();
+          UTBoolConfigString configObj = (UTBoolConfigString) configField.getType().getConstructor()
+              .newInstance();
           configObj.importConfigString(configString);
 
           configField.set(this, configObj);
@@ -64,9 +58,7 @@ public class UTCombinedBoolConfigString {
         }
         configField.setAccessible(true);
       } catch (Exception ex) {
-        logger.error(
-            "Can't inject value of field [{}] due to error: {}",
-            configName,
+        logger.error("Can't inject value of field [{}] due to error: {}", configName,
             ex.getMessage());
       }
     }
@@ -95,17 +87,12 @@ public class UTCombinedBoolConfigString {
             continue;
           }
 
-          builder
-              .append(configName)
-              .append(this.pairSeparator)
-              .append(str)
+          builder.append(configName).append(this.pairSeparator).append(str)
               .append(this.combinedSeparator);
         }
       } catch (Exception ex) {
-        this.logger.error(
-            "Collect config field failed [{}] due to error: {}",
-            configField.getName(),
-            ex.getMessage());
+        this.logger.error("Collect config field failed [{}] due to error: {}",
+            configField.getName(), ex.getMessage());
       } finally {
         configField.setAccessible(false);
       }

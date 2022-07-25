@@ -14,22 +14,16 @@ public class RCStatus {
 
   @GetMapping("/api/status/server")
   public ResponseEntity<String> getServerStatus() {
-    return UTApiResponse.responseJson(
-        ResponseCode.OK,
-        DCServerStatus.getStatus());
+    return UTApiResponse.responseJson(ResponseCode.OK, DCServerStatus.getStatus());
   }
 
   @GetMapping("/api/status/service/api")
   public ResponseEntity<String> getApiServiceStatus() {
-    return UTApiResponse.responseJson(
-        ResponseCode.OK,
-        SVApiControl.getInstance().getStatus());
+    return UTApiResponse.responseJson(ResponseCode.OK, SVApiControl.getInstance().getStatus());
   }
 
   @GetMapping("/api/status/service/discord")
   public ResponseEntity<String> getDiscordServiceStatus() {
-    return UTApiResponse.responseJson(
-        ResponseCode.OK,
-        SVDiscord.getInstance().getStatus());
+    return UTApiResponse.responseJson(ResponseCode.OK, SVDiscord.getInstance().getStatus());
   }
 }

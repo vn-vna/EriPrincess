@@ -16,12 +16,9 @@ public class CFPostgresDriver {
 
   @Bean
   public DataSource getDataSource() {
-    DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder
-        .create()
-        .driverClassName("org.postgresql.Driver")
-        .url(this.cfDataSource.getDataSource())
-        .username(this.cfDataSource.getDbUser())
-        .password(this.cfDataSource.getDbPassword());
+    DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create()
+        .driverClassName("org.postgresql.Driver").url(this.cfDataSource.getDataSource())
+        .username(this.cfDataSource.getDbUser()).password(this.cfDataSource.getDbPassword());
 
     return dataSourceBuilder.build();
   }

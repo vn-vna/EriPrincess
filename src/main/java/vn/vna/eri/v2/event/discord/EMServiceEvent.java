@@ -11,8 +11,9 @@ import vn.vna.eri.v2.configs.helper.ConfigTargetLoadStage;
 import vn.vna.eri.v2.services.SVDiscord;
 
 @NoArgsConstructor
-public class EMServiceEvent extends ListenerAdapter {
-  private static final Logger logger = LoggerFactory.getLogger(EMMessageEvent.class);
+public class EMServiceEvent
+    extends ListenerAdapter {
+  private static final Logger   logger = LoggerFactory.getLogger(EMMessageEvent.class);
   private static EMServiceEvent instance;
 
   public static EMServiceEvent getInstance() {
@@ -26,14 +27,10 @@ public class EMServiceEvent extends ListenerAdapter {
 
   @Override
   public void onReady(ReadyEvent event) {
-    logger.info(
-        "Logged in as [{}] successfully",
-        SVDiscord.getInstance().getSelfUser().getAsTag());
+    logger.info("Logged in as [{}] successfully", SVDiscord.getInstance().getSelfUser().getAsTag());
     super.onReady(event);
-    CFGlobalConfig
-        .getInstance()
-        .invokeUpdateAtStage(ConfigTargetLoadStage.DISCORD_SERVICE_READY);
-    CMDDiscordCommand.loadCommands();
+    CFGlobalConfig.getInstance().invokeUpdateAtStage(ConfigTargetLoadStage.DISCORD_SERVICE_READY);
+    CMDTemplate.loadCommands();
   }
 
 }

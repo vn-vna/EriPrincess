@@ -13,7 +13,8 @@ import vn.vna.eri.v2.utils.UTGenericEntity;
 @Setter
 @Entity
 @Table(name = "_svrcfg")
-public class ETServerConfig extends UTGenericEntity<DCServerConfig> {
+public class ETServerConfig
+    extends UTGenericEntity<DCServerConfig> {
 
   @Id
   @Column(name = "_key")
