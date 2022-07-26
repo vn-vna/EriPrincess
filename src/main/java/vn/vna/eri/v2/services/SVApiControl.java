@@ -72,4 +72,5 @@ public class SVApiControl {
     logger.info("Spring boot application is initialized successfully");
     CFGlobalConfig.getInstance().invokeUpdateAtStage(ConfigTargetLoadStage.SPRING_SERVICE_READY);
   }
+
 }
