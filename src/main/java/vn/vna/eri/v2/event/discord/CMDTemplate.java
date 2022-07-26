@@ -1,6 +1,7 @@
 package vn.vna.eri.v2.event.discord;
 
 import static vn.vna.eri.v2.configs.CFLangPack.SECTION_CMD;
+import static vn.vna.eri.v2.configs.CFLangPack.SECTION_TEMPLATE;
 import static vn.vna.eri.v2.utils.helper.PlaceholderEntry.entry;
 
 import java.lang.reflect.Constructor;
@@ -26,6 +27,7 @@ import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import vn.vna.eri.v2.configs.CFLangPack;
 import vn.vna.eri.v2.error.ERDiscordGuildPermissionMismatch;
 import vn.vna.eri.v2.event.discord.helper.CommandProperties;
@@ -39,7 +41,9 @@ import vn.vna.eri.v2.utils.UTMessageBuilder;
 @Setter
 public abstract class CMDTemplate {
 
-  public static String LPK_HELP_CHILD_PROPS = "tpl.help.child-cmd-props";
+  public static final String LPK_HELP_CHILD_PROPS = "tpl.help.child-cmd-props";
+
+  public static final String CACHE_POOL_NAME = "dsc-string-stuff";
 
   private static final Logger     logger = LoggerFactory.getLogger(CMDTemplate.class);
   private static Set<CMDTemplate> commandManager;
@@ -219,6 +223,7 @@ public abstract class CMDTemplate {
     }
   }
 
+  @Cacheable(cacheNames = CACHE_POOL_NAME, key = "{#root.targetClass, #lang}")
   public String getHelpString(String lang) {
     StringBuilder    sb      = new StringBuilder();
     UTMessageBuilder builder = UTMessageBuilder.getInstance();
@@ -228,8 +233,9 @@ public abstract class CMDTemplate {
         .getLangPack(lang)
         .ifPresent((langPack) -> {
           String commandDescription = langPack.get(SECTION_CMD, this.getDescriptionKey());
-          String templateChildInfo = langPack.get(SECTION_CMD, LPK_HELP_CHILD_PROPS);
+          String templateChildInfo = langPack.get(SECTION_TEMPLATE, LPK_HELP_CHILD_PROPS);
           sb.append(commandDescription).append("\n");
+
           for (CMDTemplate child : this.getChildren()) {
             String childDescription = langPack.get(SECTION_CMD, child.getDescriptionKey());
             sb.append(builder.formatMessage(templateChildInfo,
