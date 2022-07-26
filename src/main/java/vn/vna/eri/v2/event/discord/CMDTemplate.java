@@ -27,7 +27,6 @@ import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.Cacheable;
 import vn.vna.eri.v2.configs.CFLangPack;
 import vn.vna.eri.v2.error.ERDiscordGuildPermissionMismatch;
 import vn.vna.eri.v2.event.discord.helper.CommandProperties;
@@ -208,11 +207,10 @@ public abstract class CMDTemplate {
 
   public void requirePermissionMessageEvent(Member bot, Member sender, GuildChannel channel)
       throws ERDiscordGuildPermissionMismatch {
-    List<Permission> botPermissionMisMatch = this.getMismatchPermission(bot, channel,
-        this.botPermission);
+    List<Permission> permMismatch = this.getMismatchPermission(bot, channel, this.botPermission);
 
-    if (botPermissionMisMatch.size() > 0) {
-      throw new ERDiscordGuildPermissionMismatch(bot, botPermissionMisMatch);
+    if (permMismatch.size() > 0) {
+      throw new ERDiscordGuildPermissionMismatch(bot, permMismatch);
     }
 
     List<Permission> senderPermissionMismatch = this.getMismatchPermission(sender, channel,
@@ -223,7 +221,6 @@ public abstract class CMDTemplate {
     }
   }
 
-  @Cacheable(cacheNames = CACHE_POOL_NAME, key = "{#root.targetClass, #lang}")
   public String getHelpString(String lang) {
     StringBuilder    sb      = new StringBuilder();
     UTMessageBuilder builder = UTMessageBuilder.getInstance();
