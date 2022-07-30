@@ -20,12 +20,15 @@ public class DCGuildConfig
   private String  language;
   @SerializedName("tz")
   private Integer timeZone;
+  @SerializedName("airport")
+  private String  airportChannel;
 
   public DCGuildConfig(String guildId) {
     this.guildId        = guildId;
     this.joinedDateTime = Instant.now();
     this.language       = LangPackEnum.EN_US.getName();
     this.timeZone       = 7;
+    this.airportChannel = null;
   }
 
 }

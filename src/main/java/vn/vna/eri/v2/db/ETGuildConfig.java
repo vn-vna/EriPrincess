@@ -30,6 +30,8 @@ public class ETGuildConfig
   private String  language;
   @Column(name = "_tz")
   private Integer timeZone;
+  @Column(name = "_airport")
+  private String  airportChannel;
 
   public ETGuildConfig() {
     super(DCGuildConfig.class);
