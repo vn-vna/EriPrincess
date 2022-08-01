@@ -1,16 +1,14 @@
 package vn.vna.eri.v2.configs;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
+import java.io.InputStream;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import org.ini4j.Ini;
+import org.ini4j.Profile.Section;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import vn.vna.eri.v2.configs.helper.LangPackEnum;
@@ -19,9 +17,11 @@ import vn.vna.eri.v2.configs.helper.LangPackEnum;
 @Setter
 public class CFLangPack {
 
-  public static final LangPackEnum DEFAULT_LANG_PACK = LangPackEnum.EN_US;
-  public static final String       SECTION_CMD       = "cmd";
-  public static final String       SECTION_TEMPLATE  = "template";
+  public static final LangPackEnum DEFAULT_LANG_PACK        = LangPackEnum.EN_US;
+  public static final String       SECTION_CMD              = "cmd";
+  public static final String       SECTION_TEMPLATE         = "template";
+  private static final String      LANG_LIST_PATHNAME       = "/lang-list.ini";
+  private static final String      LANGPACK_SOURCE_PROPNAME = "source";
 
   private static CFLangPack instance;
   private static Logger     logger = LoggerFactory.getLogger(CFLangPack.class);
@@ -41,26 +41,26 @@ public class CFLangPack {
     logger.info("Starting load language pack from resources");
     this.langPacks = new HashMap<>();
     try {
-      Optional.of(Objects.requireNonNull(CFLangPack.class.getResource("/lang")).toURI())
-          .ifPresent((uri) -> {
-            File   folder        = new File(uri);
-            List<File> langPackFiles = Arrays.stream(Objects.requireNonNull(folder.listFiles()))
-                .filter((file) -> file.isFile() && file.getName().endsWith(".ini")).toList();
+      InputStream packListStream = CFLangPack.class
+          .getResourceAsStream(LANG_LIST_PATHNAME);
 
-            logger.info("Found {} [ini] file from [lang] folder", langPackFiles.size());
+      Ini langList = new Ini(packListStream);
 
-            for (File file : langPackFiles) {
-              try {
-                String fileName = file.getName();
-                String langPackName = fileName.substring(0, fileName.length() - 4);
-                Ini ini         = new Ini(file);
-                this.langPacks.put(langPackName, ini);
-              } catch (IOException ioex) {
-                logger.error("Create ini loader for {} failed due to error: {}", file.getName(),
-                    ioex.getMessage());
-              }
-            }
-          });
+      langList.entrySet().stream().forEach((entry) -> {
+        String  sectionName = entry.getKey();
+        Section sectionData = entry.getValue();
+        String  source      = sectionData.get(LANGPACK_SOURCE_PROPNAME);
+        try {
+          InputStream packStream = CFLangPack.class.getResourceAsStream(source);
+          this.langPacks.put(sectionName, new Ini(packStream));
+        } catch (Exception ex) {
+          logger.error(
+              "Can't load lang pack {} from source {} due to error: {}",
+              sectionName,
+              source,
+              ex.getMessage());
+        }
+      });
     } catch (Exception ex) {
       ex.printStackTrace();
       logger.error("Can't load language pack due to error: {}", ex.getMessage());

@@ -10,9 +10,7 @@ public class EPMain {
 
   public static void main(String[] args) {
     CFGlobalConfig.getInstance().invokeUpdateAtStage(ConfigTargetLoadStage.PRE_START);
-
     CFLangPack.getInstance().loadLangPacks();
-
     SVApiControl.initialize(args);
     SVDiscord.initialize();
   }
