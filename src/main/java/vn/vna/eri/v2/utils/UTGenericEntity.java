@@ -48,13 +48,12 @@ public class UTGenericEntity<DataClass extends UTJsonClass> {
           .filter((method) -> method.getName().startsWith("set")).toList();
 
       for (Method setMethod : setMethods) {
-        String getMethodName = "get" + setMethod.getName().substring(3); // setSomething
-                                                                         // ->
-                                                                         // getSomething
+        // set{Property} -> get{Property}
+        String getMethodName = "get" + setMethod.getName().substring(3);
 
         Object ret = object.getClass().getMethod(getMethodName).invoke(object);
 
-        if (!excludeNull && Objects.isNull(ret)) {
+        if (Objects.isNull(ret) && excludeNull) {
           continue;
         }
 

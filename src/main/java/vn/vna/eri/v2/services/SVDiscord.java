@@ -32,6 +32,7 @@ import vn.vna.eri.v2.configs.CFGlobalConfig;
 import vn.vna.eri.v2.error.ERDiscordServiceExists;
 import vn.vna.eri.v2.event.discord.EMMessageEvent;
 import vn.vna.eri.v2.event.discord.EMServiceEvent;
+import vn.vna.eri.v2.event.discord.EMUserEvent;
 import vn.vna.eri.v2.schema.DCServiceStatus;
 
 public class SVDiscord
@@ -66,6 +67,7 @@ public class SVDiscord
       logger.warn("Discord bot service is disabled by default");
       return;
     }
+
     SVDiscord.logger.info("Starting Discord service");
     SVDiscord.serviceThread = new Thread(new SVDiscord());
     serviceThread.start();
@@ -94,9 +96,14 @@ public class SVDiscord
 
     EMMessageEvent msgEventListener     = EMMessageEvent.getInstance();
     EMServiceEvent serviceEventListener = EMServiceEvent.getInstance();
+    EMUserEvent    userEventListener    = EMUserEvent.getInstance();
 
-    JDABuilder jdaBuilder = JDABuilder.create(token, intents).addEventListeners(msgEventListener,
-        serviceEventListener);
+    JDABuilder jdaBuilder = JDABuilder
+        .create(token, intents)
+        .addEventListeners(
+            msgEventListener,
+            serviceEventListener,
+            userEventListener);
 
     try {
       this.jdaContext = jdaBuilder.build();

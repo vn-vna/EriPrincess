@@ -13,4 +13,8 @@ public class PlaceholderEntry
   public static PlaceholderEntry entry(String key, String value) {
     return new PlaceholderEntry(key, value);
   }
+
+  public static PlaceholderEntry entry(String key, int value) {
+    return new PlaceholderEntry(key, "" + value);
+  }
 }
