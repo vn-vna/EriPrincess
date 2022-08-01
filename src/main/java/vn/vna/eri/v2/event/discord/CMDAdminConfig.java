@@ -83,7 +83,9 @@ public class CMDAdminConfig
                     update.setAirportChannel(mention.targetId());
                     cfgClient.updateConfig(guildId, update)
                         .ifPresent((result) -> {
-                          TextChannel airport = guild.getTextChannelById(mention.targetId());
+                          TextChannel airport = guild.getTextChannelById(
+                              result.getAirportChannel());
+
                           msg.setContent(msgBuilder
                               .formatMessage(tplSuccessMsg,
                                   entry("field", CMD_CFG_AIRPORT),

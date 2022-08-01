@@ -8,7 +8,7 @@ public class UTMentionParser {
 
   public static Optional<MessageMention> parseMention(String quote) {
     if (quote.startsWith("<") && quote.endsWith(">")) {
-      quote = quote.substring(1, quote.length() - 2);
+      quote = quote.substring(1, quote.length() - 1);
       for (MessageMentionType mt : MessageMentionType.values()) {
         if (quote.startsWith(mt.getPrefix())) {
           String id = quote.substring(mt.getPrefix().length());

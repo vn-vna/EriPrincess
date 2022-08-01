@@ -62,7 +62,6 @@ public class CFLangPack {
         }
       });
     } catch (Exception ex) {
-      ex.printStackTrace();
       logger.error("Can't load language pack due to error: {}", ex.getMessage());
     }
   }
