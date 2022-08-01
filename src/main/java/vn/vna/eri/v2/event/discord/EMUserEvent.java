@@ -24,7 +24,8 @@ import vn.vna.eri.v2.utils.UTMessageBuilder;
 public class EMUserEvent
     extends ListenerAdapter {
 
-  public static final String LPK_DEFAULT_AIRPORT_MSG = "tpl.default.airport-msg";
+  public static final String LPK_DEFAULT_AIRPORT_WELCOME = "tpl.default.airport-msg.welcome";
+  public static final String LPK_DEFAULT_AIRPORT_GOODBYE = "tpl.default.airport-msg.goodbye";
 
   private static EMUserEvent instance;
 
@@ -65,11 +66,11 @@ public class EMUserEvent
           }
 
           String tplWelcome = langPackMng.getString(cfg.getLanguage(),
-              SECTION_TEMPLATE, LPK_DEFAULT_AIRPORT_MSG).orElse("");
+              SECTION_TEMPLATE, LPK_DEFAULT_AIRPORT_WELCOME).orElse("");
 
           airportChannel
               .sendMessage(msgBuilder.formatMessage(tplWelcome,
-                  entry("member", member.getEffectiveName()),
+                  entry("member", member.getAsMention()),
                   entry("guild", guild.getName()),
                   entry("no", guild.getMemberCount())))
               .queue();
@@ -79,6 +80,39 @@ public class EMUserEvent
   @Override
   public void onGuildMemberRemove(GuildMemberRemoveEvent event) {
     super.onGuildMemberRemove(event);
+
+    CLDiscordGuildConfig cfgClient   = CLDiscordGuildConfig.getClient();
+    CFLangPack           langPackMng = CFLangPack.getInstance();
+    UTMessageBuilder     msgBuilder  = UTMessageBuilder.getInstance();
+
+    Guild  guild   = event.getGuild();
+    String guildId = guild.getId();
+    Member member  = event.getMember();
+
+    cfgClient
+        .getConfiguration(guildId)
+        .ifPresent((cfg) -> {
+          String airportId = cfg.getAirportChannel();
+          if (Objects.isNull(airportId)) {
+            return;
+          }
+
+          TextChannel airportChannel = guild.getTextChannelById(airportId);
+
+          if (Objects.isNull(airportChannel)) {
+            return;
+          }
+
+          String tplGoodbye = langPackMng.getString(cfg.getLanguage(),
+              SECTION_TEMPLATE, LPK_DEFAULT_AIRPORT_GOODBYE).orElse("");
+
+          airportChannel
+              .sendMessage(msgBuilder.formatMessage(tplGoodbye,
+                  entry("member", member.getEffectiveName()),
+                  entry("guild", guild.getName()),
+                  entry("count", guild.getMemberCount())))
+              .queue();
+        });
   }
 
   @Override
