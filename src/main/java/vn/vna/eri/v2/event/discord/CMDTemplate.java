@@ -1,6 +1,7 @@
 package vn.vna.eri.v2.event.discord;
 
 import static vn.vna.eri.v2.configs.CFLangPack.SECTION_CMD;
+import static vn.vna.eri.v2.configs.CFLangPack.SECTION_TEMPLATE;
 import static vn.vna.eri.v2.utils.helper.PlaceholderEntry.entry;
 
 import java.lang.reflect.Constructor;
@@ -39,7 +40,9 @@ import vn.vna.eri.v2.utils.UTMessageBuilder;
 @Setter
 public abstract class CMDTemplate {
 
-  public static String LPK_HELP_CHILD_PROPS = "tpl.help.child-cmd-props";
+  public static final String LPK_HELP_CHILD_PROPS = "tpl.help.child-cmd-props";
+
+  public static final String CACHE_POOL_NAME = "dsc-string-stuff";
 
   private static final Logger     logger = LoggerFactory.getLogger(CMDTemplate.class);
   private static Set<CMDTemplate> commandManager;
@@ -204,11 +207,10 @@ public abstract class CMDTemplate {
 
   public void requirePermissionMessageEvent(Member bot, Member sender, GuildChannel channel)
       throws ERDiscordGuildPermissionMismatch {
-    List<Permission> botPermissionMisMatch = this.getMismatchPermission(bot, channel,
-        this.botPermission);
+    List<Permission> permMismatch = this.getMismatchPermission(bot, channel, this.botPermission);
 
-    if (botPermissionMisMatch.size() > 0) {
-      throw new ERDiscordGuildPermissionMismatch(bot, botPermissionMisMatch);
+    if (permMismatch.size() > 0) {
+      throw new ERDiscordGuildPermissionMismatch(bot, permMismatch);
     }
 
     List<Permission> senderPermissionMismatch = this.getMismatchPermission(sender, channel,
@@ -228,8 +230,9 @@ public abstract class CMDTemplate {
         .getLangPack(lang)
         .ifPresent((langPack) -> {
           String commandDescription = langPack.get(SECTION_CMD, this.getDescriptionKey());
-          String templateChildInfo = langPack.get(SECTION_CMD, LPK_HELP_CHILD_PROPS);
+          String templateChildInfo = langPack.get(SECTION_TEMPLATE, LPK_HELP_CHILD_PROPS);
           sb.append(commandDescription).append("\n");
+
           for (CMDTemplate child : this.getChildren()) {
             String childDescription = langPack.get(SECTION_CMD, child.getDescriptionKey());
             sb.append(builder.formatMessage(templateChildInfo,

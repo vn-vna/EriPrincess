@@ -24,6 +24,7 @@ import vn.vna.eri.v2.utils.helper.PlaceholderEntry;
 public final class UTMessageBuilder {
 
   public static final String ZEROWIDTH_WHITE_SPACE   = "\u200b";
+
   public static final String LPK_PERMMISSING_TITLE   = "tpl.perm-missing.title";
   public static final String LPK_PERMMISSING_PERMSTR = "tpl.perm-missing.perm-str";
 
