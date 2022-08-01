@@ -1,14 +1,12 @@
 package vn.vna.eri.v2.schema;
 
-import lombok.Data;
-import vn.vna.eri.v2.utils.UTJsonClass;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
-public final class ARDiscordGuildConfig implements UTJsonClass {
-
-  private Boolean success;
-  private String error;
-  private Long took;
-  private DCGuildConfigInfo result;
-
+@Getter
+@Setter
+@NoArgsConstructor
+public final class ARDiscordGuildConfig
+    extends ARTemplate<DCGuildConfig> {
 }

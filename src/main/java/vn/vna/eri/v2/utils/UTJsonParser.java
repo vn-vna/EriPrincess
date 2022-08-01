@@ -12,7 +12,7 @@ public class UTJsonParser {
   private static UTJsonParser instance;
 
   @Getter
-  private Gson parser;
+  private final Gson parser;
 
   private UTJsonParser() {
     GsonBuilder builder = new GsonBuilder();

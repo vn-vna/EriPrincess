@@ -9,7 +9,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
-import vn.vna.eri.v2.schema.DCGuildConfigInfo;
+import vn.vna.eri.v2.schema.DCGuildConfig;
 import vn.vna.eri.v2.utils.UTGenericEntity;
 
 @Getter
@@ -17,20 +17,23 @@ import vn.vna.eri.v2.utils.UTGenericEntity;
 @Entity
 @Table(name = "_dsc_guilds")
 @DynamicUpdate
-public class ETGuildConfig extends UTGenericEntity<DCGuildConfigInfo> {
+public class ETGuildConfig
+    extends UTGenericEntity<DCGuildConfig> {
 
   @Id
   @Nonnull
   @Column(name = "_id")
-  private String guildId;
+  private String  guildId;
   @Column(name = "_joined_datetime")
   private Instant joinedDateTime;
   @Column(name = "_lang")
-  private String language;
+  private String  language;
   @Column(name = "_tz")
   private Integer timeZone;
+  @Column(name = "_airport")
+  private String  airportChannel;
 
   public ETGuildConfig() {
-    super(DCGuildConfigInfo.class);
+    super(DCGuildConfig.class);
   }
 }

@@ -9,9 +9,7 @@ import vn.vna.eri.v2.services.SVDiscord;
 public class EPMain {
 
   public static void main(String[] args) {
-    CFGlobalConfig
-        .getInstance()
-        .invokeUpdateAtStage(ConfigTargetLoadStage.PRE_START);
+    CFGlobalConfig.getInstance().invokeUpdateAtStage(ConfigTargetLoadStage.PRE_START);
 
     CFLangPack.getInstance().loadLangPacks();
 

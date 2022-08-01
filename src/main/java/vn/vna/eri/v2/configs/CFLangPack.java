@@ -17,9 +17,14 @@ import vn.vna.eri.v2.configs.helper.LangPackEnum;
 
 @Getter
 @Setter
-public final class CFLangPack {
+public class CFLangPack {
+
+  public static final LangPackEnum DEFAULT_LANG_PACK = LangPackEnum.EN_US;
+  public static final String       SECTION_CMD       = "cmd";
+  public static final String       SECTION_TEMPLATE  = "template";
+
   private static CFLangPack instance;
-  private static Logger logger = LoggerFactory.getLogger(CFLangPack.class);
+  private static Logger     logger = LoggerFactory.getLogger(CFLangPack.class);
 
   Map<String, Ini> langPacks;
 
@@ -36,53 +41,53 @@ public final class CFLangPack {
     logger.info("Starting load language pack from resources");
     this.langPacks = new HashMap<>();
     try {
-      Optional
-          .ofNullable(CFLangPack.class.getResource("/lang").toURI())
+      Optional.of(Objects.requireNonNull(CFLangPack.class.getResource("/lang")).toURI())
           .ifPresent((uri) -> {
-            File folder = new File(uri);
-            List<File> langPackFiles = Arrays
-                .stream(folder.listFiles())
-                .filter((file) -> file.isFile() && file.getName().endsWith(".ini"))
-                .toList();
+            File   folder        = new File(uri);
+            List<File> langPackFiles = Arrays.stream(Objects.requireNonNull(folder.listFiles()))
+                .filter((file) -> file.isFile() && file.getName().endsWith(".ini")).toList();
 
-            logger.info(
-                "Found {} [ini] file from [lang] folder",
-                langPackFiles.size());
+            logger.info("Found {} [ini] file from [lang] folder", langPackFiles.size());
 
             for (File file : langPackFiles) {
               try {
                 String fileName = file.getName();
-                String langPackName = fileName
-                    .substring(0, fileName.length() - 4);
-                Ini ini = new Ini(file);
+                String langPackName = fileName.substring(0, fileName.length() - 4);
+                Ini ini         = new Ini(file);
                 this.langPacks.put(langPackName, ini);
               } catch (IOException ioex) {
-                logger.error(
-                    "Create ini loader for {} failed due to error: {}",
-                    file.getName(),
+                logger.error("Create ini loader for {} failed due to error: {}", file.getName(),
                     ioex.getMessage());
               }
             }
           });
     } catch (Exception ex) {
-      logger.error(
-          "Can't load language pack due to error: {}",
-          ex.getMessage());
+      logger.error("Can't load language pack due to error: {}", ex.getMessage());
     }
   }
 
   public Optional<Ini> getLangPack(LangPackEnum pack) {
-    return Optional.ofNullable(this.langPacks.get(pack.getName()));
+    return this.getLangPack(pack.getName());
+  }
+
+  public Optional<Ini> getLangPack(String packName) {
+    return Optional.ofNullable(this.langPacks.get(packName));
+  }
+
+  public Optional<String> getString(String pack, String section, String key) {
+    Ini langPack = this.getLangPack(pack)
+        .orElse(this.getLangPack(DEFAULT_LANG_PACK).get());
+
+    return Optional.ofNullable(langPack.get(section, key));
+  }
+
+  public Optional<String> getString(String section, String key) {
+    Ini langPack = this.getLangPack(DEFAULT_LANG_PACK).get();
+    return Optional.ofNullable(langPack.get(section, key));
   }
 
   public Optional<String> getString(LangPackEnum pack, String section, String key) {
-    Ini langPack = this.langPacks.get(pack.getName());
-
-    if (Objects.isNull(langPack)) {
-      return Optional.empty();
-    }
-
-    return Optional.ofNullable(langPack.get(section, key));
+    return this.getString(pack.getName(), section, key);
   }
 
 }

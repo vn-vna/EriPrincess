@@ -22,25 +22,26 @@ import vn.vna.eri.v2.services.SVApiControl;
 import vn.vna.eri.v2.utils.UTSingleton;
 
 public class CFGlobalConfig {
-  public static final String CT_NAME_DSC_EVLISTENER = "bot-event-listener";
-  public static final String CT_NAME_DSC_MSG_BUILDER = "bot-msg-builder";
+
+  public static final String CT_NAME_DSC_EVLISTENER    = "bot-event-listener";
+  public static final String CT_NAME_DSC_MSG_BUILDER   = "bot-msg-builder";
   public static final String CT_NAME_SPRING_DATASOURCE = "spring-data-source";
 
-  public static final String ENV_DATASOURCE = "DATASOURCE";
-  public static final String ENV_DBUSER = "DBUSER";
-  public static final String ENV_DBPWD = "DBPWD";
-  public static final String ENV_BOT_TOKEN = "BOT_TOKEN";
+  public static final String ENV_DATASOURCE      = "DATASOURCE";
+  public static final String ENV_DBUSER          = "DBUSER";
+  public static final String ENV_DBPWD           = "DBPWD";
+  public static final String CFG_BOT_TOKEN       = "BOT_TOKEN";
   public static final String ENV_DISABLE_DISCORD = "DISABLE_DISCORD";
-  public static final String ENV_DISABLE_API = "DISABLE_API";
+  public static final String ENV_DISABLE_API     = "DISABLE_API";
 
-  public static final String CFG_BOT_PREFIX = "BOT_PREFIX";
-  public static final String CFG_BOT_NAME = "BOT_NAME";
-  public static final String CFG_BOT_EMBED_TITLE = "BOT_EMBED_TITLE";
+  public static final String CFG_BOT_PREFIX          = "BOT_PREFIX";
+  public static final String CFG_BOT_NAME            = "BOT_NAME";
+  public static final String CFG_BOT_EMBED_TITLE     = "BOT_EMBED_TITLE";
   public static final String CFG_BOT_EMBED_TITLE_URL = "BOT_EMBED_TITLE_URL";
   public static final String CFG_BOT_EMBED_THUMB_URL = "BOT_EMBED_THUMB_URL";
-  public static final String CFG_BOT_EMBED_FOOTER = "BOT_EMBED_FOOTER";
+  public static final String CFG_BOT_EMBED_FOOTER    = "BOT_EMBED_FOOTER";
 
-  private static final Logger logger = LoggerFactory.getLogger(CFGlobalConfig.class);;
+  private static final Logger   logger = LoggerFactory.getLogger(CFGlobalConfig.class);
   private static CFGlobalConfig instance;
 
   @Getter
@@ -61,11 +62,9 @@ public class CFGlobalConfig {
 
   public String requestConfigValue(String key) {
     try {
-      if (Objects.nonNull(SVApiControl.getInstance()) &&
-          Objects.nonNull(SVApiControl.getApplicationContext())) {
-        String result = CLServerConfig
-            .getClient()
-            .getString(key);
+      if (Objects.nonNull(SVApiControl.getInstance())
+          && Objects.nonNull(SVApiControl.getApplicationContext())) {
+        String result = CLServerConfig.getClient().getString(key);
         if (Objects.nonNull(result)) {
           return result;
         }
@@ -84,43 +83,23 @@ public class CFGlobalConfig {
   }
 
   public Optional<Boolean> getBoolean(String key) {
-    try {
-      return Optional.of(Boolean.parseBoolean(this.getString(key).get()));
-    } catch (Exception nfex) {
-      return Optional.empty();
-    }
+    return this.getString(key).map(Boolean::parseBoolean);
   }
 
   public Optional<Integer> getInteger(String key) {
-    try {
-      return Optional.of(Integer.parseInt(this.getString(key).get()));
-    } catch (Exception nfex) {
-      return Optional.empty();
-    }
+    return this.getString(key).map(Integer::parseInt);
   }
 
   public Optional<Long> getLong(String key) {
-    try {
-      return Optional.of(Long.parseLong(this.getString(key).get()));
-    } catch (Exception nfex) {
-      return Optional.empty();
-    }
+    return this.getString(key).map(Long::parseLong);
   }
 
   public Optional<Float> getFloat(String key) {
-    try {
-      return Optional.of(Float.parseFloat(this.getString(key).get()));
-    } catch (Exception nfex) {
-      return Optional.empty();
-    }
+    return this.getString(key).map(Float::parseFloat);
   }
 
   public Optional<Double> getDouble(String key) {
-    try {
-      return Optional.of(Double.parseDouble(this.getString(key).get()));
-    } catch (NumberFormatException nfex) {
-      return Optional.empty();
-    }
+    return this.getString(key).map(Double::parseDouble);
   }
 
   public void scanConfigTargets() {
@@ -129,56 +108,41 @@ public class CFGlobalConfig {
 
     ConfigurationBuilder reflectionConfigBuilder = new ConfigurationBuilder()
         .setUrls(ClasspathHelper.forPackage(CFGlobalConfig.class.getPackageName()));
-    Reflections reflections = new Reflections(reflectionConfigBuilder);
+    Reflections          reflections             = new Reflections(reflectionConfigBuilder);
 
-    reflections
-        .getSubTypesOf(UpdatableConfigTarget.class)
-        .stream()
+    reflections.getSubTypesOf(UpdatableConfigTarget.class).stream()
         .filter((type) -> Objects.nonNull(type.getAnnotation(ConfigTarget.class)))
         .forEach((type) -> {
           ConfigTarget properties = type.getAnnotation(ConfigTarget.class);
           this.configTargets.put(properties.name(), type);
         });
-    ;
 
     logger.info("Scanned {} config target(s)", this.configTargets.size());
 
     // Invoke getInstance once to construct all of them
-    this.configTargets
-        .entrySet()
-        .forEach((entry) -> {
-          UTSingleton.getInstanceOf(entry.getValue());
-        });
+    this.configTargets.forEach((key, type) -> UTSingleton.getInstanceOf(type));
   }
 
   public void invokeUpdateAtStage(ConfigTargetLoadStage stage) {
     logger.info("Invoking configuration loader from stage {}", stage.getStageName());
-    this.configTargets
-        .entrySet()
-        .forEach((entry) -> {
-          ConfigTarget property = entry.getValue().getAnnotation(ConfigTarget.class);
-          if (property.stage().equals(stage)) {
-            logger.info(
-                "Loading configuration class [{}]",
-                entry.getValue().getSimpleName());
-            UTSingleton
-                .getInstanceOf(entry.getValue())
-                .ifPresent(UpdatableConfigTarget::update);
-          }
-        });
+    this.configTargets.forEach((key, type) -> {
+      ConfigTarget property = type.getAnnotation(ConfigTarget.class);
+      if (property.stage().equals(stage)) {
+        logger.info("Loading configuration class [{}]", type.getSimpleName());
+        UTSingleton.getInstanceOf(type).ifPresent(UpdatableConfigTarget::update);
+      }
+    });
   }
 
   public void loadConfigForObject(Object obj) {
-    List<Field> configFields = Arrays
-        .stream(obj.getClass().getDeclaredFields())
-        .filter((field) -> Objects.nonNull(field.getAnnotation(LoadConfig.class)))
-        .toList();
+    List<Field> configFields = Arrays.stream(obj.getClass().getDeclaredFields())
+        .filter((field) -> Objects.nonNull(field.getAnnotation(LoadConfig.class))).toList();
 
     for (Field field : configFields) {
       try {
         field.setAccessible(true);
-        LoadConfig annotated = field.getAnnotation(LoadConfig.class);
-        Optional<?> value = null;
+        LoadConfig  annotated = field.getAnnotation(LoadConfig.class);
+        Optional<?> value     = null;
         {
           if (annotated.type().equals(String.class)) {
             value = this.getString(annotated.value());
@@ -195,15 +159,11 @@ public class CFGlobalConfig {
           }
         }
         field.set(obj, value.orElse(null));
-        logger.info(
-            "Loaded config value for field {} with alias {}",
-            field.getName(),
+        logger.info("Loaded config value for field {} with alias {}", field.getName(),
             annotated.value());
       } catch (Exception ex) {
-        CFGlobalConfig.logger.error(
-            "Can't inject value for field {} due to error: {}",
-            field.getName(),
-            ex.getMessage());
+        CFGlobalConfig.logger.error("Can't inject value for field {} due to error: {}",
+            field.getName(), ex.getMessage());
       } finally {
         field.setAccessible(false);
       }

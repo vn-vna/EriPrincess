@@ -8,39 +8,40 @@ import vn.vna.eri.v2.utils.UTJsonClass;
 
 @Data
 @NoArgsConstructor
-public class DCSystemStatus implements UTJsonClass {
+public class DCSystemStatus
+    implements UTJsonClass {
 
   @SerializedName("cpu_count")
   private Integer cpuCount;
   @SerializedName("cpu_usage")
-  private Double avgCpuUsage;
+  private Double  avgCpuUsage;
   @SerializedName("max_heap")
-  private Long maxHeapSize;
+  private Long    maxHeapSize;
   @SerializedName("crr_heap")
-  private Long crrHeapSize;
+  private Long    crrHeapSize;
   @SerializedName("mem_total")
-  private Long memoryTotal;
+  private Long    memoryTotal;
   @SerializedName("mem_free")
-  private Long memoryFree;
+  private Long    memoryFree;
   @SerializedName("os_version")
-  private String osVersion;
+  private String  osVersion;
   @SerializedName("os_name")
-  private String osName;
+  private String  osName;
   @SerializedName("os_manufacture")
-  private String osManufacture;
+  private String  osManufacture;
 
   public static DCSystemStatus getCurrentStatus() {
-    DCSystemStatus result = new DCSystemStatus();
-    SystemInfo sysInfo = new SystemInfo();
+    DCSystemStatus result  = new DCSystemStatus();
+    SystemInfo     sysInfo = new SystemInfo();
 
-    result.avgCpuUsage = sysInfo.getHardware().getProcessor().getSystemCpuLoad(30);
-    result.cpuCount = sysInfo.getHardware().getProcessor().getLogicalProcessorCount();
-    result.crrHeapSize = Runtime.getRuntime().totalMemory();
-    result.maxHeapSize = Runtime.getRuntime().maxMemory();
-    result.memoryTotal = sysInfo.getHardware().getMemory().getTotal();
-    result.memoryFree = sysInfo.getHardware().getMemory().getAvailable();
-    result.osName = sysInfo.getOperatingSystem().getFamily();
-    result.osVersion = sysInfo.getOperatingSystem().getVersionInfo().getVersion();
+    result.avgCpuUsage   = sysInfo.getHardware().getProcessor().getSystemCpuLoad(30);
+    result.cpuCount      = sysInfo.getHardware().getProcessor().getLogicalProcessorCount();
+    result.crrHeapSize   = Runtime.getRuntime().totalMemory();
+    result.maxHeapSize   = Runtime.getRuntime().maxMemory();
+    result.memoryTotal   = sysInfo.getHardware().getMemory().getTotal();
+    result.memoryFree    = sysInfo.getHardware().getMemory().getAvailable();
+    result.osName        = sysInfo.getOperatingSystem().getFamily();
+    result.osVersion     = sysInfo.getOperatingSystem().getVersionInfo().getVersion();
     result.osManufacture = sysInfo.getOperatingSystem().getManufacturer();
 
     return result;

@@ -6,14 +6,15 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-import vn.vna.eri.v2.schema.DCServerConfigInfo;
+import vn.vna.eri.v2.schema.DCServerConfig;
 import vn.vna.eri.v2.utils.UTGenericEntity;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "_svrcfg")
-public class ETServerConfig extends UTGenericEntity<DCServerConfigInfo> {
+public class ETServerConfig
+    extends UTGenericEntity<DCServerConfig> {
 
   @Id
   @Column(name = "_key")
@@ -22,6 +23,6 @@ public class ETServerConfig extends UTGenericEntity<DCServerConfigInfo> {
   private String value;
 
   public ETServerConfig() {
-    super(DCServerConfigInfo.class);
+    super(DCServerConfig.class);
   }
 }

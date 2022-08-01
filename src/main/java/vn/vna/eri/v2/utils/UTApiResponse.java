@@ -15,10 +15,7 @@ public class UTApiResponse {
     HttpHeaders headers = new HttpHeaders();
     headers.add(HEADER_CONTENT_TYPE, CONTENT_TYPE_JSON);
 
-    return ResponseEntity
-        .status(status.getCode())
-        .headers(headers)
-        .body(str);
+    return ResponseEntity.status(status.getCode()).headers(headers).body(str);
   }
 
   public static ResponseEntity<String> responseJson(ResponseCode status, UTJsonClass obj) {

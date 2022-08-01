@@ -16,19 +16,20 @@ import vn.vna.eri.v2.configs.helper.UpdatableConfigTarget;
 
 @Getter
 @ConfigTarget(name = CT_NAME_DSC_MSG_BUILDER, stage = DISCORD_SERVICE_READY)
-public class CFBotMessageBuilder implements UpdatableConfigTarget {
+public class CFBotMessageBuilder
+    implements UpdatableConfigTarget {
 
   private static CFBotMessageBuilder instance;
   @LoadConfig(CFG_BOT_NAME)
-  private String botName;
+  private String                     botName;
   @LoadConfig(CFG_BOT_EMBED_TITLE)
-  private String botEmbedTitle;
+  private String                     botEmbedTitle;
   @LoadConfig(CFG_BOT_EMBED_TITLE_URL)
-  private String botEmbedTitleUrl;
+  private String                     botEmbedTitleUrl;
   @LoadConfig(CFG_BOT_EMBED_THUMB_URL)
-  private String botEmbedThumbUrl;
+  private String                     botEmbedThumbUrl;
   @LoadConfig(CFG_BOT_EMBED_FOOTER)
-  private String botEmbedFooter;
+  private String                     botEmbedFooter;
 
   public static CFBotMessageBuilder getInstance() {
     synchronized (CFBotMessageBuilder.class) {

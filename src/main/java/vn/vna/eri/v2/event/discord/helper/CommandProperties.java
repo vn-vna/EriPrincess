@@ -5,17 +5,17 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import net.dv8tion.jda.api.Permission;
-import vn.vna.eri.v2.event.discord.CMDDiscordCommand;
+import vn.vna.eri.v2.event.discord.CMDTemplate;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface CommandProperties {
 
-  Class<? extends CMDDiscordCommand>[] parent() default {};
+  Class<? extends CMDTemplate>[] parent() default {};
 
   String[] commands();
 
-  String description() default "";
+  String descriptionKey() default "";
 
   CommandType type();
 

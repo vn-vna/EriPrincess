@@ -7,7 +7,8 @@ import vn.vna.eri.v2.utils.helper.BoolConfigProperty;
 
 @Getter
 @Setter
-public class CSPermissionStatus extends UTBoolConfigString {
+public class CSPermissionStatus
+    extends UTBoolConfigString {
 
   @BoolConfigProperty
   protected Boolean read;

@@ -28,16 +28,16 @@ import vn.vna.eri.v2.schema.DCServiceStatus;
 @EnableScheduling
 public class SVApiControl {
 
-  private static final Logger logger;
+  private static final Logger       logger;
   private static ApplicationContext springAppCtx;
-  private static SVApiControl instance;
+  private static SVApiControl       instance;
 
   static {
     logger = LoggerFactory.getLogger(SVApiControl.class);
   }
 
   @Getter
-  private DCServiceStatus status;
+  private final DCServiceStatus status;
 
   public SVApiControl() {
     if (!Objects.isNull(SVApiControl.instance)) {
@@ -72,4 +72,5 @@ public class SVApiControl {
     logger.info("Spring boot application is initialized successfully");
     CFGlobalConfig.getInstance().invokeUpdateAtStage(ConfigTargetLoadStage.SPRING_SERVICE_READY);
   }
+
 }
