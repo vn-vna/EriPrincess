@@ -6,7 +6,7 @@ import vn.vna.eri.v2.utils.helper.MessageMentionType;
 
 public class UTMentionParser {
 
-  private static Optional<MessageMention> parseMention(String quote) {
+  public static Optional<MessageMention> parseMention(String quote) {
     if (quote.startsWith("<") && quote.endsWith(">")) {
       quote = quote.substring(1, quote.length() - 2);
       for (MessageMentionType mt : MessageMentionType.values()) {

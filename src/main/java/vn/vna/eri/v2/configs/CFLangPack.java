@@ -17,7 +17,7 @@ import vn.vna.eri.v2.configs.helper.LangPackEnum;
 
 @Getter
 @Setter
-public final class CFLangPack {
+public class CFLangPack {
 
   public static final LangPackEnum DEFAULT_LANG_PACK = LangPackEnum.EN_US;
   public static final String       SECTION_CMD       = "cmd";
@@ -78,6 +78,11 @@ public final class CFLangPack {
     Ini langPack = this.getLangPack(pack)
         .orElse(this.getLangPack(DEFAULT_LANG_PACK).get());
 
+    return Optional.ofNullable(langPack.get(section, key));
+  }
+
+  public Optional<String> getString(String section, String key) {
+    Ini langPack = this.getLangPack(DEFAULT_LANG_PACK).get();
     return Optional.ofNullable(langPack.get(section, key));
   }
 
