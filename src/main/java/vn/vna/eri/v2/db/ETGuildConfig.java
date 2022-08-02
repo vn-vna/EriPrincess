@@ -18,7 +18,7 @@ import vn.vna.eri.v2.utils.UTGenericEntity;
 @Table(name = "_dsc_guilds")
 @DynamicUpdate
 public class ETGuildConfig
-    extends UTGenericEntity<DCGuildConfig> {
+  extends UTGenericEntity<DCGuildConfig> {
 
   @Id
   @Nonnull

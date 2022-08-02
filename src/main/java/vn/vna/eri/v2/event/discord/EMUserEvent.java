@@ -22,7 +22,7 @@ import vn.vna.eri.v2.configs.CFLangPack;
 import vn.vna.eri.v2.utils.UTMessageBuilder;
 
 public class EMUserEvent
-    extends ListenerAdapter {
+  extends ListenerAdapter {
 
   public static final String LPK_DEFAULT_AIRPORT_WELCOME = "tpl.default.airport-msg.welcome";
   public static final String LPK_DEFAULT_AIRPORT_GOODBYE = "tpl.default.airport-msg.goodbye";
@@ -52,29 +52,29 @@ public class EMUserEvent
     Member member  = event.getMember();
 
     cfgClient
-        .getConfiguration(guildId)
-        .ifPresent((cfg) -> {
-          String airportId = cfg.getAirportChannel();
-          if (Objects.isNull(airportId)) {
-            return;
-          }
+      .getConfiguration(guildId)
+      .ifPresent((cfg) -> {
+        String airportId = cfg.getAirportChannel();
+        if (Objects.isNull(airportId)) {
+          return;
+        }
 
-          TextChannel airportChannel = guild.getTextChannelById(airportId);
+        TextChannel airportChannel = guild.getTextChannelById(airportId);
 
-          if (Objects.isNull(airportChannel)) {
-            return;
-          }
+        if (Objects.isNull(airportChannel)) {
+          return;
+        }
 
-          String tplWelcome = langPackMng.getString(cfg.getLanguage(),
-              SECTION_TEMPLATE, LPK_DEFAULT_AIRPORT_WELCOME).orElse("");
+        String tplWelcome = langPackMng.getString(cfg.getLanguage(),
+          SECTION_TEMPLATE, LPK_DEFAULT_AIRPORT_WELCOME).orElse("");
 
-          airportChannel
-              .sendMessage(msgBuilder.formatMessage(tplWelcome,
-                  entry("member", member.getAsMention()),
-                  entry("guild", guild.getName()),
-                  entry("no", guild.getMemberCount())))
-              .queue();
-        });
+        airportChannel
+          .sendMessage(msgBuilder.formatMessage(tplWelcome,
+            entry("member", member.getAsMention()),
+            entry("guild", guild.getName()),
+            entry("no", guild.getMemberCount())))
+          .queue();
+      });
   }
 
   @Override
@@ -90,29 +90,29 @@ public class EMUserEvent
     Member member  = event.getMember();
 
     cfgClient
-        .getConfiguration(guildId)
-        .ifPresent((cfg) -> {
-          String airportId = cfg.getAirportChannel();
-          if (Objects.isNull(airportId)) {
-            return;
-          }
+      .getConfiguration(guildId)
+      .ifPresent((cfg) -> {
+        String airportId = cfg.getAirportChannel();
+        if (Objects.isNull(airportId)) {
+          return;
+        }
 
-          TextChannel airportChannel = guild.getTextChannelById(airportId);
+        TextChannel airportChannel = guild.getTextChannelById(airportId);
 
-          if (Objects.isNull(airportChannel)) {
-            return;
-          }
+        if (Objects.isNull(airportChannel)) {
+          return;
+        }
 
-          String tplGoodbye = langPackMng.getString(cfg.getLanguage(),
-              SECTION_TEMPLATE, LPK_DEFAULT_AIRPORT_GOODBYE).orElse("");
+        String tplGoodbye = langPackMng.getString(cfg.getLanguage(),
+          SECTION_TEMPLATE, LPK_DEFAULT_AIRPORT_GOODBYE).orElse("");
 
-          airportChannel
-              .sendMessage(msgBuilder.formatMessage(tplGoodbye,
-                  entry("member", member.getEffectiveName()),
-                  entry("guild", guild.getName()),
-                  entry("count", guild.getMemberCount())))
-              .queue();
-        });
+        airportChannel
+          .sendMessage(msgBuilder.formatMessage(tplGoodbye,
+            entry("member", member.getEffectiveName()),
+            entry("guild", guild.getName()),
+            entry("count", guild.getMemberCount())))
+          .queue();
+      });
   }
 
   @Override

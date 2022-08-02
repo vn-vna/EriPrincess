@@ -6,7 +6,7 @@ import vn.vna.eri.v2.utils.UTKeyValuePair;
 
 @Data
 public class DCServerConfig
-    extends UTKeyValuePair<String, String> {
+  extends UTKeyValuePair<String, String> {
 
   public DCServerConfig() {
     this.setKey(null);

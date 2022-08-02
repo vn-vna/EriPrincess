@@ -91,7 +91,7 @@ public class CLServerConfig {
       return Optional.ofNullable(this.repository.save(saveValue).toDataObject());
     } catch (Exception ex) {
       logger.error("Request set config {} from database has failed due to: {}", key,
-          ex.getMessage());
+        ex.getMessage());
     }
     return Optional.empty();
   }
@@ -130,7 +130,7 @@ public class CLServerConfig {
       }
     } catch (Exception ex) {
       logger.error("Request get config {} from database has failed due to: {}", key,
-          ex.getMessage());
+        ex.getMessage());
     }
 
     return value;

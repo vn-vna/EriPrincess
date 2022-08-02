@@ -54,13 +54,13 @@ public class CLDiscordGuildConfig {
   @CachePut(cacheNames = CL_GC_CACHE_NAME, key = "#guildId")
   public Optional<DCGuildConfig> updateConfig(String guildId, DCGuildConfig info) {
     return this.getConfiguration(guildId)
-        .map((result) -> {
-          ETGuildConfig newEntity = new ETGuildConfig();
-          newEntity.importFromDataObject(result, true);
-          newEntity.importFromDataObject(info, true);
+      .map((result) -> {
+        ETGuildConfig newEntity = new ETGuildConfig();
+        newEntity.importFromDataObject(result, true);
+        newEntity.importFromDataObject(info, true);
 
-          return this.repository.save(newEntity).toDataObject();
-        });
+        return this.repository.save(newEntity).toDataObject();
+      });
   }
 
   @CacheEvict(cacheNames = CL_GC_CACHE_NAME, key = "#guildId")

@@ -17,11 +17,11 @@ public class CFPostgresDriver {
   @Bean
   public DataSource getDataSource() {
     return DataSourceBuilder.create()
-        .driverClassName("org.postgresql.Driver")
-        .url(this.cfDataSource.getDataSource())
-        .username(this.cfDataSource.getDbUser())
-        .password(this.cfDataSource.getDbPassword())
-        .build();
+      .driverClassName("org.postgresql.Driver")
+      .url(this.cfDataSource.getDataSource())
+      .username(this.cfDataSource.getDbUser())
+      .password(this.cfDataSource.getDbPassword())
+      .build();
   }
 
 }

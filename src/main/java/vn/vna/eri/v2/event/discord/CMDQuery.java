@@ -9,12 +9,12 @@ import org.slf4j.LoggerFactory;
 import vn.vna.eri.v2.event.discord.helper.CommandProperties;
 
 @CommandProperties(
-    commands = "query",
-    descriptionKey = "cmd.desc.cmd-query",
-    type = MESSAGE_COMMAND
+  commands = "query",
+  descriptionKey = "cmd.desc.cmd-query",
+  type = MESSAGE_COMMAND
 )
 public class CMDQuery
-    extends CMDTemplate {
+  extends CMDTemplate {
 
   public static final Logger logger = LoggerFactory.getLogger(CMDQuery.class);
 

@@ -8,7 +8,7 @@ import vn.vna.eri.v2.utils.UTJsonClass;
 @Data
 @NoArgsConstructor
 public class DCServiceStatus
-    implements UTJsonClass {
+  implements UTJsonClass {
 
   public static final String STATUS_ONLINE  = "online";
   public static final String STATUS_OFFLINE = "offline";

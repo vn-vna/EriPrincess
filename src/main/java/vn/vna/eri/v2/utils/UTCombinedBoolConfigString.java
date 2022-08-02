@@ -27,9 +27,9 @@ public class UTCombinedBoolConfigString {
 
   private List<Field> gatherConfigField() {
     return Arrays.stream(this.getClass().getDeclaredFields())
-        .filter((field) -> UTBoolConfigString.class.isAssignableFrom(field.getType())
-            && Objects.nonNull(field.getAnnotation(BoolConfigProperty.class)))
-        .sorted(Comparator.comparing(Field::getName)).toList();
+      .filter((field) -> UTBoolConfigString.class.isAssignableFrom(field.getType())
+        && Objects.nonNull(field.getAnnotation(BoolConfigProperty.class)))
+      .sorted(Comparator.comparing(Field::getName)).toList();
   }
 
   public void importFromConfigString(String str) {
@@ -50,7 +50,7 @@ public class UTCombinedBoolConfigString {
         if (UTBoolConfigString.class.isAssignableFrom(configField.getType())) {
           configField.setAccessible(true);
           UTBoolConfigString configObj = (UTBoolConfigString) configField.getType().getConstructor()
-              .newInstance();
+            .newInstance();
           configObj.importConfigString(configString);
 
           configField.set(this, configObj);
@@ -59,7 +59,7 @@ public class UTCombinedBoolConfigString {
         configField.setAccessible(true);
       } catch (Exception ex) {
         logger.error("Can't inject value of field [{}] due to error: {}", configName,
-            ex.getMessage());
+          ex.getMessage());
       }
     }
   }
@@ -88,11 +88,11 @@ public class UTCombinedBoolConfigString {
           }
 
           builder.append(configName).append(this.pairSeparator).append(str)
-              .append(this.combinedSeparator);
+            .append(this.combinedSeparator);
         }
       } catch (Exception ex) {
         this.logger.error("Collect config field failed [{}] due to error: {}",
-            configField.getName(), ex.getMessage());
+          configField.getName(), ex.getMessage());
       } finally {
         configField.setAccessible(false);
       }

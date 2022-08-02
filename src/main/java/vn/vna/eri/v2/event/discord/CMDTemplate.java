@@ -84,28 +84,28 @@ public abstract class CMDTemplate {
 
     logger.info("Command(s) will be loaded from {}", packageScan.getName());
     ConfigurationBuilder reflectionConfigBuilder = new ConfigurationBuilder()
-        .setUrls(ClasspathHelper.forPackage(CMDTemplate.class.getPackageName()));
+      .setUrls(ClasspathHelper.forPackage(CMDTemplate.class.getPackageName()));
     Reflections          reflections             = new Reflections(reflectionConfigBuilder);
 
     // Collect command classes
     Set<Class<? extends CMDTemplate>> reflectedTypes = reflections
-        .getSubTypesOf(CMDTemplate.class).stream()
-        .filter(type -> CMDTemplate.class.equals(type.getSuperclass()))
-        .collect(Collectors.toSet());
+      .getSubTypesOf(CMDTemplate.class).stream()
+      .filter(type -> CMDTemplate.class.equals(type.getSuperclass()))
+      .collect(Collectors.toSet());
 
     logger.info("Reflection found {} command class(es)", reflectedTypes.size());
 
     // Collect injection field
     Set<Field> injectionFields = Arrays.stream(CMDTemplate.class.getDeclaredFields())
-        .filter((field -> !Objects.isNull(field.getAnnotation(PropertyField.class))))
-        .collect(Collectors.toSet());
+      .filter((field -> !Objects.isNull(field.getAnnotation(PropertyField.class))))
+      .collect(Collectors.toSet());
 
     // Create objects
     Set<CMDTemplate> commandCollection = new HashSet<>();
     for (Class<? extends CMDTemplate> reflectedType : reflectedTypes) {
       try {
         Constructor<? extends CMDTemplate> typeDefaultConstructor = reflectedType
-            .getConstructor();
+          .getConstructor();
 
         CommandProperties properties = reflectedType.getAnnotation(CommandProperties.class);
 
@@ -114,13 +114,13 @@ public abstract class CMDTemplate {
         // Inject value
         for (Field injectionField : injectionFields) {
           injectionField.set(command,
-              CommandProperties.class.getMethod(injectionField.getName()).invoke(properties));
+            CommandProperties.class.getMethod(injectionField.getName()).invoke(properties));
         }
 
         commandCollection.add(command);
       } catch (Exception ex) {
         logger.error("Create command object with type [{}] has failed due to error: {}",
-            reflectedType.getName(), ex.getMessage());
+          reflectedType.getName(), ex.getMessage());
       }
     }
 
@@ -134,21 +134,21 @@ public abstract class CMDTemplate {
     // Inspect child commands
     for (CMDTemplate command : commandCollection) {
       command.setChildren(commandCollection.stream()
-          .filter(
-              (subcommand) -> Arrays.asList(subcommand.getParent()).contains(command.getClass()))
-          .collect(Collectors.toSet()));
+        .filter(
+          (subcommand) -> Arrays.asList(subcommand.getParent()).contains(command.getClass()))
+        .collect(Collectors.toSet()));
     }
 
     // Get all root commands
     CMDTemplate.commandManager = commandCollection.stream()
-        .filter(CMDTemplate::isRootCommand).collect(Collectors.toSet());
+      .filter(CMDTemplate::isRootCommand).collect(Collectors.toSet());
 
     logger.info("Scan discord command operation finished took {} ms, found {} root command(s)",
-        System.currentTimeMillis() - beginTime, CMDTemplate.commandManager.size());
+      System.currentTimeMillis() - beginTime, CMDTemplate.commandManager.size());
   }
 
   private static ExecutionInfo tryToMatchRecursive(String[] commandArray,
-      CMDTemplate crrCommand, Integer depth, CMDTemplate root) {
+    CMDTemplate crrCommand, Integer depth, CMDTemplate root) {
     if (crrCommand.match(commandArray[depth])) {
       if (Objects.isNull(root)) {
         root = crrCommand;
@@ -194,19 +194,19 @@ public abstract class CMDTemplate {
   }
 
   private List<Permission> getMismatchPermission(Member member, GuildChannel channel,
-      Permission[] requiredPermissions) {
+    Permission[] requiredPermissions) {
     List<Permission>    mismatch;
     EnumSet<Permission> availablePermissions = member.getPermissions(channel);
 
     mismatch = Arrays.stream(requiredPermissions)
-        .filter((permission) -> !availablePermissions.contains(permission))
-        .collect(Collectors.toList());
+      .filter((permission) -> !availablePermissions.contains(permission))
+      .collect(Collectors.toList());
 
     return mismatch;
   }
 
   public void requirePermissionMessageEvent(Member bot, Member sender, GuildChannel channel)
-      throws ERDiscordGuildPermissionMismatch {
+    throws ERDiscordGuildPermissionMismatch {
     List<Permission> permMismatch = this.getMismatchPermission(bot, channel, this.botPermission);
 
     if (permMismatch.size() > 0) {
@@ -214,7 +214,7 @@ public abstract class CMDTemplate {
     }
 
     List<Permission> senderPermissionMismatch = this.getMismatchPermission(sender, channel,
-        this.senderPermission);
+      this.senderPermission);
 
     if (senderPermissionMismatch.size() > 0) {
       throw new ERDiscordGuildPermissionMismatch(sender, senderPermissionMismatch);
@@ -226,20 +226,20 @@ public abstract class CMDTemplate {
     UTMessageBuilder builder = UTMessageBuilder.getInstance();
 
     CFLangPack
-        .getInstance()
-        .getLangPack(lang)
-        .ifPresent((langPack) -> {
-          String commandDescription = langPack.get(SECTION_CMD, this.getDescriptionKey());
-          String templateChildInfo = langPack.get(SECTION_TEMPLATE, LPK_HELP_CHILD_PROPS);
-          sb.append(commandDescription).append("\n");
+      .getInstance()
+      .getLangPack(lang)
+      .ifPresent((langPack) -> {
+        String commandDescription = langPack.get(SECTION_CMD, this.getDescriptionKey());
+        String templateChildInfo = langPack.get(SECTION_TEMPLATE, LPK_HELP_CHILD_PROPS);
+        sb.append(commandDescription).append("\n");
 
-          for (CMDTemplate child : this.getChildren()) {
-            String childDescription = langPack.get(SECTION_CMD, child.getDescriptionKey());
-            sb.append(builder.formatMessage(templateChildInfo,
-                entry("cmds", String.join(",", child.getCommands())),
-                entry("description", childDescription)));
-          }
-        });
+        for (CMDTemplate child : this.getChildren()) {
+          String childDescription = langPack.get(SECTION_CMD, child.getDescriptionKey());
+          sb.append(builder.formatMessage(templateChildInfo,
+            entry("cmds", String.join(",", child.getCommands())),
+            entry("description", childDescription)));
+        }
+      });
 
     return sb.toString();
   }

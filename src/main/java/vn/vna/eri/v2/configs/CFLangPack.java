@@ -42,7 +42,7 @@ public class CFLangPack {
     this.langPacks = new HashMap<>();
     try {
       InputStream packListStream = CFLangPack.class
-          .getResourceAsStream(LANG_LIST_PATHNAME);
+        .getResourceAsStream(LANG_LIST_PATHNAME);
 
       Ini langList = new Ini(packListStream);
 
@@ -55,10 +55,10 @@ public class CFLangPack {
           this.langPacks.put(sectionName, new Ini(packStream));
         } catch (Exception ex) {
           logger.error(
-              "Can't load lang pack {} from source {} due to error: {}",
-              sectionName,
-              source,
-              ex.getMessage());
+            "Can't load lang pack {} from source {} due to error: {}",
+            sectionName,
+            source,
+            ex.getMessage());
         }
       });
     } catch (Exception ex) {
@@ -76,7 +76,7 @@ public class CFLangPack {
 
   public Optional<String> getString(String pack, String section, String key) {
     Ini langPack = this.getLangPack(pack)
-        .orElse(this.getLangPack(DEFAULT_LANG_PACK).get());
+      .orElse(this.getLangPack(DEFAULT_LANG_PACK).get());
 
     return Optional.ofNullable(langPack.get(section, key));
   }

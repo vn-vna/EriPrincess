@@ -10,7 +10,7 @@ import vn.vna.eri.v2.utils.UTJsonClass;
 @Data
 @NoArgsConstructor
 public class DCGuildConfig
-    implements UTJsonClass {
+  implements UTJsonClass {
 
   @SerializedName("id")
   private String  guildId;

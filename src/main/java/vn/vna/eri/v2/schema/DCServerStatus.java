@@ -9,7 +9,7 @@ import vn.vna.eri.v2.utils.UTJsonClass;
 @Data
 @NoArgsConstructor
 public class DCServerStatus
-    implements UTJsonClass {
+  implements UTJsonClass {
 
   @SerializedName("system_status")
   DCSystemStatus systemStatus;

@@ -16,11 +16,11 @@ import vn.vna.eri.v2.event.discord.helper.CommandProperties;
 import vn.vna.eri.v2.utils.UTMessageBuilder;
 
 @CommandProperties(
-    type = MESSAGE_COMMAND,
-    commands = "admin",
-    descriptionKey = "cmd.desc.cmd-admin")
+  type = MESSAGE_COMMAND,
+  commands = "admin",
+  descriptionKey = "cmd.desc.cmd-admin")
 public class CMDAdmin
-    extends CMDTemplate {
+  extends CMDTemplate {
 
   public static final String LPK_TEMPLATE_TITLE = "tpl.help.title";
   public static final String LPK_TEMPLATE_DESC  = "tpl.help.desc";
@@ -29,35 +29,35 @@ public class CMDAdmin
   public void execute(String[] commandList, Event event, Integer commandDepth) {
     if (event instanceof MessageReceivedEvent msgEvent) {
       String langPackName = CLDiscordGuildConfig.getClient()
-          .getConfiguration(msgEvent.getGuild().getId())
-          .map((cfg) -> cfg.getLanguage())
-          .orElse(CFLangPack.DEFAULT_LANG_PACK.getName());
+        .getConfiguration(msgEvent.getGuild().getId())
+        .map((cfg) -> cfg.getLanguage())
+        .orElse(CFLangPack.DEFAULT_LANG_PACK.getName());
 
       Optional<Ini> langPack = CFLangPack.getInstance()
-          .getLangPack(langPackName);
+        .getLangPack(langPackName);
 
       String helpString  = this.getHelpString(langPackName);
       String descString  = langPack
-          .map((pack) -> pack.get(SECTION_TEMPLATE, LPK_TEMPLATE_DESC))
-          .orElse("");
+        .map((pack) -> pack.get(SECTION_TEMPLATE, LPK_TEMPLATE_DESC))
+        .orElse("");
       String titleString = langPack
-          .map((pack) -> pack.get(SECTION_TEMPLATE, LPK_TEMPLATE_TITLE))
-          .orElse("");
+        .map((pack) -> pack.get(SECTION_TEMPLATE, LPK_TEMPLATE_TITLE))
+        .orElse("");
 
       EmbedBuilder   embed = UTMessageBuilder.getInstance().getDefaultEmbedBuilder();
       MessageBuilder msg   = new MessageBuilder();
 
       embed
-          .setDescription(UTMessageBuilder
-              .getInstance()
-              .formatMessage(descString,
-                  entry("cmd", String.join(",", this.getCommands()))))
-          .addField(titleString, helpString, false);
+        .setDescription(UTMessageBuilder
+          .getInstance()
+          .formatMessage(descString,
+            entry("cmd", String.join(",", this.getCommands()))))
+        .addField(titleString, helpString, false);
 
       msg.setEmbeds(embed.build());
       msgEvent.getChannel()
-          .sendMessage(msg.build())
-          .queue();
+        .sendMessage(msg.build())
+        .queue();
 
     }
   }

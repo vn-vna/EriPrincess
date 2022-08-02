@@ -7,7 +7,7 @@ import net.dv8tion.jda.api.entities.Member;
 
 @Getter
 public class ERDiscordGuildPermissionMismatch
-    extends IllegalAccessException {
+  extends IllegalAccessException {
 
   protected List<Permission> mismatchPermission;
   protected Member           member;

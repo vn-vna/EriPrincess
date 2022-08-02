@@ -63,7 +63,7 @@ public class CFGlobalConfig {
   public String requestConfigValue(String key) {
     try {
       if (Objects.nonNull(SVApiControl.getInstance())
-          && Objects.nonNull(SVApiControl.getApplicationContext())) {
+        && Objects.nonNull(SVApiControl.getApplicationContext())) {
         String result = CLServerConfig.getClient().getString(key);
         if (Objects.nonNull(result)) {
           return result;
@@ -71,8 +71,8 @@ public class CFGlobalConfig {
       }
     } catch (Exception ex) {
       logger.warn(
-          "Get configuration variable from database failed due to error: {}. Trying to get from ENV instead",
-          ex.getMessage());
+        "Get configuration variable from database failed due to error: {}. Trying to get from ENV instead",
+        ex.getMessage());
     }
     // Get value from ENV variables
     return System.getenv(key);
@@ -107,15 +107,15 @@ public class CFGlobalConfig {
     this.configTargets = new HashMap<>();
 
     ConfigurationBuilder reflectionConfigBuilder = new ConfigurationBuilder()
-        .setUrls(ClasspathHelper.forPackage(CFGlobalConfig.class.getPackageName()));
+      .setUrls(ClasspathHelper.forPackage(CFGlobalConfig.class.getPackageName()));
     Reflections          reflections             = new Reflections(reflectionConfigBuilder);
 
     reflections.getSubTypesOf(UpdatableConfigTarget.class).stream()
-        .filter((type) -> Objects.nonNull(type.getAnnotation(ConfigTarget.class)))
-        .forEach((type) -> {
-          ConfigTarget properties = type.getAnnotation(ConfigTarget.class);
-          this.configTargets.put(properties.name(), type);
-        });
+      .filter((type) -> Objects.nonNull(type.getAnnotation(ConfigTarget.class)))
+      .forEach((type) -> {
+        ConfigTarget properties = type.getAnnotation(ConfigTarget.class);
+        this.configTargets.put(properties.name(), type);
+      });
 
     logger.info("Scanned {} config target(s)", this.configTargets.size());
 
@@ -136,7 +136,7 @@ public class CFGlobalConfig {
 
   public void loadConfigForObject(Object obj) {
     List<Field> configFields = Arrays.stream(obj.getClass().getDeclaredFields())
-        .filter((field) -> Objects.nonNull(field.getAnnotation(LoadConfig.class))).toList();
+      .filter((field) -> Objects.nonNull(field.getAnnotation(LoadConfig.class))).toList();
 
     for (Field field : configFields) {
       try {
@@ -160,10 +160,10 @@ public class CFGlobalConfig {
         }
         field.set(obj, value.orElse(null));
         logger.info("Loaded config value for field {} with alias {}", field.getName(),
-            annotated.value());
+          annotated.value());
       } catch (Exception ex) {
         CFGlobalConfig.logger.error("Can't inject value for field {} due to error: {}",
-            field.getName(), ex.getMessage());
+          field.getName(), ex.getMessage());
       } finally {
         field.setAccessible(false);
       }

@@ -20,16 +20,16 @@ import vn.vna.eri.v2.utils.UTMentionParser;
 import vn.vna.eri.v2.utils.UTMessageBuilder;
 
 @CommandProperties(
-    commands = { "config", "cfg" },
-    senderPermission = {
-        MANAGE_SERVER,
-        MANAGE_CHANNEL },
-    type = CommandType.SUBCOMMAND,
-    parent = CMDAdmin.class,
-    descriptionKey = "cmd.desc.cmd-admin-config"
+  commands = { "config", "cfg" },
+  senderPermission = {
+    MANAGE_SERVER,
+    MANAGE_CHANNEL },
+  type = CommandType.SUBCOMMAND,
+  parent = CMDAdmin.class,
+  descriptionKey = "cmd.desc.cmd-admin-config"
 )
 public class CMDAdminConfig
-    extends CMDTemplate {
+  extends CMDTemplate {
 
   public static final String CMD_CFG_AIRPORT  = "airport";
   public static final String CMD_CFG_LANGUAGE = "lang";
@@ -51,85 +51,85 @@ public class CMDAdminConfig
       MessageBuilder msg = new MessageBuilder();
 
       cfgClient
-          .getConfiguration(guildId)
-          .ifPresentOrElse((cfg) -> {
-            String tplSuccessMsg = langPackMng
-                .getString(cfg.getLanguage(), SECTION_CMD, LPK_CFG_SUCCESS)
-                .orElse("");
-            String tplErrMsg = langPackMng
-                .getString(cfg.getLanguage(), SECTION_CMD, LPK_CFG_ERROR)
-                .orElse("");
+        .getConfiguration(guildId)
+        .ifPresentOrElse((cfg) -> {
+          String tplSuccessMsg = langPackMng
+            .getString(cfg.getLanguage(), SECTION_CMD, LPK_CFG_SUCCESS)
+            .orElse("");
+          String tplErrMsg   = langPackMng
+            .getString(cfg.getLanguage(), SECTION_CMD, LPK_CFG_ERROR)
+            .orElse("");
 
-            if (commandList.length < 4) {
-              return;
-            }
+          if (commandList.length < 4) {
+            return;
+          }
 
-            String prop = commandList[commandDepth + 1];
+          String prop = commandList[commandDepth + 1];
 
-            switch (prop) {
-            case CMD_CFG_AIRPORT ->
-              UTMentionParser
-                  .parseMention(commandList[commandDepth + 2])
-                  .ifPresent((mention) -> {
-                    if (mention.type() != MENTION_CHANNEL_TEXT) {
-                      msg.setContent(msgBuilder
-                          .formatMessage(tplErrMsg,
-                              entry("guild", guild.getName())));
-                      return;
-                    }
+          switch (prop) {
+          case CMD_CFG_AIRPORT ->
+            UTMentionParser
+              .parseMention(commandList[commandDepth + 2])
+              .ifPresent((mention) -> {
+                if (mention.type() != MENTION_CHANNEL_TEXT) {
+                  msg.setContent(msgBuilder
+                    .formatMessage(tplErrMsg,
+                      entry("guild", guild.getName())));
+                  return;
+                }
 
-                    DCGuildConfig update = new DCGuildConfig();
-                    update.setGuildId(guildId);
-                    update.setAirportChannel(mention.targetId());
-                    cfgClient.updateConfig(guildId, update)
-                        .ifPresent((result) -> {
-                          TextChannel airport = guild.getTextChannelById(
-                              result.getAirportChannel());
+                DCGuildConfig update = new DCGuildConfig();
+                update.setGuildId(guildId);
+                update.setAirportChannel(mention.targetId());
+                cfgClient.updateConfig(guildId, update)
+                  .ifPresent((result) -> {
+                    TextChannel airport = guild.getTextChannelById(
+                      result.getAirportChannel());
 
-                          msg.setContent(msgBuilder
-                              .formatMessage(tplSuccessMsg,
-                                  entry("field", CMD_CFG_AIRPORT),
-                                  entry("value", airport.getAsMention())));
-                        });
-
+                    msg.setContent(msgBuilder
+                      .formatMessage(tplSuccessMsg,
+                        entry("field", CMD_CFG_AIRPORT),
+                        entry("value", airport.getAsMention())));
                   });
-            case CMD_CFG_LANGUAGE -> {
-              String langParam = commandList[commandDepth + 2];
-              langPackMng
-                  .getLangPack(langParam)
-                  .ifPresent((pack) -> {
-                    DCGuildConfig update = new DCGuildConfig();
-                    update.setGuildId(guildId);
-                    update.setLanguage(langParam);
 
-                    cfgClient.updateConfig(guildId, update)
-                        .ifPresentOrElse((result) -> {
-                          msg.setContent(msgBuilder
-                              .formatMessage(tplSuccessMsg,
-                                  entry("field", CMD_CFG_LANGUAGE),
-                                  entry("value", langParam)));
-                        }, () -> {
-                          msg.setContent(msgBuilder
-                              .formatMessage(tplErrMsg,
-                                  entry("field", CMD_CFG_LANGUAGE),
-                                  entry("value", langParam)));
-                        });
+              });
+          case CMD_CFG_LANGUAGE -> {
+            String langParam = commandList[commandDepth + 2];
+            langPackMng
+              .getLangPack(langParam)
+              .ifPresent((pack) -> {
+                DCGuildConfig update = new DCGuildConfig();
+                update.setGuildId(guildId);
+                update.setLanguage(langParam);
+
+                cfgClient.updateConfig(guildId, update)
+                  .ifPresentOrElse((result) -> {
+                    msg.setContent(msgBuilder
+                      .formatMessage(tplSuccessMsg,
+                        entry("field", CMD_CFG_LANGUAGE),
+                        entry("value", langParam)));
+                  }, () -> {
+                    msg.setContent(msgBuilder
+                      .formatMessage(tplErrMsg,
+                        entry("field", CMD_CFG_LANGUAGE),
+                        entry("value", langParam)));
                   });
-            }
-            }
-          }, () -> {
-            String tplNoConfig = langPackMng
-                .getString(SECTION_CMD, LPK_CFG_NCFG)
-                .orElse("");
+              });
+          }
+          }
+        }, () -> {
+          String tplNoConfig = langPackMng
+            .getString(SECTION_CMD, LPK_CFG_NCFG)
+            .orElse("");
 
-            msg.setContent(msgBuilder
-                .formatMessage(tplNoConfig,
-                    entry("guild", guild.getName())));
-          });
+          msg.setContent(msgBuilder
+            .formatMessage(tplNoConfig,
+              entry("guild", guild.getName())));
+        });
 
       msgEvent.getChannel()
-          .sendMessage(msg.build())
-          .queue();
+        .sendMessage(msg.build())
+        .queue();
     }
   }
 

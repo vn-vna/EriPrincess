@@ -42,7 +42,7 @@ public class UTBoolConfigString {
     this.clearConfig();
 
     List<String> tokens = Arrays.stream(str.split(this.separator))
-        .filter(token -> !"".equals(token)).toList();
+      .filter(token -> !"".equals(token)).toList();
 
     for (Field configField : this.configFields) {
       try {
@@ -55,8 +55,8 @@ public class UTBoolConfigString {
         }
       } catch (Exception ex) {
         this.logger.error(
-            "Can't inject value of field {} while parsing config string due to error: {}",
-            configField.getName(), ex.getMessage());
+          "Can't inject value of field {} while parsing config string due to error: {}",
+          configField.getName(), ex.getMessage());
       } finally {
         configField.setAccessible(false);
       }
@@ -66,9 +66,9 @@ public class UTBoolConfigString {
   private List<Field> gatherConfigField() {
     // Gather fields
     return Arrays.stream(this.getClass().getDeclaredFields())
-        .filter(field -> Objects.nonNull(field.getAnnotation(BoolConfigProperty.class))
-            && field.getType().equals(Boolean.class))
-        .sorted(Comparator.comparing(Field::getName)).toList();
+      .filter(field -> Objects.nonNull(field.getAnnotation(BoolConfigProperty.class))
+        && field.getType().equals(Boolean.class))
+      .sorted(Comparator.comparing(Field::getName)).toList();
   }
 
   public String toConfigString() {
@@ -94,7 +94,7 @@ public class UTBoolConfigString {
         }
       } catch (Exception ex) {
         this.logger.error("Unable to parse config field [{}] due to error: {}",
-            configField.getName(), ex.getMessage());
+          configField.getName(), ex.getMessage());
       } finally {
         configField.setAccessible(false);
       }

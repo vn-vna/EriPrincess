@@ -15,7 +15,7 @@ import vn.vna.eri.v2.event.discord.helper.CommandType;
 
 @NoArgsConstructor
 public class EMMessageEvent
-    extends ListenerAdapter {
+  extends ListenerAdapter {
 
   private static final Logger   logger = LoggerFactory.getLogger(EMMessageEvent.class);
   private static EMMessageEvent instance;
@@ -54,17 +54,17 @@ public class EMMessageEvent
     }
 
     String[] commandArray = rawContent
-        .substring(CFDiscordService.getInstance().getBotPrefix().length()).split(" ");
+      .substring(CFDiscordService.getInstance().getBotPrefix().length()).split(" ");
 
     long    beginEx = System.currentTimeMillis();
     boolean success = CMDTemplate.tryExecute(commandArray, event, CommandType.MESSAGE_COMMAND);
     if (success) {
       logger.info(
-          "Took {} ms: Executed a command required by {} on guild {} with message \"{}\"",
-          System.currentTimeMillis() - beginEx,
-          event.getMember().getEffectiveName(),
-          event.getGuild().getName(),
-          event.getMessage().getContentRaw());
+        "Took {} ms: Executed a command required by {} on guild {} with message \"{}\"",
+        System.currentTimeMillis() - beginEx,
+        event.getMember().getEffectiveName(),
+        event.getGuild().getName(),
+        event.getMessage().getContentRaw());
     }
   }
 

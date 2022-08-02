@@ -6,5 +6,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ARReloadConfig
-    extends ARTemplate<String> {
+  extends ARTemplate<String> {
 }
