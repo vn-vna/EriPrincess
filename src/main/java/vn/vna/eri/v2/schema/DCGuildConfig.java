@@ -22,6 +22,8 @@ public class DCGuildConfig
   private Integer timeZone;
   @SerializedName("airport")
   private String  airportChannel;
+  @SerializedName("enable_audit")
+  private Boolean enableAuditLog;
 
   public DCGuildConfig(String guildId) {
     this.guildId        = guildId;

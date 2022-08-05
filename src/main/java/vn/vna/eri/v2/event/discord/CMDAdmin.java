@@ -1,5 +1,6 @@
 package vn.vna.eri.v2.event.discord;
 
+import static vn.vna.eri.v2.configs.CFLangPack.DEFAULT_LANG_PACK;
 import static vn.vna.eri.v2.configs.CFLangPack.SECTION_TEMPLATE;
 import static vn.vna.eri.v2.event.discord.helper.CommandType.MESSAGE_COMMAND;
 import static vn.vna.eri.v2.utils.helper.PlaceholderEntry.entry;
@@ -13,6 +14,7 @@ import org.ini4j.Ini;
 import vn.vna.eri.v2.clients.CLDiscordGuildConfig;
 import vn.vna.eri.v2.configs.CFLangPack;
 import vn.vna.eri.v2.event.discord.helper.CommandProperties;
+import vn.vna.eri.v2.schema.DCGuildConfig;
 import vn.vna.eri.v2.utils.UTMessageBuilder;
 
 @CommandProperties(
@@ -30,8 +32,8 @@ public class CMDAdmin
     if (event instanceof MessageReceivedEvent msgEvent) {
       String langPackName = CLDiscordGuildConfig.getClient()
         .getConfiguration(msgEvent.getGuild().getId())
-        .map((cfg) -> cfg.getLanguage())
-        .orElse(CFLangPack.DEFAULT_LANG_PACK.getName());
+        .map(DCGuildConfig::getLanguage)
+        .orElse(DEFAULT_LANG_PACK.getName());
 
       Optional<Ini> langPack = CFLangPack.getInstance()
         .getLangPack(langPackName);

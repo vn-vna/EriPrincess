@@ -67,7 +67,7 @@ public final class UTMessageBuilder {
     CFLangPack
       .getInstance()
       .getLangPack(guildConfig
-        .map((cfg) -> cfg.getLanguage()).orElse(DEFAULT_LANG_PACK.getName()))
+        .map(DCGuildConfig::getLanguage).orElse(DEFAULT_LANG_PACK.getName()))
       .ifPresent((langPack) -> {
         String templateTitle = langPack.get(SECTION_TEMPLATE, LPK_PERMMISSING_TITLE);
         String templateElem = langPack.get(SECTION_TEMPLATE, LPK_PERMMISSING_PERMSTR);
@@ -75,8 +75,7 @@ public final class UTMessageBuilder {
         for (Permission perm : mismatch) {
           permErrStr.append(this.formatMessage(templateElem,
             entry("emoji", ":no_entry_sign:"),
-            entry("perm_name", perm.getName()),
-            entry("endl", "\n")));
+            entry("perm_name", perm.getName())));
         }
 
         errEmbed.addField(

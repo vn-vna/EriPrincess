@@ -32,6 +32,8 @@ public class ETGuildConfig
   private Integer timeZone;
   @Column(name = "_airport")
   private String  airportChannel;
+  @Column(name = "_enable_audit")
+  private Boolean enableAuditLog;
 
   public ETGuildConfig() {
     super(DCGuildConfig.class);

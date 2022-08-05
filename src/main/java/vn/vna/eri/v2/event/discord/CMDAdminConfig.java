@@ -16,8 +16,8 @@ import vn.vna.eri.v2.configs.CFLangPack;
 import vn.vna.eri.v2.event.discord.helper.CommandProperties;
 import vn.vna.eri.v2.event.discord.helper.CommandType;
 import vn.vna.eri.v2.schema.DCGuildConfig;
-import vn.vna.eri.v2.utils.UTMentionParser;
 import vn.vna.eri.v2.utils.UTMessageBuilder;
+import vn.vna.eri.v2.utils.UTStringParser;
 
 @CommandProperties(
   commands = { "config", "cfg" },
@@ -68,7 +68,7 @@ public class CMDAdminConfig
 
           switch (prop) {
           case CMD_CFG_AIRPORT ->
-            UTMentionParser
+            UTStringParser
               .parseMention(commandList[commandDepth + 2])
               .ifPresent((mention) -> {
                 if (mention.type() != MENTION_CHANNEL_TEXT) {
