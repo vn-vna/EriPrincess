@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RPServerConfig
-    extends JpaRepository<ETServerConfig, String> {
+  extends JpaRepository<ETServerConfig, String> {
 
 }

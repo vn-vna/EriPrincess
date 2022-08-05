@@ -36,7 +36,7 @@ import vn.vna.eri.v2.event.discord.EMUserEvent;
 import vn.vna.eri.v2.schema.DCServiceStatus;
 
 public class SVDiscord
-    implements Runnable {
+  implements Runnable {
 
   private static final Logger logger;
   private static Thread       serviceThread;
@@ -91,19 +91,19 @@ public class SVDiscord
 
     List<GatewayIntent> intents = new ArrayList<>();
     Collections.addAll(intents, GUILD_MESSAGES, GUILD_MEMBERS, GUILD_BANS, GUILD_EMOJIS,
-        GUILD_INVITES, GUILD_MESSAGE_TYPING, GUILD_PRESENCES, GUILD_VOICE_STATES, GUILD_WEBHOOKS,
-        GUILD_MESSAGE_REACTIONS);
+      GUILD_INVITES, GUILD_MESSAGE_TYPING, GUILD_PRESENCES, GUILD_VOICE_STATES, GUILD_WEBHOOKS,
+      GUILD_MESSAGE_REACTIONS);
 
     EMMessageEvent msgEventListener     = EMMessageEvent.getInstance();
     EMServiceEvent serviceEventListener = EMServiceEvent.getInstance();
     EMUserEvent    userEventListener    = EMUserEvent.getInstance();
 
     JDABuilder jdaBuilder = JDABuilder
-        .create(token, intents)
-        .addEventListeners(
-            msgEventListener,
-            serviceEventListener,
-            userEventListener);
+      .create(token, intents)
+      .addEventListeners(
+        msgEventListener,
+        serviceEventListener,
+        userEventListener);
 
     try {
       this.jdaContext = jdaBuilder.build();

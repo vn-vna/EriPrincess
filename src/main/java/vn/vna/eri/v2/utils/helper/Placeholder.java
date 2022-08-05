@@ -13,7 +13,7 @@ public class Placeholder {
   private Placeholder() {
     this.placeholder = new HashMap<>();
     this.place("endl", "\n")
-        .place("tab", "\t");
+      .place("tab", "\t");
   }
 
   public Placeholder place(String key, String value) {

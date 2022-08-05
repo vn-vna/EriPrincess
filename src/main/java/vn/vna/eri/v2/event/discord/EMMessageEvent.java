@@ -12,12 +12,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import vn.vna.eri.v2.configs.CFDiscordService;
 import vn.vna.eri.v2.event.discord.helper.CommandType;
+import vn.vna.eri.v2.utils.UTStringParser;
 
 @NoArgsConstructor
 public class EMMessageEvent
-    extends ListenerAdapter {
+  extends ListenerAdapter {
 
-  private static final Logger   logger = LoggerFactory.getLogger(EMMessageEvent.class);
+  private static final Logger logger = LoggerFactory.getLogger(EMMessageEvent.class);
+
   private static EMMessageEvent instance;
 
   public static EMMessageEvent getInstance() {
@@ -53,18 +55,20 @@ public class EMMessageEvent
       return;
     }
 
-    String[] commandArray = rawContent
-        .substring(CFDiscordService.getInstance().getBotPrefix().length()).split(" ");
+    String commandString = rawContent
+      .substring(CFDiscordService.getInstance().getBotPrefix().length());
+
+    String[] commandArray = UTStringParser.parseCommand(commandString).toArray(String[]::new);
 
     long    beginEx = System.currentTimeMillis();
     boolean success = CMDTemplate.tryExecute(commandArray, event, CommandType.MESSAGE_COMMAND);
     if (success) {
       logger.info(
-          "Took {} ms: Executed a command required by {} on guild {} with message \"{}\"",
-          System.currentTimeMillis() - beginEx,
-          event.getMember().getEffectiveName(),
-          event.getGuild().getName(),
-          event.getMessage().getContentRaw());
+        "Took {} ms: Executed a command required by {} on guild {} with message \"{}\"",
+        System.currentTimeMillis() - beginEx,
+        event.getMember().getEffectiveName(),
+        event.getGuild().getName(),
+        event.getMessage().getContentRaw());
     }
   }
 

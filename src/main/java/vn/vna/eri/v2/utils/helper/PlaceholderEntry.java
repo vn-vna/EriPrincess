@@ -3,7 +3,7 @@ package vn.vna.eri.v2.utils.helper;
 import vn.vna.eri.v2.utils.UTKeyValuePair;
 
 public class PlaceholderEntry
-    extends UTKeyValuePair<String, String> {
+  extends UTKeyValuePair<String, String> {
 
   public PlaceholderEntry(String key, String value) {
     this.setKey(key);

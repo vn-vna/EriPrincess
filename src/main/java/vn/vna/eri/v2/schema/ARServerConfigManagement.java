@@ -8,5 +8,5 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class ARServerConfigManagement
-    extends ARTemplate<DCServerConfig> {
+  extends ARTemplate<DCServerConfig> {
 }

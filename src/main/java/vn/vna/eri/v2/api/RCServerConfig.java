@@ -102,7 +102,7 @@ public class RCServerConfig {
       status = ResponseCode.OK;
     } else if (this.reloadTarget.containsKey(target)) {
       UTSingleton.getInstanceOf(this.reloadTarget.get(target))
-          .ifPresent(UpdatableConfigTarget::update);
+        .ifPresent(UpdatableConfigTarget::update);
       status = ResponseCode.OK;
     } else {
       status = ResponseCode.BAD_REQUEST;

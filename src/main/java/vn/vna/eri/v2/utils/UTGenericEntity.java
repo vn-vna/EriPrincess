@@ -27,7 +27,7 @@ public class UTGenericEntity<DataClass extends UTJsonClass> {
       obj = type.getConstructor().newInstance();
 
       var setMethods = Arrays.stream(type.getMethods())
-          .filter((method) -> method.getName().startsWith("set")).toList();
+        .filter((method) -> method.getName().startsWith("set")).toList();
 
       for (var setMethod : setMethods) {
         String getMethodName = "get" + setMethod.getName().substring(3);
@@ -37,7 +37,7 @@ public class UTGenericEntity<DataClass extends UTJsonClass> {
 
     } catch (Exception ex) {
       logger.error("Convert [{}] to data object [{}] has failed due to error {}",
-          this.getClass().getName(), type.getName(), ex.getMessage());
+        this.getClass().getName(), type.getName(), ex.getMessage());
     }
     return obj;
   }
@@ -45,7 +45,7 @@ public class UTGenericEntity<DataClass extends UTJsonClass> {
   public void importFromDataObject(DataClass object, Boolean excludeNull) {
     try {
       List<Method> setMethods = Arrays.stream(this.getClass().getMethods())
-          .filter((method) -> method.getName().startsWith("set")).toList();
+        .filter((method) -> method.getName().startsWith("set")).toList();
 
       for (Method setMethod : setMethods) {
         // set{Property} -> get{Property}
@@ -61,7 +61,7 @@ public class UTGenericEntity<DataClass extends UTJsonClass> {
       }
     } catch (Exception ex) {
       logger.error("Import data from data object [{}] into [{}] has failed due to error: {}",
-          object.getClass().getName(), this.getClass().getName(), ex.getMessage());
+        object.getClass().getName(), this.getClass().getName(), ex.getMessage());
     }
   }
 

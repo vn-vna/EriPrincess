@@ -18,7 +18,7 @@ import vn.vna.eri.v2.utils.UTGenericEntity;
 @Table(name = "_dsc_guilds")
 @DynamicUpdate
 public class ETGuildConfig
-    extends UTGenericEntity<DCGuildConfig> {
+  extends UTGenericEntity<DCGuildConfig> {
 
   @Id
   @Nonnull
@@ -32,6 +32,8 @@ public class ETGuildConfig
   private Integer timeZone;
   @Column(name = "_airport")
   private String  airportChannel;
+  @Column(name = "_enable_audit")
+  private Boolean enableAuditLog;
 
   public ETGuildConfig() {
     super(DCGuildConfig.class);

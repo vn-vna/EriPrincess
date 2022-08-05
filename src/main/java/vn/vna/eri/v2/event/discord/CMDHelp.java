@@ -17,11 +17,11 @@ import vn.vna.eri.v2.schema.DCGuildConfig;
 import vn.vna.eri.v2.utils.UTMessageBuilder;
 
 @CommandProperties(
-    commands = "help",
-    type = MESSAGE_COMMAND,
-    descriptionKey = "cmd.desc.cmd-help")
+  commands = "help",
+  type = MESSAGE_COMMAND,
+  descriptionKey = "cmd.desc.cmd-help")
 public class CMDHelp
-    extends CMDTemplate {
+  extends CMDTemplate {
 
   public static final String LPK_TEMPLATE_TITLE = "tpl.help.title";
 
@@ -33,34 +33,34 @@ public class CMDHelp
       String         guildId      = msgEvent.getGuild().getId();
 
       Optional<DCGuildConfig> guildConfig = CLDiscordGuildConfig.getClient()
-          .getConfiguration(guildId);
+        .getConfiguration(guildId);
 
       CFLangPack.getInstance()
-          .getLangPack(guildConfig.map((cfg) -> cfg.getLanguage())
-              .orElse(DEFAULT_LANG_PACK.getName()))
-          .ifPresent((langPack) -> {
+        .getLangPack(guildConfig.map((cfg) -> cfg.getLanguage())
+          .orElse(DEFAULT_LANG_PACK.getName()))
+        .ifPresent((langPack) -> {
 
-            String templateTitle = langPack.get(SECTION_TEMPLATE, LPK_TEMPLATE_TITLE);
-            String templateElem = langPack.get(SECTION_TEMPLATE, LPK_HELP_CHILD_PROPS);
+          String templateTitle = langPack.get(SECTION_TEMPLATE, LPK_TEMPLATE_TITLE);
+          String templateElem = langPack.get(SECTION_TEMPLATE, LPK_HELP_CHILD_PROPS);
 
-            StringBuilder stringBuilder = new StringBuilder();
+          StringBuilder stringBuilder = new StringBuilder();
 
-            for (CMDTemplate cmd : CMDTemplate.getCommandManager()) {
-              String desc = langPack.get(CFLangPack.SECTION_CMD, cmd.getDescriptionKey());
-              stringBuilder
-                  .append(UTMessageBuilder.getInstance().formatMessage(templateElem,
-                      entry("cmds", String.join(",", cmd.getCommands())),
-                      entry("description", desc)));
-            }
+          for (CMDTemplate cmd : CMDTemplate.getCommandManager()) {
+            String desc = langPack.get(CFLangPack.SECTION_CMD, cmd.getDescriptionKey());
+            stringBuilder
+              .append(UTMessageBuilder.getInstance().formatMessage(templateElem,
+                entry("cmds", String.join(",", cmd.getCommands())),
+                entry("description", desc)));
+          }
 
-            embedBuilder
-                .addField(templateTitle, stringBuilder.toString(), false);
-          });
+          embedBuilder
+            .addField(templateTitle, stringBuilder.toString(), false);
+        });
 
       msgBuilder.setEmbeds(embedBuilder.build());
       msgEvent.getChannel()
-          .sendMessage(msgBuilder.build())
-          .queue();
+        .sendMessage(msgBuilder.build())
+        .queue();
     }
   }
 

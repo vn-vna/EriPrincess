@@ -15,8 +15,8 @@ public class PermissionStringTest {
 
   @Test
   public void testToString2() {
-    String expected = "api:read discord:read,write";
-    CSPermissions perm = new CSPermissions();
+    String        expected = "api:read discord:read,write";
+    CSPermissions perm     = new CSPermissions();
     perm.getApi().setRead(true);
     perm.getApi().setWrite(false);
     perm.getDiscord().setRead(true);
@@ -26,8 +26,8 @@ public class PermissionStringTest {
 
   @Test
   public void testToString3() {
-    String expected = "api:read";
-    CSPermissions perm = new CSPermissions();
+    String        expected = "api:read";
+    CSPermissions perm     = new CSPermissions();
     perm.getApi().setRead(true);
     perm.getApi().setWrite(false);
     perm.getDiscord().setRead(false);
@@ -38,7 +38,7 @@ public class PermissionStringTest {
   @Test
   public void testParseAndToString1() {
     String expected = "read,write";
-    String source = "write,read";
+    String source   = "write,read";
 
     CSPermissionStatus ps = new CSPermissionStatus();
     ps.importConfigString(source);
@@ -49,13 +49,12 @@ public class PermissionStringTest {
   @Test
   public void testParseAndToString2() {
     String expected = "api:read,write discord:read";
-    String source = "discord:read api:write,read,,";
+    String source   = "discord:read api:write,read,,";
 
     CSPermissions perm = new CSPermissions();
     perm.importFromConfigString(source);
 
     Assert.assertEquals(expected, perm.toString());
   }
-
 
 }

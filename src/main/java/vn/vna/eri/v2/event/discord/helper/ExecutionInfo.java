@@ -11,7 +11,7 @@ import vn.vna.eri.v2.event.discord.CMDTemplate;
 public class ExecutionInfo {
 
   private CMDTemplate command;
-  private Integer           depth;
+  private Integer     depth;
   private CMDTemplate rootCommand;
 
 }

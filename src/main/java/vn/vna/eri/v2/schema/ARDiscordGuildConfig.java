@@ -8,5 +8,5 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public final class ARDiscordGuildConfig
-    extends ARTemplate<DCGuildConfig> {
+  extends ARTemplate<DCGuildConfig> {
 }

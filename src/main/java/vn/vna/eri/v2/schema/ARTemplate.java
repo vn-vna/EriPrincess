@@ -9,7 +9,7 @@ import vn.vna.eri.v2.utils.UTJsonClass;
 @Getter
 @Setter
 public class ARTemplate<R>
-    implements UTJsonClass {
+  implements UTJsonClass {
 
   protected Boolean success;
   protected String  error;

@@ -17,7 +17,7 @@ import vn.vna.eri.v2.configs.helper.UpdatableConfigTarget;
 @Getter
 @ConfigTarget(name = CT_NAME_DSC_MSG_BUILDER, stage = DISCORD_SERVICE_READY)
 public class CFBotMessageBuilder
-    implements UpdatableConfigTarget {
+  implements UpdatableConfigTarget {
 
   private static CFBotMessageBuilder instance;
   @LoadConfig(CFG_BOT_NAME)

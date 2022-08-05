@@ -10,7 +10,7 @@ import vn.vna.eri.v2.utils.UTJsonClass;
 @Data
 @NoArgsConstructor
 public class DCGuildConfig
-    implements UTJsonClass {
+  implements UTJsonClass {
 
   @SerializedName("id")
   private String  guildId;
@@ -22,6 +22,8 @@ public class DCGuildConfig
   private Integer timeZone;
   @SerializedName("airport")
   private String  airportChannel;
+  @SerializedName("enable_audit")
+  private Boolean enableAuditLog;
 
   public DCGuildConfig(String guildId) {
     this.guildId        = guildId;

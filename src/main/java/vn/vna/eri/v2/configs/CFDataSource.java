@@ -15,7 +15,7 @@ import vn.vna.eri.v2.configs.helper.UpdatableConfigTarget;
 @Getter
 @ConfigTarget(name = CT_NAME_SPRING_DATASOURCE, stage = PRE_START)
 public class CFDataSource
-    implements UpdatableConfigTarget {
+  implements UpdatableConfigTarget {
 
   private static CFDataSource instance;
 

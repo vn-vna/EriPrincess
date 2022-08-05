@@ -21,17 +21,17 @@ import vn.vna.eri.v2.services.SVDiscord;
 import vn.vna.eri.v2.utils.UTMessageBuilder;
 
 @CommandProperties(
-    type = SUBCOMMAND,
-    commands = "register",
-    descriptionKey = "cmd.desc.cmd-admin-register",
-    parent = CMDAdmin.class,
-    senderPermission = {
-        MANAGE_SERVER,
-        MANAGE_CHANNEL,
-        MANAGE_PERMISSIONS,
-        MANAGE_ROLES })
+  type = SUBCOMMAND,
+  commands = "register",
+  descriptionKey = "cmd.desc.cmd-admin-register",
+  parent = CMDAdmin.class,
+  senderPermission = {
+    MANAGE_SERVER,
+    MANAGE_CHANNEL,
+    MANAGE_PERMISSIONS,
+    MANAGE_ROLES })
 public class CMDAdminRegister
-    extends CMDTemplate {
+  extends CMDTemplate {
 
   private static String TPL_GUILD_EXISTS_TITLE  = "cmd.tpl.cmd-admin-register.exists.title";
   private static String TPL_GUILD_EXISTS_VAL    = "cmd.tpl.cmd-admin-register.exists.val";
@@ -56,45 +56,45 @@ public class CMDAdminRegister
       try {
         this.requirePermissionMessageEvent(bot, sender, guildChannel);
         configClient
-            .getConfiguration(guildId)
-            .ifPresentOrElse((cfg) -> {
-              String existTitleTpl = langPackMng
-                  .getString(cfg.getLanguage(), SECTION_CMD, TPL_GUILD_EXISTS_TITLE)
+          .getConfiguration(guildId)
+          .ifPresentOrElse((cfg) -> {
+            String existTitleTpl = langPackMng
+              .getString(cfg.getLanguage(), SECTION_CMD, TPL_GUILD_EXISTS_TITLE)
+              .orElse("");
+            String existValTpl = langPackMng
+              .getString(cfg.getLanguage(), SECTION_CMD, TPL_GUILD_EXISTS_VAL)
+              .orElse("");
+
+            embed.addField(
+              msgBuidler.formatMessage(existTitleTpl),
+              msgBuidler.formatMessage(existValTpl),
+              false);
+          }, () -> {
+            configClient
+              .createConfig(guildId)
+              .ifPresent((cfg) -> {
+                String createdTitleTpl = langPackMng
+                  .getString(cfg.getLanguage(), SECTION_CMD, TPL_GUILD_CREATED_TITLE)
                   .orElse("");
-              String existValTpl = langPackMng
-                  .getString(cfg.getLanguage(), SECTION_CMD, TPL_GUILD_EXISTS_VAL)
+                String createdValTpl = langPackMng
+                  .getString(cfg.getLanguage(), SECTION_CMD, TPL_GUILD_CREATED_VAL)
                   .orElse("");
 
-              embed.addField(
-                  msgBuidler.formatMessage(existTitleTpl),
-                  msgBuidler.formatMessage(existValTpl),
+                embed.addField(
+                  msgBuidler.formatMessage(createdTitleTpl),
+                  msgBuidler.formatMessage(createdValTpl),
                   false);
-            }, () -> {
-              configClient
-                  .createConfig(guildId)
-                  .ifPresent((cfg) -> {
-                    String createdTitleTpl = langPackMng
-                        .getString(cfg.getLanguage(), SECTION_CMD, TPL_GUILD_CREATED_TITLE)
-                        .orElse("");
-                    String createdValTpl = langPackMng
-                        .getString(cfg.getLanguage(), SECTION_CMD, TPL_GUILD_CREATED_VAL)
-                        .orElse("");
-
-                    embed.addField(
-                        msgBuidler.formatMessage(createdTitleTpl),
-                        msgBuidler.formatMessage(createdValTpl),
-                        false);
-                  });
-            });
+              });
+          });
 
         msg.setEmbeds(embed.build());
         msgEvent.getChannel()
-            .sendMessage(msg.build())
-            .queue();
+          .sendMessage(msg.build())
+          .queue();
       } catch (ERDiscordGuildPermissionMismatch pmex) {
         msgEvent.getChannel()
-            .sendMessage(UTMessageBuilder.getInstance().getPermissionMissingMessage(pmex))
-            .queue();
+          .sendMessage(UTMessageBuilder.getInstance().getPermissionMissingMessage(pmex))
+          .queue();
       }
     }
   }

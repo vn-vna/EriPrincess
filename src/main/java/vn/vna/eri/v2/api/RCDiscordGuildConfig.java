@@ -41,7 +41,7 @@ public class RCDiscordGuildConfig {
 
   @PutMapping("/api/config/discord/{id}")
   public ResponseEntity<String> putGuildConfigById(@PathVariable("id") String guildId,
-      @RequestBody String info) {
+    @RequestBody String info) {
     Long                 beginTime   = System.nanoTime();
     ARDiscordGuildConfig apiResponse = new ARDiscordGuildConfig();
     apiResponse.setSuccess(false);

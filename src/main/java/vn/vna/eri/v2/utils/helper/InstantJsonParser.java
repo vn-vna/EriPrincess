@@ -11,7 +11,7 @@ import java.lang.reflect.Type;
 import java.time.Instant;
 
 public class InstantJsonParser
-    implements JsonSerializer<Instant>, JsonDeserializer<Instant> {
+  implements JsonSerializer<Instant>, JsonDeserializer<Instant> {
 
   @Override
   public JsonElement serialize(Instant src, Type typeOfSrc, JsonSerializationContext context) {
@@ -20,7 +20,7 @@ public class InstantJsonParser
 
   @Override
   public Instant deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-      throws JsonParseException {
+    throws JsonParseException {
     return Instant.parse(json.getAsString());
   }
 

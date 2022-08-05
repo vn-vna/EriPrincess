@@ -14,7 +14,7 @@ import vn.vna.eri.v2.utils.UTGenericEntity;
 @Entity
 @Table(name = "_svrcfg")
 public class ETServerConfig
-    extends UTGenericEntity<DCServerConfig> {
+  extends UTGenericEntity<DCServerConfig> {
 
   @Id
   @Column(name = "_key")

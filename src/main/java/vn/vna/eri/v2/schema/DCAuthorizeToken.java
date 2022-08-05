@@ -7,7 +7,7 @@ import vn.vna.eri.v2.utils.UTJsonClass;
 @Data
 @NoArgsConstructor
 public class DCAuthorizeToken
-    implements UTJsonClass {
+  implements UTJsonClass {
 
   private String token;
   private String permissions;

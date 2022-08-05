@@ -12,7 +12,7 @@ import vn.vna.eri.v2.services.SVDiscord;
 
 @NoArgsConstructor
 public class EMServiceEvent
-    extends ListenerAdapter {
+  extends ListenerAdapter {
   private static final Logger   logger = LoggerFactory.getLogger(EMMessageEvent.class);
   private static EMServiceEvent instance;
 

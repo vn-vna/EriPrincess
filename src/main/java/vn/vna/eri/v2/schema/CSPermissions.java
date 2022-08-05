@@ -8,7 +8,7 @@ import vn.vna.eri.v2.utils.helper.BoolConfigProperty;
 @Getter
 @Setter
 public class CSPermissions
-    extends UTCombinedBoolConfigString {
+  extends UTCombinedBoolConfigString {
 
   @BoolConfigProperty
   private CSPermissionStatus api;

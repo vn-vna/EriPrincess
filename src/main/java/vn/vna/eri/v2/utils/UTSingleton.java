@@ -16,7 +16,7 @@ public class UTSingleton {
       return Optional.ofNullable(singletonClass.cast(result));
     } catch (Exception ex) {
       logger.error("Can't get instance from class {} due to error {}", singletonClass.getName(),
-          ex.getMessage());
+        ex.getMessage());
     }
     return Optional.empty();
   }
