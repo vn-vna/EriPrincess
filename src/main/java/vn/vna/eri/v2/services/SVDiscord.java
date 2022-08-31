@@ -38,13 +38,9 @@ import vn.vna.eri.v2.schema.DCServiceStatus;
 public class SVDiscord
   implements Runnable {
 
-  private static final Logger logger;
+  private static final Logger logger = LoggerFactory.getLogger(SVDiscord.class);
   private static Thread       serviceThread;
   private static SVDiscord    instance;
-
-  static {
-    logger = LoggerFactory.getLogger(SVDiscord.class);
-  }
 
   @Getter
   private final DCServiceStatus status;
@@ -55,6 +51,7 @@ public class SVDiscord
     if (!Objects.isNull(SVDiscord.instance)) {
       throw new ERDiscordServiceExists();
     }
+
     this.status = new DCServiceStatus();
     this.status.setStatus(STATUS_OFFLINE);
     this.status.setLastStartUp(null);
@@ -90,8 +87,11 @@ public class SVDiscord
     String token = CFGlobalConfig.getInstance().getString(CFGlobalConfig.CFG_BOT_TOKEN).orElse("");
 
     List<GatewayIntent> intents = new ArrayList<>();
-    Collections.addAll(intents, GUILD_MESSAGES, GUILD_MEMBERS, GUILD_BANS, GUILD_EMOJIS,
-      GUILD_INVITES, GUILD_MESSAGE_TYPING, GUILD_PRESENCES, GUILD_VOICE_STATES, GUILD_WEBHOOKS,
+
+    Collections.addAll(intents,
+      GUILD_MESSAGES, GUILD_MEMBERS, GUILD_BANS,
+      GUILD_EMOJIS, GUILD_INVITES, GUILD_MESSAGE_TYPING,
+      GUILD_PRESENCES, GUILD_VOICE_STATES, GUILD_WEBHOOKS,
       GUILD_MESSAGE_REACTIONS);
 
     EMMessageEvent msgEventListener     = EMMessageEvent.getInstance();

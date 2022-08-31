@@ -21,8 +21,11 @@ public class ETAuthToken
   @Id
   @Column(name = "_token")
   private String token;
-  @Column(name = "_permissions")
-  private String permissions;
+  @Column(
+    name = "_permissions",
+    columnDefinition = "text[]"
+  )
+  private String[] permissions;
 
   public ETAuthToken() {
     super(DCAuthorizeToken.class);
